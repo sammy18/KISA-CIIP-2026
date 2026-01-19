@@ -1,0 +1,214 @@
+#!/bin/bash
+# ============================================================================
+# @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
+# @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
+# @Version: 1.0.0
+# @Last Updated: 2026-01-16
+# ============================================================================
+# [점검 항목 상세]
+# @ID          : U-14
+# @Category    : Unix Server
+# @Platform    : RedHat/CentOS/RHEL
+# @Severity    : 상
+# @Title       : root 홈, 패스 디렉터리 권한 및 PATH 설정
+# @Description : root PATH 확인 (. 포함 여부)
+# @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
+# ==============================================================================
+
+set -euo pipefail
+
+# 스크립트 디렉토리 설정
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
+
+# 필수 라이브러리 로드
+source "${LIB_DIR}/common.sh"
+source "${LIB_DIR}/command_validator.sh"
+source "${LIB_DIR}/timeout_handler.sh"
+source "${LIB_DIR}/result_manager.sh"
+source "${LIB_DIR}/output_mode.sh"
+source "${LIB_DIR}/metadata_parser.sh"
+
+
+ITEM_ID="U-14"
+ITEM_NAME="root 홈, 패스 디렉터리 권한 및 PATH 설정"
+SEVERITY="상"
+
+# 가이드라인 정보
+GUIDELINE_PURPOSE="비인가자가불법적으로생성한디렉터리및명령어를우선으로실행되지않도록설정하기위함"
+GUIDELINE_THREAT="root 계정의 PATH 환경변수에 정상적인 관리자 명령어(ls, mv, cp 등)의 디렉터리 경로보다 현재 디렉터리를 지칭하는 '.' 표시가 우선하면 현재 디렉터리에 변조된 명령어를 삽입하여 관리자 명령어 입력시악의적인기능이실행될수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="PATH환경변수에'.'이맨앞이나중간에포함되지않은경우"
+GUIDELINE_CRITERIA_BAD="PATH환경변수에'.'이맨앞이나중간에포함된경우"
+GUIDELINE_REMEDIATION="root 계정의환경설정파일(/.profile, /.bashrc 등)과 시스템환경설정파일(/etc/profile등)에설정된 PATH환경변수에서현재디렉터리를나타내는'.'을PATH환경변수의마지막으로이동하도록설정"
+
+# ============================================================================
+# 진단 함수
+# ============================================================================
+
+# 진단 수행
+diagnose() {
+
+
+    diagnosis_result="unknown"
+    local status="미진단"
+    local inspection_summary=""
+    local command_result=""
+    local command_executed=""
+    local newline=$'\n'
+
+    # 진단 로직 구현
+    # root PATH 확인 (. 포함 여부)
+
+    local path_has_dot=false
+    local path_issues=""
+    local root_home_perms=""
+    local path_dirs_issues=""
+
+    # 1) root 계정의 PATH 환경변수 확인
+    # /root/.bashrc, /root/.profile, /etc/profile 등에서 PATH 설정 확인
+    local root_path=""
+
+    # root로 su하여 PATH 확인 (실제 환경에서만 작동)
+    if [ "$EUID" -eq 0 ]; then
+        root_path="$PATH"
+    else
+        # 현재 사용자가 root가 아닌 경우, 설정 파일에서 확인
+        if [ -f /root/.bashrc ]; then
+            root_path=$(grep "^export PATH=" /root/.bashrc 2>/dev/null | sed 's/export PATH=//')
+        fi
+        if [ -z "$root_path" ] && [ -f /root/.profile ]; then
+            root_path=$(grep "^PATH=" /root/.profile 2>/dev/null | sed 's/PATH=//')
+        fi
+    fi
+
+    # PATH에 "." 또는 "::" (빈 디렉토리, 현재 디렉토리 의미) 포함 확인
+    if [ -n "$root_path" ]; then
+        # 콜론으로 구분된 PATH 검사
+        local old_ifs="$IFS"
+        IFS=':'
+        for path_dir in $root_path; do
+            if [ "$path_dir" = "." ] || [ -z "$path_dir" ]; then
+                path_has_dot=true
+                path_issues="${path_issues}PATH에 현재 디렉토리(.) 또는 빈 경로 포함, "
+            fi
+        done
+        IFS="$old_ifs"
+    fi
+
+    # 2) root 홈 디렉토리 권한 확인
+    local root_home="/root"
+    if [ -d "$root_home" ]; then
+        local home_perms=$(stat -c "%a" "$root_home" 2>/dev/null)
+        local home_owner=$(stat -c "%U:%G" "$root_home" 2>/dev/null)
+
+        # root 홈 디렉토리는 root만 접근 가능해야 함 (700, 750 권장)
+        if [ "$home_owner" = "root:root" ]; then
+            if [ "$home_perms" = "700" ] || [ "$home_perms" = "750" ]; then
+                root_home_perms="root 홈 권한: ${home_perms} (${home_owner}) [양호]"
+            else
+                root_home_perms="root 홈 권한: ${home_perms} (${home_owner}) [권한 700 또는 750 권장]"
+            fi
+        else
+            root_home_perms="root 홈 소유자: ${home_owner} [root:root 아님]"
+        fi
+    else
+        root_home_perms="/root 디렉토리 없음"
+    fi
+
+    # 3) PATH에 포함된 디렉토리 권한 확인 (쓰기 권한 있는지)
+    if [ -n "$root_path" ]; then
+        local old_ifs="$IFS"
+        IFS=':'
+        for path_dir in $root_path; do
+            if [ -n "$path_dir" ] && [ "$path_dir" != "." ] && [ -d "$path_dir" ]; then
+                local dir_perms=$(stat -c "%a" "$path_dir" 2>/dev/null)
+                # others에 쓰기 권한이 있는지 확인 (777, 775 등)
+                if [ -n "$dir_perms" ]; then
+                    local others_write=${dir_perms: -1}
+                    if [ "$others_write" -ge 6 ] 2>/dev/null; then
+                        path_dirs_issues="${path_dirs_issues}${path_dir} 권한 ${dir_perms} (others 쓰기 가능), "
+                    fi
+                fi
+            fi
+        done
+        IFS="$old_ifs"
+    fi
+
+    # 최종 판정
+    local all_issues="${path_issues}${root_home_perms}${path_dirs_issues}"
+
+    # Build raw command output
+    local path_output="$PATH"
+    local root_home_stat=$(stat -c "%a:%U:%G" /root 2>/dev/null)
+    command_result="[Current PATH]${newline}${path_output}${newline}${newline}[Root home directory stats]${newline}${root_home_stat}"
+
+    if [ "$path_has_dot" = true ]; then
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        inspection_summary="root PATH에 현재 디렉토리(.) 포함: ${path_issues%, }"
+        command_executed="echo \$PATH && stat -c '%a:%U:%G' /root"
+    elif [ -n "$path_dirs_issues" ]; then
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        inspection_summary="PATH 디렉토리 권한 문제: ${path_dirs_issues%, }"
+        command_executed="echo \$PATH && stat -c '%a:%U:%G' /root"
+    else
+        diagnosis_result="GOOD"
+        status="양호"
+        inspection_summary="root PATH 및 홈 디렉토리 보안 설정 적절 (${root_home_perms})"
+        command_executed="echo \$PATH && stat -c '%a:%U:%G' /root"
+    fi
+
+    #echo ""
+    #echo "진단 결과: ${status}"
+    #echo "판정: ${diagnosis_result}"
+    #echo "설명: ${inspection_summary}"
+    #echo ""
+
+    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
+    # Run-all 모드 확인
+    save_dual_result \
+        "${ITEM_ID}" \
+        "${ITEM_NAME}" \
+        "${status}" \
+        "${diagnosis_result}" \
+        "${inspection_summary}" \
+        "${command_result}" \
+        "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" \
+        "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" \
+        "${GUIDELINE_CRITERIA_BAD}" \
+        "${GUIDELINE_REMEDIATION}"
+
+    # 결과 저장 확인
+    verify_result_saved "${ITEM_ID}"
+
+
+    return 0
+}
+
+# ============================================================================
+# 메인 실행
+# ============================================================================
+
+main() {
+    # 진단 시작 표시
+    show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
+
+    # 디스크 공간 확인
+    check_disk_space
+
+    # 진단 수행
+    diagnose
+
+    # 진단 완료 표시
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
+
+    return 0
+}
+
+# 스크립트 직접 실행 시에만 진단 수행
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+    main "$@"
+fi
