@@ -303,18 +303,6 @@ cd 08.DBMS/PostgreSQL
 
 ---
 
-## 🤝 기여
-
-본 프로젝트는 오픈소스입니다. 기여를 환영합니다!
-
-1. Fork
-2. 기능 브랜치 생성 (`git checkout -b feature/AmazingFeature`)
-3. 커밋 (`git commit -m 'Add AmazingFeature'`)
-4. 푸시 (`git push origin feature/AmazingFeature`)
-5. Pull Request
-
----
-
 ## 📄 라이선스
 
 MIT License
@@ -323,7 +311,6 @@ MIT License
 
 ## 🔗 관련 링크
 
-- **메인 프로젝트**: https://github.com/rebugui/KISA-CIIP-2026-dev (비공개)
 - **공개 Scripts**: https://github.com/rebugui/KISA-CIIP-2026 (이 저장소)
 - **KISA 공식 홈페이지**: https://www.kisa.or.kr
 
@@ -338,7 +325,6 @@ MIT License
 
 ## 🙏 감사의 말
 
-- KISA(한국인터넷진흥원) CIIP 가이드라인 제공
 - 오픈소스 보안 커뮤니티
 - 모든 기여자분들
 
