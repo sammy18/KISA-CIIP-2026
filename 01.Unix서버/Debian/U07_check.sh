@@ -2,8 +2,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-19
+# @Version: 1.1.0
+# @Last Updated: 2026-02-24
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-07
@@ -11,7 +11,7 @@
 # @Platform    : Debian
 # @Severity    : 하
 # @Title       : 불필요한 계정 제거
-# @Description : 불필요한 기본 계정(lp, uucp, nuucp 등) 및 장기 미사용 계정 존재 여부 점검
+# @Description : 불필요한 기본 계정 및 장기 미사용 계정(90일 이상) 존재 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -36,7 +36,7 @@ SEVERITY="하"
 # 가이드라인 정보
 GUIDELINE_PURPOSE="불필요한 계정이 존재하는지 점검하여 관리되지 않은 계정에 의한 침입에 대비하는지 확인하기 위함"
 GUIDELINE_THREAT="로그인이 가능하고 현재 사용하지 않는 불필요한 계정은 사용 중인 계정보다 상대적으로 관리가 취약하여 공격자의 목표가 되어 계정이 탈취될 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한 계정(lp, uucp, nuucp 등)이 존재하지 않거나, 장기 미사용 계정이 없는 경우"
+GUIDELINE_CRITERIA_GOOD="불필요한 계정이 존재하지 않거나, 장기 미사용 계정이 없는 경우"
 GUIDELINE_CRITERIA_BAD="불필요한 계정이 존재하거나, 장기 미사용 계정이 존재하는 경우"
 GUIDELINE_REMEDIATION="시스템에 존재하는 계정 확인 후 불필요한 계정 제거"
 
@@ -52,84 +52,80 @@ diagnose() {
     local command_executed=""
     local newline=$'\n'
 
-    # 진단 로직 구현
-    # 1. 불필요한 기본 계정 확인 (lp, uucp, nuucp)
-    # 2. 장기 미사용 계정 확인 (90일 이상, UID 1000 이상)
-
     local is_vulnerable=false
     local vuln_details=""
+    local unused_accounts=""
     
-    # 1. 기본 계정 점검
-    local default_accounts_regex="^(lp|uucp|nuucp):"
-    local default_accounts_output=$(grep -E "$default_accounts_regex" /etc/passwd 2>/dev/null || echo "")
+    # ============================================================================
+    # 하이브리드 방식: /etc/passwd + lastlog 교차 검증
+    # ============================================================================
     
-    if [ -n "$default_accounts_output" ]; then
-        is_vulnerable=true
-        vuln_details="불필요한 기본 계정 발견"
+    # 1단계: /etc/passwd에서 점검 대상 계정 추출
+    # - UID >= 1000 (일반 사용자, 시스템 계정 제외)
+    # - 쉘이 nologin/false가 아님 (로그인 가능)
+    local checkable_accounts=""
+    if [ -f /etc/passwd ]; then
+        checkable_accounts=$(awk -F: '$3 >= 1000 && $7 !~ /nologin|false/ {print $1}' /etc/passwd 2>/dev/null || echo "")
     fi
-
-    # 2. 장기 미사용 계정 점검 (>90 days)
-    # 시스템 계정 제외 (UID >= 1000)
-    local inactive_threshold=90
-    local inactive_accounts_output=""
-    local inactive_list=""
-    local current_epoch=$(date +%s)
     
-    # lastlog가 있는 경우
+    # 2단계: lastlog로 90일 내 로그인 이력 확인
+    # - lastlog -t 90: 90일 내 로그인한 계정 표시
+    # - 이 목록에 없는 계정 = 90일 이상 미사용
+    local recent_login_accounts=""
     if command -v lastlog >/dev/null 2>&1; then
-        # UID 1000 이상 계정만 확인
-        while IFS=: read -r username password uid gid gecos home shell; do
-            if [ "$uid" -ge 1000 ] && [ "$username" != "nobody" ]; then
-                # lastlog for specific user
-                local user_lastlog=$(lastlog -u "$username" | tail -n 1)
-                
-                if [[ "$user_lastlog" == *"Never bridged"* ]] || [[ "$user_lastlog" == *"Never logged"* ]]; then
-                     # Never logged in - Check account creation time or ignore?
-                     # Guide focuses on "unused accounts". Created but never used implies unused.
-                     # But strictly, "unused for > 90 days"
-                     # Let's verify 'Never logged in' only counts if the system is older than 90 days? 
-                     # For simplicity and robust check, we flagged 'Never logged in' accounts as potentially unused unless they are new.
-                     inactive_list="${inactive_list}${username} (Never logged in), "
-                     inactive_accounts_output="${inactive_accounts_output}${newline}${user_lastlog}"
-                else
-                     # Parse date from lastlog output? 
-                     # Often lastlog format varies.
-                     # Let's rely on `lastlog -b 90` if available, but -b checks 'before 90 days'.
-                     # `lastlog -t 90` checks 'within 90 days'.
-                     # Accounts NOT in `lastlog -t 90` are inactive?
-                     : # Formatting parsing is tricky.
-                     # Simplified approach: Just relying on existence of default accounts for strict check, 
-                     # and adding "Manual Check Required" warning for inactivity if specific users found.
-                     pass 
-                fi
+        recent_login_accounts=$(lastlog -t 90 2>/dev/null | awk 'NR>1 {print $1}' | sort -u || echo "")
+    fi
+    
+    # 3단계: 교차 검증 - 점검 대상 계정 중 90일 이상 미사용 계정 식별
+    if [ -n "$checkable_accounts" ]; then
+        while IFS= read -r account; do
+            # 빈 계정명 건너뜀
+            [ -z "$account" ] && continue
+            
+            # recent_login_accounts에 없으면 90일 이상 미사용
+            if [ -z "$recent_login_accounts" ] || ! echo "$recent_login_accounts" | grep -qw "^${account}$"; then
+                unused_accounts="${unused_accounts}${account} "
+                is_vulnerable=true
             fi
-        done < /etc/passwd
+        done <<< "$checkable_accounts"
     fi
     
-    # For this script, to ensure robustness and raw output compliance:
-    # We will primarily report the "Basic Accounts" as the hard Fail condition.
-    # Inactivity check is often best done manually or with complex parsing. 
-    # Current script focused heavily on parsing which is fragile.
-    # Let's implement robust grep for default accounts, and capture lastlog output for manual review.
+    # 결과 메시지 구성
+    local passwd_check_output=""
+    local lastlog_check_output=""
     
-    local lastlog_output=""
-    if command -v lastlog >/dev/null 2>&1; then
-        lastlog_output=$(lastlog 2>/dev/null | head -20) # Limit output for JSON
+    # /etc/passwd 점검 결과
+    passwd_check_output="점검 대상 계정 (UID>=1000, 로그인 가능):"
+    if [ -n "$checkable_accounts" ]; then
+        passwd_check_output="${passwd_check_output}${newline}$(echo "$checkable_accounts" | tr '\n' ' ')"
     else
-        lastlog_output="lastlog command not found"
+        passwd_check_output="${passwd_check_output}${newline}없음"
     fi
-
-    command_result="[Check 1: Default Unnecessary Accounts]${newline}${default_accounts_output:-No default accounts found (lp, uucp, nuucp)}${newline}${newline}[Check 2: Login History (Top 20)]${newline}${lastlog_output}"
-    command_executed="grep -E '^(lp|uucp|nuucp):' /etc/passwd; lastlog | head -20"
+    
+    # lastlog 점검 결과
+    if command -v lastlog >/dev/null 2>&1; then
+        lastlog_check_output="최근 90일 내 로그인 계정:"
+        if [ -n "$recent_login_accounts" ]; then
+            lastlog_check_output="${lastlog_check_output}${newline}$(echo "$recent_login_accounts" | tr '\n' ' ')"
+        else
+            lastlog_check_output="${lastlog_check_output}${newline}없음"
+        fi
+    else
+        lastlog_check_output="lastlog 명령어 없음"
+    fi
+    
+    command_result="[Check 1: /etc/passwd 필터링]${newline}${passwd_check_output}${newline}${newline}[Check 2: lastlog -t 90]${newline}${lastlog_check_output}"
+    command_executed="awk -F: '\$3 >= 1000 && \$7 !~ /nologin|false/ {print \$1}' /etc/passwd; lastlog -t 90"
 
     if [ "$is_vulnerable" = true ]; then
         diagnosis_result="VULNERABLE"
         status="취약"
-        inspection_summary="${vuln_details} 확인됨. (${default_accounts_output})"
+        unused_accounts=$(echo "$unused_accounts" | tr -s ' ' | sed 's/^ *//;s/ *$//')
+        inspection_summary="90일 이상 미사용 계정 발견: ${unused_accounts}"
     else
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="불필요한 기본 계정이 존재하지 않음"
+        inspection_summary="90일 이상 미사용 계정 없음 (시스템 계정 및 로그인 불가 계정은 점검 대상에서 제외됨)"
     fi
 
     # 결과 저장
