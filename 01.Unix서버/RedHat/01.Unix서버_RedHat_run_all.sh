@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
@@ -26,7 +26,7 @@ echo ""
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
@@ -34,6 +34,9 @@ source "${LIB_DIR}/command_validator.sh"
 source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
+
+# 통합 결과 파일 생성 (result_manager.sh 함수 사용) set -u 대응 코드 삽입
+declare -a RESULTS_JSON=()
 
 # ============================================================================
 # 전체 진단 설정
@@ -90,7 +93,6 @@ run_single_check() {
     local item_name=""
 
     # tmp_output에서 JSON 추출 (완전한 JSON 객체)
-    # 중괄호 깊이를 추적하여 완전한 JSON 추출
     json_output=$(awk '
     BEGIN { obj=0; brace=0; in_json=0 }
     /^{/ {
@@ -110,6 +112,10 @@ run_single_check() {
     in_json { print }
     ' "$tmp_output")
 
+    # ========================================================================
+    # [수정 포인트] 성공/실패 판정 로직 보정
+    # exit_code가 1(취약)이어도 JSON이 출력되었다면 스크립트 실행은 성공한 것임
+    # ========================================================================
     if [ -n "$json_output" ]; then
         # JSON 필드 추출
         item_name=$(echo "$json_output" 2>/dev/null | grep -oP '"item_name":\s*"\K[^"]+' | head -1 || echo "")
@@ -118,20 +124,23 @@ run_single_check() {
         # inspection.summary 추출
         summary=$(echo "$json_output" 2>/dev/null | grep -oP '"inspection":\s*\{[^}]*"summary":\s*"\K[^"]+' | head -1 || echo "")
         if [ -z "$summary" ]; then
-            summary=$(echo "$json_output" 2>/dev/null | grep -oP '"summary":\s*"\K[^"]+' | head -1 || echo "진단 실패")
+            summary=$(echo "$json_output" 2>/dev/null | grep -oP '"summary":\s*"\K[^"]+' | head -1 || echo "진단 완료")
         fi
 
         RESULTS_JSON+=("$json_output")
-    fi
-
-    # 결과 확인
-    if [ $exit_code -eq 0 ]; then
+        
+        # JSON 데이터가 존재하면 PASSED_ITEMS로 분류 (성공 카운트)
         PASSED_ITEMS+=("$item_id")
+        local internal_ret=0
     else
+        # JSON이 추출되지 않은 경우에만 진짜 실패로 처리
         FAILED_ITEMS+=("$item_id")
+        final_result="ERROR"
+        summary="진단 스크립트 실행 오류 또는 JSON 데이터 미출력"
+        local internal_ret=1
     fi
 
-    # PC 형식으로 CLI 출력 (간단한 요약만)
+    # PC 형식으로 CLI 출력
     echo "==================================================================="
     echo "진단 항목: ${item_id} (${current}/${TOTAL_ITEMS})"
     echo "==================================================================="
@@ -148,7 +157,7 @@ run_single_check() {
     # 임시 파일 삭제
     rm -f "$tmp_output"
 
-    return $exit_code
+    return $internal_ret
 }
 
 # ============================================================================
@@ -179,11 +188,8 @@ main() {
     for item_id in "${DIAGNOSIS_ITEMS[@]}"; do
         current=$((current + 1))
 
-        if run_single_check "$item_id"; then
-            :
-        else
-            echo "[WARN] ${item_id} 진단 실패" >&2
-        fi
+        # run_single_check의 리턴값으로 성공/실패 여부 판단
+        run_single_check "$item_id"
     done
 
     # 진단 종료 시간
@@ -206,7 +212,7 @@ main() {
         "${PLATFORM}" \
         "${SCRIPT_DIR}" \
         "${TOTAL_ITEMS}" \
-        "${RESULTS_JSON[@]}"
+        "${RESULTS_JSON[@]:-}"
 
     echo ""
     echo "[완료] 전체 진단 완료"
