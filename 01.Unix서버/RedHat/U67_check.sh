@@ -1,229 +1,82 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-67
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 중
-# @Title       : 로그 디렉터리 소유자 및 권한 설정
-# @Description : /var/log 권한 700 또는 750 확인
+# @Category    : UNIX > 1. 계정 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (중)
+# @Title       : 홈 디렉토리 소유자 및 권한 설정
+# @Description : 사용자 홈 디렉토리의 소유자 일치 여부 및 타인 쓰기 권한 제한 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-67"
-ITEM_NAME="로그 디렉터리 소유자 및 권한 설정"
-SEVERITY="중"
+ITEM_NAME="홈 디렉토리 소유자 및 권한 설정"
+SEVERITY="(중)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="로그파일을관리자만제어할수있게하여비인가자의임의적인파일훼손및변조를방지하기위함"
-GUIDELINE_THREAT="로그에 대한 접근 통제가 미흡할 경우, 비인가자가로그에서정보를획득하거나로그자체를변조할수 있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="/var/log 디렉터리 소유자가 root이고 권한이 700 또는 750이며, 내부 로그 파일의 소유자가 root 또는 syslog이고 권한이 600 또는 640인 경우"
-GUIDELINE_CRITERIA_BAD="/var/log 디렉터리 소유자가 root가 아니거나, 디렉터리 권한이 700 또는 750이 아니거나, world-writable 파일이 존재하거나, 로그 파일 권한이 600/640을 초과하는 경우"
-GUIDELINE_REMEDIATION="디렉터리내로그파일소유자및권한변경설정"
+GUIDELINE_PURPOSE="홈 디렉토리 내 개인 파일 및 설정 정보를 보호하여 타 사용자에 의한 변조 및 정보 유출을 차단하기 위함"
+GUIDELINE_THREAT="홈 디렉토리 권한이 과도하게 부여될 경우 타인에 의해 중요 파일이 변조되거나 쉘 설정 파일 수정을 통해 권한이 탈취될 수 있음"
+GUIDELINE_CRITERIA_GOOD="홈 디렉토리 소유자가 해당 계정이고, 타 사용자 쓰기 권한이 없는 경우"
+GUIDELINE_CRITERIA_BAD="홈 디렉토리 소유자가 불일치하거나 타 사용자 쓰기 권한이 허용된 경우"
+GUIDELINE_REMEDIATION="홈 디렉토리 소유자 변경(chown) 및 권한 변경(chmod 700)"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="모든 홈 디렉터리의 설정이 적절합니다."
+    local command_executed="ls -ld /home/*"
+    local check_output=""
+    local bad_list=""
 
+    # 1. 실제 디렉토리 리스트 추출 (증적용)
+    check_output=$(ls -ld /home/* 2>/dev/null)
 
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
-    local command_result=""
-    local command_executed=""
-    local newline=$'\n'
-
-    # 진단 로직 구현
-    # /var/log 디렉터리 소유자 및 권한 설정 확인
-
-    local log_dir="/var/log"
-    local is_secure=false
-    local details=""
-    local raw_output=""
-
-    # 디렉터리 존재 확인
-    if [ ! -d "$log_dir" ]; then
-        diagnosis_result="MANUAL"
-        status="수동진단"
-        inspection_summary="/var/log 디렉터리가 존재하지 않습니다"
-        local raw_log_check=$(ls -ld /var/log 2>&1)
-        command_result="[Command: ls -ld /var/log]${newline}${raw_log_check}"
-        command_executed="ls -ld /var/log"
-
-        echo ""
-      #  echo "진단 결과: ${status}"
-      # echo "판정: ${diagnosis_result}"
-      # echo "설명: ${inspection_summary}"
-        echo ""
-
-
-        # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-        # Run-all 모드 확인
-        save_dual_result \
-            "${ITEM_ID}" \
-            "${ITEM_NAME}" \
-            "${status}" \
-            "${diagnosis_result}" \
-            "${inspection_summary}" \
-            "${command_result}" \
-            "${command_executed}" \
-            "${GUIDELINE_PURPOSE}" \
-            "${GUIDELINE_THREAT}" \
-            "${GUIDELINE_CRITERIA_GOOD}" \
-            "${GUIDELINE_CRITERIA_BAD}" \
-            "${GUIDELINE_REMEDIATION}"
-
-        # 결과 저장 확인
-        verify_result_saved "${ITEM_ID}"
-        return 0
-    fi
-
-    # Capture raw output for /var/log directory and files
-    raw_output=$(echo "=== /var/log Directory Info ===" && stat -c "%a %U %G" /var/log 2>/dev/null && echo -e "\n=== Critical Log Files ===" && ls -la /var/log/messages /var/log/secure 2>/dev/null && echo -e "\n=== World-Writable Files ===" && find /var/log -type f -perm -o+w 2>/dev/null | head -5 || echo "None found")
-
-    # 권한 및 소유자 확인
-    local perms=$(stat -c "%a" "$log_dir" 2>/dev/null || echo "000")
-    local owner=$(stat -c "%U" "$log_dir" 2>/dev/null || echo "unknown")
-    local group=$(stat -c "%G" "$log_dir" 2>/dev/null || echo "unknown")
-
-    details="권한: ${perms}, 소유자: ${owner}:${group}"
-
-    # 보안 판정 (권한 700 또는 750 (디렉토리), 소유자 root)
-    if [ "$owner" = "root" ]; then
-        if [[ "$perms" =~ ..0$ ]] || [[ "$perms" =~ ..5$ ]]; then  
-           
-           # Check for world writable files
-           local insecure_files=$(find "$log_dir" -type f -perm -o+w 2>/dev/null | head -5)
-           
-           if [ -n "$insecure_files" ]; then
-                is_secure=false
-                details="${details}, World-writable files found: ${insecure_files}..."
-           else
-                # Check specific critical logs
-                local critical_logs=("syslog" "auth.log" "kern.log" "daemon.log" "mail.log" "messages" "secure")
-                # Added 'messages' and 'secure' for RedHat
-                local crit_issue=false
-                
-                for log in "${critical_logs[@]}"; do
-                    if [ -f "$log_dir/$log" ]; then
-                        local l_perm=$(stat -c "%a" "$log_dir/$log")
-                        local l_owner=$(stat -c "%U" "$log_dir/$log")
-                        
-                        if [ "$l_owner" != "root" ] && [ "$l_owner" != "syslog" ]; then
-                            crit_issue=true
-                            details="${details}, ${log} owner invalid ($l_owner)"
-                        fi
-                        
-                        if [[ "$l_perm" =~ .2. ]] || [[ "$l_perm" =~ ..2 ]] || [[ "$l_perm" =~ .6. ]] || [[ "$l_perm" =~ ..6 ]]; then
-                             crit_issue=true
-                             details="${details}, ${log} writable by group/others ($l_perm)"
-                        fi
-                    fi
-                done
-                
-                if [ "$crit_issue" = true ]; then
-                    is_secure=false
-                else
-                    is_secure=true
-                fi
-           fi
-        else
-            is_secure=false
-            details="${details} (디렉토리 권한 취약)"
+    # 2. 루프를 돌며 상세 점검 (UID 1000 이상 기준)
+    while IFS=: read -r user pass uid gid info home shell; do
+        if [ "$uid" -ge 1000 ] && [ -d "$home" ]; then
+            local owner=$(stat -c "%U" "$home")
+            local perm=$(stat -c "%a" "$home")
+            
+            # 소유자가 본인이 아니거나, 타인(Others)에게 쓰기 권한(2 이상)이 있는 경우
+            if [ "$owner" != "$user" ] || [ "${perm: -1}" -ge 2 ]; then
+                status="취약"
+                diagnosis_result="VULNERABLE"
+                bad_list+="${user}(${perm}, Owner:${owner}) "
+            fi
         fi
+    done < /etc/passwd
+
+    # 3. 현황값 기록
+    if [ "$status" == "취약" ]; then
+        inspection_summary="부적절한 권한/소유자의 홈 디렉터리가 발견되었습니다."
+        command_result="[취약 리스트]: ${bad_list}\n\n[전체 리스트]:\n${check_output}"
     else
-        is_secure=false
-        details="${details} (디렉토리 소유자 취약)"
+        command_result="[전체 리스트]:\n${check_output}"
     fi
 
-    command_executed="stat -c '%a %U %G' /var/log && find /var/log -type f -perm -o+w"
-
-    # 최종 판정
-    if [ "$is_secure" = true ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="/var/log 디렉터리 및 주요 로그 파일 설정이 양호합니다 (${details})"
-        command_result="${raw_output}"
-    else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="/var/log 설정 미흡 (${details})"
-        command_result="${raw_output}"
-    fi
-
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
-    save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
-    verify_result_saved "${ITEM_ID}"
-
-
-    return 0
+   
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

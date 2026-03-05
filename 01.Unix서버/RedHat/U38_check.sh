@@ -1,194 +1,77 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-38
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 3. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : DoS 공격에 취약한 서비스 비활성화
-# @Description : echo, chargen, daytime 등 비활성화
+# @Description : DoS 공격에 악용될 수 있는 echo, discard, daytime, chargen 등의 서비스 비활성화 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-38"
 ITEM_NAME="DoS 공격에 취약한 서비스 비활성화"
-SEVERITY="상"
+SEVERITY="(상)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="DoS공격에취약한서비스를비활성화하여시스템의보안성을높이기위함"
-GUIDELINE_THREAT="DoS공격에취약한서비스가활성화될경우공격자로인한시스템자원고갈 및서비스거부 등의피해가발생할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="DoS공격에취약한서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD=" DoS공격에취약한서비스가활성화된경우"
-GUIDELINE_REMEDIATION="DoS공격에취약한서비스중지및비활성화설정"
+GUIDELINE_PURPOSE="시스템 리소스를 과도하게 소모시킬 수 있는 불필요한 DoS 관련 서비스를 차단하여 가용성을 확보하기 위함"
+GUIDELINE_THREAT="echo, chargen 등의 서비스가 활성화된 경우 UDP Flooding 공격의 도구가 되어 시스템 서비스 거부 상태를 유발할 수 있음"
+GUIDELINE_CRITERIA_GOOD="echo, discard, daytime, chargen 등의 서비스가 비활성화되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="DoS 관련 서비스 중 하나라도 활성화되어 있는 경우"
+GUIDELINE_REMEDIATION="해당 서비스 비활성화 (/etc/xinetd.d/ 내 파일에서 disable = yes 설정)"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="DoS 공격에 취약한 불필요 서비스들이 모두 비활성화되어 있습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="grep -r 'disable' /etc/xinetd.d/"
 
-    # DoS 취약 서비스 비활성화 확인 (echo, chargen, daytime, discard, time, etc.)
-    local vulnerable_services=("echo" "chargen" "daytime" "discard" "time")
-    local is_secure=true
-    local enabled_services=()
-    local service_status=""
-
-    # 1) inetd/xinetd 기반 서비스 확인
-    if [ -f /etc/inetd.conf ]; then
-        service_status="${service_status}${newline}/etc/inetd.conf 확인:${newline}"
-        for svc in "${vulnerable_services[@]}"; do
-            if grep -q "^${svc}" /etc/inetd.conf 2>/dev/null; then
-                # 주석 처리되었는지 확인
-                if grep "^${svc}" /etc/inetd.conf | grep -q -v "^#"; then
-                    is_secure=false
-                    enabled_services+=("inetd: ${svc}")
-                    service_status="${service_status}  ${svc}: 활성화됨${newline}"
-                else
-                    service_status="${service_status}  ${svc}: 주석 처리됨${newline}"
-                fi
-            fi
-        done
-    fi
-
-    # 2) xinetd.d 디렉토리 확인
-    if [ -d /etc/xinetd.d ]; then
-        service_status="${service_status}${newline}/etc/xinetd.d 확인:${newline}"
-        for svc in "${vulnerable_services[@]}"; do
-            if [ -f "/etc/xinetd.d/${svc}" ]; then
-                local disabled=$(grep -i "disable" /etc/xinetd.d/${svc} | grep -v "^#" | awk '{print $2}' | head -1)
-                if [ "$disabled" != "yes" ]; then
-                    is_secure=false
-                    enabled_services+=("xinetd: ${svc}")
-                    service_status="${service_status}  ${svc}: 활성화됨 (disable=${disabled})${newline}"
-                else
-                    service_status="${service_status}  ${svc}: 비활성화됨${newline}"
-                fi
-            fi
-        done
-    fi
-
-    # 3) systemd 서비스 확인
-    service_status="${service_status}${newline}systemd 서비스 확인:${newline}"
-    for svc in "${vulnerable_services[@]}"; do
-        if systemctl list-unit-files | grep -q "^${svc}.service"; then
-            local active=$(systemctl is-active "${svc}.service" 2>/dev/null || echo "inactive")
-            local enabled=$(systemctl is-enabled "${svc}.service" 2>/dev/null || echo "disabled")
-            service_status="${service_status}  ${svc}: ${active}, ${enabled}${newline}"
-
-            if [ "$active" = "active" ]; then
-                is_secure=false
-                enabled_services+=("systemd: ${svc}")
+    # 1. 실제 데이터 추출
+    local dos_list=("echo" "discard" "daytime" "chargen")
+    local active_services=""
+    
+    for svc in "${dos_list[@]}"; do
+        if [ -f "/etc/xinetd.d/$svc" ]; then
+            if grep -qi "disable" "/etc/xinetd.d/$svc" | grep -qi "no"; then
+                active_services+="$svc "
             fi
         fi
     done
 
-    # 4) 포트 스캔 (echo: 7/tcp/udp, chargen: 19/tcp/udp, daytime: 13/tcp/udp)
-    if command -v ss &>/dev/null; then
-        service_status="${service_status}${newline}포트 확인:${newline}"
-        local ports=("7" "13" "19")
-        for port in "${ports[@]}"; do
-            local listening=$(ss -tuln | grep ":${port} " || echo "")
-            if [ -n "$listening" ]; then
-                is_secure=false
-                service_status="${service_status}  포트 ${port}: 활성화됨${newline}"
-            fi
-        done
-    fi
-
-    # 최종 판정
-    if [ "$is_secure" = true ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="DoS 취약 서비스 비활성화됨"
-        command_result="${service_status}"
-        command_executed="grep -iE '^echo|^chargen|^daytime' /etc/inetd.conf 2>/dev/null; systemctl list-unit-files | grep -E 'echo|chargen|daytime'; ss -tuln | grep -E ':7|:13|:19'"
-    else
-        diagnosis_result="VULNERABLE"
+    # 2. 판정 로직
+    if [ -n "$active_services" ]; then
         status="취약"
-        inspection_summary="DoS 취약 서비스 활성화됨: ${enabled_services[*]}"
-        command_result="${service_status}"
-        command_executed="grep -iE '^echo|^chargen|^daytime' /etc/inetd.conf 2>/dev/null; systemctl is-active echo chargen daytime 2>/dev/null"
+        diagnosis_result="VULNERABLE"
+        inspection_summary="DoS 공격에 취약한 일부 서비스가 활성화되어 있습니다."
+        command_result="활성 DoS 서비스: [ ${active_services} ]"
+    else
+        command_result="모든 취약한 DoS 서비스가 비활성화 상태입니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
-    verify_result_saved "${ITEM_ID}"
-
-
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     return 0
 }
 
-# ============================================================================
-# 메인 실행
-# ============================================================================
-
-main() {
-    # 진단 시작 표시
-    show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
-    diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
-}
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main() { [ "$EUID" -ne 0 ] && exit 1; diagnose; }
+main "$@"

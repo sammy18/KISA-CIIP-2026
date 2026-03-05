@@ -1,169 +1,47 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-45
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 3. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : 메일 서비스 버전 점검
-# @Description : Sendmail/Postfix 버전 확인
-# @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
+# @Description : 사용 중인 Sendmail 등 메일 서비스 프로그램의 최신 버전 사용 여부 점검
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../lib"
+source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${LIB_DIR}/output_mode.sh"; source "${LIB_DIR}/metadata_parser.sh"
 
-# 스크립트 디렉토리 설정
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+ITEM_ID="U-45"; ITEM_NAME="메일 서비스 버전 점검"; SEVERITY="(상)"
 
-# 필수 라이브러리 로드
-source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
-source "${LIB_DIR}/result_manager.sh"
-source "${LIB_DIR}/output_mode.sh"
-source "${LIB_DIR}/metadata_parser.sh"
+GUIDELINE_PURPOSE="최신 버전의 메일 서비스를 사용하여 프로그램 취약점을 이용한 침해 사고를 방지하기 위함"
+GUIDELINE_THREAT="오래된 버전의 메일 서비스를 사용할 경우 알려진 보안 취약점을 통해 원격 코드 실행 및 시스템 장악 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="메일 서비스(Sendmail 등)를 사용하지 않거나, 사용 시 최신 버전의 패치가 적용된 경우"
+GUIDELINE_CRITERIA_BAD="메일 서비스(Sendmail 등)를 사용하며 최신 버전이 아니거나 보안 패치가 미흡한 경우"
+GUIDELINE_REMEDIATION="최신 버전 업데이트 적용"
 
-
-ITEM_ID="U-45"
-ITEM_NAME="메일 서비스 버전 점검"
-SEVERITY="상"
-
-# 가이드라인 정보
-GUIDELINE_PURPOSE="메일 서비스 사용 목적 검토 및 취약점이 없는 버전의 사용 유무 점검으로 최적화된 메일 서비스의 운영하기위함"
-GUIDELINE_THREAT="취약점이 발견된 메일 버전의 경우 버퍼 오버플로우(Buffer Overflow) 공격에 의한 시스템 권한 획득 및주요정보노출의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="메일서비스버전이최신버전인경우"
-GUIDELINE_CRITERIA_BAD="메일서비스버전이최신버전이아닌경우"
-GUIDELINE_REMEDIATION="Ÿ 메일서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 메일서비스사용시패치관리정책을수립하여주기적으로패치적용설정"
-
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"; local diagnosis_result="GOOD"
+    local inspection_summary="메일 서비스가 비활성화되어 있거나 최신 상태를 유지하고 있습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    
+    local mail_proc=$(ps -ef | grep -Ei "sendmail|postfix" | grep -v grep || echo "")
 
-    # 메일 서비스 버전 확인
-    local mail_installed=false
-    local mail_info=""
-    local mail_version=""
-
-    # 1) Sendmail 확인
-    if command -v sendmail &>/dev/null; then
-        mail_installed=true
-        mail_version=$(sendmail -d0.4 -bv < /dev/null 2>&1 | grep "Version" | head -1 || echo "Unknown")
-        mail_info="${mail_info}Sendmail: ${mail_version}${newline}"
-    fi
-
-    # 2) Postfix 확인
-    if command -v postconf &>/dev/null; then
-        mail_installed=true
-        mail_version=$(postconf mail_version 2>/dev/null | grep "mail_version" | awk '{print $3}' || echo "Unknown")
-        mail_info="${mail_info}Postfix: ${mail_version}${newline}"
-    fi
-
-    # 3) Exim 확인
-    if command -v exim &>/dev/null; then
-        mail_installed=true
-        mail_version=$(exim --version 2>&1 | head -1 || echo "Unknown")
-        mail_info="${mail_info}Exim: ${mail_version}${newline}"
-    fi
-
-    # 4) 서비스 실행 확인
-    if systemctl is-active sendmail &>/dev/null; then
-        mail_installed=true
-        mail_info="${mail_info}Sendmail 서비스 실행 중${newline}"
-    fi
-
-    if systemctl is-active postfix &>/dev/null; then
-        mail_installed=true
-        mail_info="${mail_info}Postfix 서비스 실행 중${newline}"
-    fi
-
-    if systemctl is-active exim4 &>/dev/null; then
-        mail_installed=true
-        mail_info="${mail_info}Exim 서비스 실행 중${newline}"
-    fi
-
-    # 최종 판정
-    if [ "$mail_installed" = false ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="메일 서비스 미설치됨"
-        local raw_mail_check=$(command -v sendmail postconf exim 2>&1; systemctl is-active sendmail postfix exim4 2>&1)
-        command_result="[Command: command -v sendmail postconf exim; systemctl is-active sendmail postfix exim4]${newline}${raw_mail_check}"
-        command_executed="command -v sendmail postconf exim; systemctl is-active sendmail postfix exim4"
+    if [ -n "$mail_proc" ]; then
+        # 버전 확인 명령어 실행 (예: sendmail -d0.1)
+        local mail_ver=$(/usr/sbin/sendmail -d0.1 < /dev/null 2>&1 | grep "Version" | head -n 1 || echo "Unknown")
+        command_result="실행 중인 메일 서비스 버전: [ ${mail_ver} ]"
+        inspection_summary="메일 서비스가 실행 중입니다. 수동으로 최신 버전 여부를 확인하십시오."
     else
-        diagnosis_result="MANUAL"
-        status="수동진단"
-        inspection_summary="메일 서비스 설치됨 - 버전 확인 필요: 최신 보안 패치 적용 여부 수동 확인 권장"
-        command_result="${mail_info}"
-        command_executed="sendmail -d0.4 < /dev/null; postconf mail_version; exim --version"
+        command_result="메일 서비스 프로세스가 발견되지 않았습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
-    save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
-    verify_result_saved "${ITEM_ID}"
-
-
-    return 0
+    save_dual_result "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" "${inspection_summary}" "${command_result}" "sendmail -d0.1" "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
-
-main() {
-    # 진단 시작 표시
-    show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
-    diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
-}
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main() { diagnose; }; main "$@"

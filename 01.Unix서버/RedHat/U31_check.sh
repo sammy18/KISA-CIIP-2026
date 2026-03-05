@@ -1,185 +1,101 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-31
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 중
-# @Title       : 홈 디렉터리 소유자 및 권한 설정
-# @Description : 홈 디렉터리 소유자가 해당 계정이고 타사용자 쓰기 권한이 없는지 확인
+# @Category    : UNIX > 2. 파일 및 디렉토리 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (중)
+# @Title       : 홈 디렉토리 소유자 및 권한 설정
+# @Description : 사용자별 홈 디렉터리의 소유자 및 권한 설정의 적절성 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-31"
-ITEM_NAME="홈 디렉터리 소유자 및 권한 설정"
-SEVERITY="중"
+ITEM_NAME="홈 디렉토리 소유자 및 권한 설정"
+SEVERITY="(중)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="사용자홈디렉토리내설정파일이비인가자에의한변조를방지하기위함"
-GUIDELINE_THREAT="홈디렉토리내설정파일변조시정상적인서비스이용이제한될위험이존재함"
-GUIDELINE_CRITERIA_GOOD="홈디렉토리소유자가해당계정이고,타사용자쓰기권한이제거된경우"
-GUIDELINE_CRITERIA_BAD="홈디렉토리소유자가해당계정이아니거나,타사용자쓰기권한이부여된경우"
-GUIDELINE_REMEDIATION="사용자별홈디렉토리소유주를해당계정으로변경하고,타사용자의쓰기권한제거하도록설정 (/etc/passwd파일에서홈디렉토리확인,사용자홈디렉토리외개별적으로만들어사용하는사용자 디렉토리존재여부확인하여점검)"
+GUIDELINE_PURPOSE="사용자 홈 디렉터리를 보호하여 타 사용자에 의한 무단 접근 및 정보 유출을 차단하기 위함"
+GUIDELINE_THREAT="홈 디렉터리 권한이 과도하게 개방된 경우 사용자 비밀정보 노출 및 악의적인 파일 변조 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="홈 디렉터리 소유자가 해당 계정이고, 타인 쓰기 권한이 없는 경우"
+GUIDELINE_CRITERIA_BAD="홈 디렉터리 소유자가 해당 계정이 아니거나, 타인 쓰기 권한이 부여된 경우"
+GUIDELINE_REMEDIATION="홈 디렉터리 소유자를 해당 계정으로 변경하고 타인 쓰기 권한 제거"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
+    # 전역 변수로 설정하여 main에서 참조 가능하게 함
+    status="양호"
+    diagnosis_result="GOOD"
+    inspection_summary="모든 홈 디렉터리의 소유자 및 권한 설정이 적절합니다."
+    command_result=""
+    command_executed="stat -c '%U %a %n' /home/*"
 
+    local checked_list=""
+    local bad_count=0
 
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
-    local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    # set -e에 의해 중단되지 않도록 루프 보호
+    while IFS=: read -r user pass uid gid info home shell; do
+        if [ "$uid" -ge 1000 ] && [ -d "$home" ]; then
+            local owner perm
+            # 에러 발생 시 죽지 않도록 2>/dev/null 처리
+            owner=$(stat -c "%U" "$home" 2>/dev/null) || owner="unknown"
+            perm=$(stat -c "%a" "$home" 2>/dev/null) || perm="000"
 
-    # 진단 로직 구현
-    # /etc/passwd에서 사용자 홈 디렉토리 확인 후 소유자 및 권한 점검
+            checked_list+="${user}(Owner:${owner}, Perm:${perm})\n"
 
-    local insecure_homedirs=""
-    local total_users=0
-    local checked_users=0
-    local system_gid_threshold=1000
-    local raw_stat_output=""
-
-    # /etc/passwd 파일 파싱
-    while IFS=: read -r username password uid gid gecos home shell; do
-        ((total_users++))
-
-        # 시스템 계정 제외 (UID >= 1000인 일반 사용자만 확인)
-        if [ "$uid" -lt "$system_gid_threshold" ]; then
-            continue
-        fi
-
-        # 로그인 쉘이 없는 계정 제외 (/bin/false, /sbin/nologin)
-        if [ "$shell" = "/bin/false" ] || [ "$shell" = "/sbin/nologin" ]; then
-            continue
-        fi
-
-        ((checked_users++))
-
-        # 홈 디렉토리 존재 확인
-        if [ ! -d "$home" ]; then
-            continue
-        fi
-
-        # 홈 디렉토리 소유자 확인
-        local owner=$(stat -c "%U" "$home" 2>/dev/null || echo "unknown")
-        local perms=$(stat -c "%a" "$home" 2>/dev/null || echo "000")
-
-        # stat 결과 누적
-        raw_stat_output="${raw_stat_output}${home}: owner=${owner}, perms=${perms}"$'\n'
-
-        # 타사용자 쓰기 권한 확인 (others의 write 권한)
-        local has_others_write=false
-        if [[ "$perms" =~ [0-9][0-9][1357]$ ]]; then
-            has_others_write=true
-        fi
-
-        # 보안 판정: 소유자가 해당 사용자가 아니거나, 타사용자 쓰기 권한이 있는 경우
-        if [ "$owner" != "$username" ] || [ "$has_others_write" = true ]; then
-            local reason=""
-            if [ "$owner" != "$username" ]; then
-                reason="소유자: ${owner}"
+            # 판정 로직: 소유자 불일치 OR 타인 쓰기 권한(마지막 자리 >= 2)
+            if [ "$owner" != "$user" ] || [ "${perm: -1}" -ge 2 ]; then
+                status="취약"
+                diagnosis_result="VULNERABLE"
+                ((bad_count++))
             fi
-            if [ "$has_others_write" = true ]; then
-                if [ -n "$reason" ]; then
-                    reason="${reason}, "
-                fi
-                reason="${reason}타사용자쓰기권한있음"
-            fi
-            insecure_homedirs="${insecure_homedirs}${username}(${home}: ${reason}), "
         fi
     done < /etc/passwd
 
-    command_executed="while IFS=: read -r user pw uid gid gecos home shell; do stat -c '%U %a' \"\$home\" 2>/dev/null; done < /etc/passwd"
-
-    # 최종 판정
-    if [ -z "$insecure_homedirs" ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="모든 사용자의 홈 디렉토리가 적절하게 설정되어 있습니다. (확인된 사용자: ${checked_users}명, 시스템 계정 제외)"
-        command_result="[stat -c '%U %a' outputs for UID>=1000 users]"$'\n'"${raw_stat_output}"
+    if [ "$bad_count" -gt 0 ]; then
+        inspection_summary="${bad_count}개의 홈 디렉터리 설정이 부적절합니다."
+        command_result=$(echo -e "점검 결과 상세:\n${checked_list}")
     else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="일부 사용자의 홈 디렉토리 권한 또는 소유자가 부적절합니다: ${insecure_homedirs%, }. 홈 디렉토리 소유자를 해당 계정으로 변경하고 타사용자 쓰기 권한을 제거하세요: chown <user> <home> && chmod o-w <home>"
-        command_result="[stat -c '%U %a' outputs for UID>=1000 users]"$'\n'"${raw_stat_output}"
+        command_result=$(echo -e "모든 계정 양호:\n${checked_list}")
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
+    # 이 함수가 반드시 호출되어야 결과 파일이 생성됨
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
-    verify_result_saved "${ITEM_ID}"
-
-
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
+    # root 권한 체크
+    if [ "$EUID" -ne 0 ]; then
+        echo "Error: root 권한이 필요합니다."
+        exit 1
+    fi
+
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
+    
+    # 진단 실행 (에러 발생해도 무시하고 진행하도록 설정 가능)
+    diagnose || true 
 
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
-    diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    # 최종 결과 출력 (JSON 출력 핵심 구간)
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-VULNERABLE}"
+    exit 0
 }
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

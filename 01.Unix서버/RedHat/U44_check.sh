@@ -1,190 +1,47 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-44
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 3. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : tftp, talk 서비스 비활성화
-# @Description : tftp, talk 서비스 중지 확인
-# @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
+# @Description : 인증 절차가 없는 tftp와 보안에 취약한 talk 서비스 비활성화 점검
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../lib"
+source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${LIB_DIR}/output_mode.sh"; source "${LIB_DIR}/metadata_parser.sh"
 
-# 스크립트 디렉토리 설정
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+ITEM_ID="U-44"; ITEM_NAME="tftp, talk 서비스 비활성화"; SEVERITY="(상)"
 
-# 필수 라이브러리 로드
-source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
-source "${LIB_DIR}/result_manager.sh"
-source "${LIB_DIR}/output_mode.sh"
-source "${LIB_DIR}/metadata_parser.sh"
+GUIDELINE_PURPOSE="인증 기능이 없거나 보안에 취약한 tftp, talk 서비스 비활성화를 통해 보안을 강화하기 위함"
+GUIDELINE_THREAT="tftp는 별도의 인증 절차 없이 파일 전송이 가능하여 중요 파일 유출 위험이 크며, talk는 서비스 거부 공격 등에 악용될 수 있음"
+GUIDELINE_CRITERIA_GOOD="tftp, talk 서비스가 비활성화되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="tftp, talk 서비스 중 하나라도 활성화되어 있는 경우"
+GUIDELINE_REMEDIATION="tftp/talk 서비스 비활성화"
 
-
-ITEM_ID="U-44"
-ITEM_NAME="tftp, talk 서비스 비활성화"
-SEVERITY="상"
-
-# 가이드라인 정보
-GUIDELINE_PURPOSE="안전하지않거나불필요한서비스를제거함으로써시스템보안성및리소스의효율적운용하기위함"
-GUIDELINE_THREAT="사용하지않는서비스나취약점이발표된서비스운용시공격시도가능한위험이존재함"
-GUIDELINE_CRITERIA_GOOD="tftp, talk, ntalk서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD="tftp, talk, ntalk서비스가활성화된경우"
-GUIDELINE_REMEDIATION="불필요한tftp, talk, ntalk서비스비활성화설정"
-
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"; local diagnosis_result="GOOD"
+    local inspection_summary="tftp 및 talk 서비스가 비활성화되어 있습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    
+    local active_svcs=$(grep -Ei "tftp|talk" /etc/xinetd.d/* 2>/dev/null | grep "disable" | grep -i "no" | awk -F: '{print $1}' | xargs || echo "")
+    local proc_check=$(ps -ef | grep -Ei "tftpd|talkd" | grep -v grep || echo "")
 
-    # tftp, talk 서비스 비활성화 확인
-    local services_running=false
-    local service_info=""
-    local running_services=()
-
-    # 1) tftp 서비스 확인
-    if systemctl list-unit-files | grep -q "^tftp"; then
-        local active=$(systemctl is-active tftp 2>/dev/null || echo "inactive")
-        service_info="${service_info}tftp: ${active}${newline}"
-        if [ "$active" = "active" ]; then
-            services_running=true
-            running_services+=("tftp")
-        fi
-    fi
-
-    # in.tftpd (inetd/xinetd 기반) 확인
-    if [ -f /etc/xinetd.d/tftp ]; then
-        local disabled=$(grep -i "disable" /etc/xinetd.d/tftp | grep -v "^#" | awk '{print $2}')
-        service_info="${service_info}xinetd tftp: disable=${disabled}${newline}"
-        if [ "$disabled" != "yes" ]; then
-            services_running=true
-            running_services+=("tftp(xinetd)")
-        fi
-    fi
-
-    # 2) talk/ntalk 서비스 확인
-    for svc in talk ntalk; do
-        if systemctl list-unit-files | grep -q "^${svc}"; then
-            local active=$(systemctl is-active "$svc" 2>/dev/null || echo "inactive")
-            service_info="${service_info}${svc}: ${active}${newline}"
-            if [ "$active" = "active" ]; then
-                services_running=true
-                running_services+=("$svc")
-            fi
-        fi
-    done
-
-    # talkd/ntalkd (inetd 기반) 확인
-    if [ -f /etc/inetd.conf ]; then
-        local talk_services=$(grep -E "^talk|^ntalk" /etc/inetd.conf | grep -v "^#" || echo "")
-        if [ -n "$talk_services" ]; then
-            services_running=true
-            running_services+=("talk(inetd)")
-            service_info="${service_info}inetd talk 활성화됨${newline}"
-        fi
-    fi
-
-    # 3) 포트 확인 (tftp: 69/udp, talk: 517/518)
-    if command -v ss &>/dev/null; then
-        local tftp_port=$(ss -uln | grep ":69 " || echo "")
-        local talk_port=$(ss -tuln | grep -E ":517 |:518 " || echo "")
-
-        if [ -n "$tftp_port" ]; then
-            services_running=true
-            service_info="${service_info}UDP 포트 69 (tftp) 활성화${newline}"
-        fi
-
-        if [ -n "$talk_port" ]; then
-            services_running=true
-            service_info="${service_info}포트 517/518 (talk) 활성화${newline}"
-        fi
-    fi
-
-    # 최종 판정
-    if [ "$services_running" = false ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="tftp, talk 서비스 비활성화됨"
-        local raw_service_check=$(systemctl is-active tftp talk ntalk 2>&1; ss -tuln 2>/dev/null | grep -E ':69|:517|:518' || echo "No services running")
-        command_result="[Command: systemctl is-active tftp talk ntalk; ss -tuln | grep -E ':69|:517|:518']${newline}${raw_service_check}"
-        command_executed="systemctl is-active tftp talk ntalk; ss -tuln | grep -E ':69|:517|:518'"
+    if [ -n "$active_svcs" ] || [ -n "$proc_check" ]; then
+        status="취약"; diagnosis_result="VULNERABLE"
+        inspection_summary="보안에 취약한 tftp 또는 talk 서비스가 활성화되어 있습니다."
+        command_result="활성 서비스/프로세스: [ ${active_svcs} ${proc_check} ]"
     else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="불필요한 서비스 활성화됨: ${running_services[*]}"
-        command_result="${service_info}"
-        command_executed="systemctl is-active tftp talk ntalk; grep -E '^talk|^ntalk' /etc/inetd.conf"
+        command_result="tftp, talk 서비스가 모두 비활성화되어 있습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
-    save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
-    verify_result_saved "${ITEM_ID}"
-
-
-    return 0
+    save_dual_result "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" "${inspection_summary}" "${command_result}" "ls /etc/xinetd.d" "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
-
-main() {
-    # 진단 시작 표시
-    show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
-    diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
-}
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main() { diagnose; }; main "$@"

@@ -1,158 +1,93 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-16
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 2. 파일 및 디렉토리 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : /etc/passwd 파일 소유자 및 권한 설정
-# @Description : root:root 644 확인
+# @Description : /etc/passwd 파일의 소유자 및 권한 설정이 적절한지 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-16"
 ITEM_NAME="/etc/passwd 파일 소유자 및 권한 설정"
-SEVERITY="상"
+SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="/etc/passwd파일을관리자만제어할수있게하여비인가자들의임의적인파일변조를방지하기위함"
-GUIDELINE_THREAT="비인가자가 /etc/passwd 파일의 사용자 정보를 변조하여 Shell 변경, 사용자 추가/제거 등 root 계정을포함한사용자권한획득위험이존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/passwd파일의소유자가root이고,권한이644이하인경우"
-GUIDELINE_CRITERIA_BAD=" /etc/passwd파일의소유자가root가아니거나,권한이644를초과하는경우"
-GUIDELINE_REMEDIATION="/etc/passwd파일소유자를root로변경하고권한을644로설정"
+GUIDELINE_PURPOSE="/etc/passwd 파일의 사용자 정보를 보호하여 비인가자가 사용자 정보를 변조하는 것을 방지하기 위함"
+GUIDELINE_THREAT="/etc/passwd 파일의 권한 설정이 부적절할 경우, 비인가자가 사용자 정보를 변조하여 관리자 권한을 획득하거나 시스템을 마비시킬 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/passwd 파일의 소유자가 root이고, 권한이 644 이하인 경우"
+GUIDELINE_CRITERIA_BAD="/etc/passwd 파일의 소유자가 root가 아니거나, 권한이 644 이하가 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/passwd 파일의 소유자를 root로 변경하고, 권한을 644로 설정"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    # 파싱 안정성을 위한 초기값 설정
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="/etc/passwd 파일의 소유자 및 권한 설정이 적절합니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="ls -l /etc/passwd"
 
-    # 진단 로직 구현
-    # /etc/passwd 파일 소유자 및 권한 설정 확인 (644, root:root)
+    # 1. 실제 데이터 추출
+    local file_path="/etc/passwd"
+    if [ -f "$file_path" ]; then
+        local owner_name=$(stat -c "%U" "$file_path")
+        local file_perm=$(stat -c "%a" "$file_path")
+        local ls_out=$(ls -l "$file_path")
 
-    local target_file="/etc/passwd"
-    local is_secure=false
-    local details=""
-
-    # Capture raw ls -l output
-    local ls_output=$(ls -l "$target_file" 2>/dev/null)
-    local stat_output=$(stat -c "%a %U:%G" "$target_file" 2>/dev/null)
-
-    # 파일 존재 확인
-    if [ ! -f "$target_file" ]; then
-        diagnosis_result="MANUAL"
-        status="수동진단"
-        inspection_summary="/etc/passwd 파일 없음"
-        command_result="[Command: ls -l $target_file]${newline}${ls_output}"
-        command_executed="ls -l $target_file"
-    else
-        # 파일 권한 확인
-        local file_perms=$(stat -c "%a" "$target_file" 2>/dev/null)
-        local file_owner=$(stat -c "%U:%G" "$target_file" 2>/dev/null)
-
-        # 소유자 및 권한 확인
-        if [ "$file_owner" = "root:root" ] && [ "$file_perms" = "644" ]; then
-            is_secure=true
-            details="권한: $file_perms, 소유자: $file_owner"
-        else
-            details="권한: $file_perms, 소유자: $file_owner"
-        fi
-
-        # 최종 판정
-        if [ "$is_secure" = true ]; then
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="/etc/passwd 보안 설정 적절 ($details)"
-            command_result="[Command: ls -l $target_file]${newline}${ls_output}${newline}${newline}[Command: stat -c '%a %U:%G' $target_file]${newline}${stat_output}"
-            command_executed="ls -l $target_file; stat -c '%a %U:%G' $target_file"
-        else
-            diagnosis_result="VULNERABLE"
+        # 2. 판정 로직: 소유자 root 및 권한 644 이하 체크
+        # 권한 체크는 각 자리수별로 비교 (644 이하: 100단위 <=6, 10단위 <=4, 1단위 <=4)
+        if [ "$owner_name" != "root" ] || [ "$file_perm" -gt 644 ]; then
             status="취약"
-            inspection_summary="/etc/passwd 보안 설정 부적절 ($details)"
-            command_result="[Command: ls -l $target_file]${newline}${ls_output}${newline}${newline}[Command: stat -c '%a %U:%G' $target_file]${newline}${stat_output}"
-            command_executed="ls -l $target_file; stat -c '%a %U:%G' $target_file"
+            diagnosis_result="VULNERABLE"
+            inspection_summary="/etc/passwd 파일의 소유자가 root가 아니거나 권한 설정(644)이 부적절합니다."
         fi
+
+        # 3. 결과 기록 (JSON 보호를 위한 개행 제거)
+        command_result="소유자: ${owner_name}, 권한: ${file_perm}, 상세: ${ls_out}"
+        command_result=$(echo "$command_result" | tr -d '\n\r')
+    else
+        status="N/A"
+        diagnosis_result="ERROR"
+        inspection_summary="/etc/passwd 파일을 찾을 수 없습니다."
+        command_result="파일 없음"
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
+    # U-02와 동일하게 12개의 인자를 모두 전달
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

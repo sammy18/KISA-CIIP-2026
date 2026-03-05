@@ -1,184 +1,77 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-50
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 3. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : DNS Zone Transfer 설정
-# @Description : allow-transfer 설정 확인
+# @Description : DNS 존 전송(Zone Transfer)을 제한하여 불필요한 영역 정보 노출을 방지하는지 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-50"
 ITEM_NAME="DNS Zone Transfer 설정"
-SEVERITY="상"
+SEVERITY="(상)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="DNSZoneTransfer설정을통해비인가자에대한무단접근을방지하기위함"
-GUIDELINE_THREAT="ZoneTransfer를모든사용자에게허용할경우,비인가자에게호스트정보,시스템정보등중요정보가 유출될위험이존재함"
-GUIDELINE_CRITERIA_GOOD="ZoneTransfer를허가된사용자에게만허용한경우"
-GUIDELINE_CRITERIA_BAD="Zone Transfer를모든사용자에게허용한경우"
-GUIDELINE_REMEDIATION="Ÿ DNS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ DNS서비스사용시DNSZoneTransfer를허가된사용자에게만전송허용하도록설정"
+GUIDELINE_PURPOSE="인가되지 않은 사용자의 존 전송 요청을 제한하여 내부 네트워크 및 서버 정보를 보호하기 위함"
+GUIDELINE_THREAT="인가되지 않은 사용자에게 존 전송이 허용될 경우 내부 호스트 정보, IP 주소 등 네트워크 정보가 노출되어 공격의 기초 정보로 활용될 위험이 있음"
+GUIDELINE_CRITERIA_GOOD="DNS 존 전송이 제한되어 있거나 특정 Secondary 서버에 대해서만 허용된 경우"
+GUIDELINE_CRITERIA_BAD="DNS 존 전송이 모든 호스트(any)에 대해 허용되어 있는 경우"
+GUIDELINE_REMEDIATION="named.conf 파일의 options 또는 zone 섹션에 allow-transfer { IP주소; }; 설정 추가"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="DNS 존 전송 설정이 적절하게 제한되어 있습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="grep 'allow-transfer' /etc/named.conf"
 
-    # DNS Zone Transfer 설정 확인
-    local dns_configured=false
-    local is_secure=false
-    local dns_info=""
-    local issues=()
-
-    # BIND 설정 파일 경로 확인
-    local bind_conf="/etc/bind/named.conf"
-    local bind_conf_local="/etc/bind/named.conf.local"
-    local bind_conf_opts="/etc/bind/named.conf.options"
-
-    for conf_file in "$bind_conf" "$bind_conf_local" "$bind_conf_opts"; do
-        if [ -f "$conf_file" ]; then
-            dns_configured=true
-            dns_info="${dns_info}${conf_file} 확인:${newline}"
-
-            # allow-transfer 설정 확인
-            local allow_transfer=$(grep -i "allow-transfer" "$conf_file" | grep -v "^//" | grep -v "^#" || echo "")
-            if [ -n "$allow_transfer" ]; then
-                dns_info="${dns_info}${allow_transfer}${newline}"
-
-                # "any" 또는 "none" 확인
-                if echo "$allow_transfer" | grep -qi "allow-transfer.*{.*any.*;"; then
-                    issues+=("allow-transfer가 'any'로 설정됨 (취약)")
-                elif echo "$allow_transfer" | grep -qi "allow-transfer.*{.*none.*;"; then
-                    is_secure=true
-                    dns_info="${dns_info}allow-transfer가 'none'으로 설정됨 (안전)${newline}"
-                else
-                    # 특정 IP/키로 제한된 경우
-                    is_secure=true
-                    dns_info="${dns_info}allow-transfer가 특정 호스트로 제한됨${newline}"
-                fi
-            else
-                # 기본값은 any이므로 명시적 제한이 필요함
-                issues+=("allow-transfer 설정 미존재 (기본값 any, 취약)")
-            fi
-
-            # also-notify 확인 (안전한 설정)
-            local also_notify=$(grep -i "also-notify" "$conf_file" | grep -v "^//" | grep -v "^#" || echo "")
-            if [ -n "$also_notify" ]; then
-                dns_info="${dns_info}${also_notify}${newline}"
-            fi
+    if [ -f "/etc/named.conf" ]; then
+        local transfer_opt=$(grep -i "allow-transfer" /etc/named.conf | tr -d '[:space:]' || echo "not-set")
+        if [[ "$transfer_opt" == "not-set" ]] || [[ "$transfer_opt" =~ "any" ]]; then
+            status="취약"
+            diagnosis_result="VULNERABLE"
+            inspection_summary="DNS 존 전송이 제한되지 않았거나 모든 호스트(any)에 허용되어 있습니다."
         fi
-    done
-
-    # DNS 서비스 실행 확인
-    if systemctl is-active named &>/dev/null || systemctl is-active bind9 &>/dev/null; then
-        dns_configured=true
-        dns_info="${dns_info}${newline}DNS 서비스 실행 중${newline}"
-    fi
-
-    # 최종 판정
-    if [ "$dns_configured" = false ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="DNS 서비스 미설치됨"
-        local raw_dns_status=$(systemctl is-active named bind9 2>&1)
-        command_result="[Command: systemctl is-active named bind9]${newline}${raw_dns_status}"
-        command_executed="systemctl is-active named bind9"
-    elif [ "$is_secure" = true ] && [ ${#issues[@]} -eq 0 ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="DNS Zone Transfer 제한 적절히 설정됨"
-        command_result="${dns_info}"
-        command_executed="grep -i 'allow-transfer' /etc/bind/named.conf*"
+        command_result="allow-transfer 설정 현황: [ ${transfer_opt} ]"
     else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="DNS Zone Transfer 제한 미흡: ${issues[*]}"
-        command_result="${dns_info}${newline}Issues: ${issues[*]}"
-        command_executed="grep -i 'allow-transfer' /etc/bind/named.conf*"
+        command_result="DNS 설정 파일(/etc/named.conf)이 존재하지 않습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
+    command_result=$(echo "$command_result" | tr -d '\n\r')
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

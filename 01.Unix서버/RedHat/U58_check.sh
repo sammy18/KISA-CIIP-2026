@@ -1,182 +1,74 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-58
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 중
-# @Title       : 불필요한 SNMP 서비스 구동 점검
-# @Description : SNMP 서비스 활성화 여부 확인
+# @Category    : UNIX > 5. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (중)
+# @Title       : 홈 디렉토리로 지정되지 않은 계정 금지
+# @Description : 홈 디렉토리가 존재하지 않거나 잘못 지정된 계정 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-58"
-ITEM_NAME="불필요한 SNMP 서비스 구동 점검"
-SEVERITY="중"
+ITEM_NAME="홈 디렉토리로 지정되지 않은 계정 금지"
+SEVERITY="(중)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="불필요한SNMP서비스를비활성화하여시스템보안성을높이기위함"
-GUIDELINE_THREAT="SNMP서비스의취약점을악용하여시스템정보유출및무단제어가능한위험이존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한SNMP서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD=" 불필요한SNMP서비스가활성화된경우"
-GUIDELINE_REMEDIATION="불필요한SNMP서비스중지및비활성화"
+GUIDELINE_PURPOSE="홈 디렉토리가 없는 불필요한 계정을 제거하여 공격자의 시스템 침투 경로를 차단하기 위함"
+GUIDELINE_THREAT="홈 디렉토리가 적절히 관리되지 않는 계정은 관리의 사각지대에 놓여 악용될 가능성이 높음"
+GUIDELINE_CRITERIA_GOOD="모든 계정에 대해 유효한 홈 디렉토리가 지정되어 있고 존재하는 경우"
+GUIDELINE_CRITERIA_BAD="홈 디렉토리가 지정되지 않았거나 존재하지 않는 계정이 있는 경우"
+GUIDELINE_REMEDIATION="불필요한 계정 삭제 또는 유효한 홈 디렉토리 생성 및 지정"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="모든 계정의 홈 디렉토리 설정이 적절합니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="awk -F: '\$6 == \"\" || \$6 == \"/\"' /etc/passwd"
 
-    # 진단 로직 구현
-    # SNMP 서비스 활성화 여부 확인
-
-    local snmp_running=false
-    local service_details=""
-
-    # systemctl 사용 가능한지 확인
-    if command -v systemctl >/dev/null 2>&1; then
-        # SNMP 서비스 목록 확인 (snmpd, snmptrapd 등)
-        local snmp_service_list=("snmpd.service" "snmptrapd.service" "net-snmp.service")
-
-        for svc in "${snmp_service_list[@]}"; do
-            # 서비스 상태 확인
-            if systemctl is-active "$svc" >/dev/null 2>&1; then
-                snmp_running=true
-                local is_enabled=$(systemctl is-enabled "$svc" 2>/dev/null || echo "unknown")
-                service_details="${service_details}$svc: active (enabled: $is_enabled), "
-            fi
-        done
-
-        command_executed="systemctl list-units --type=service --all | grep -E 'snmp|SNMP'"
-    else
-        # systemctl이 없는 경우 (legacy init)
-        if command -v service >/dev/null 2>&1; then
-            if service snmpd status 2>/dev/null | grep -q "running\|active"; then
-                snmp_running=true
-                service_details="snmpd: running"
-            fi
-            command_executed="service snmpd status"
-        elif [ -f /etc/init.d/snmpd ]; then
-            # /etc/init.d/snmpd 스크립트 확인
-            if /etc/init.d/snmpd status 2>/dev/null | grep -q "running\|active"; then
-                snmp_running=true
-                service_details="snmpd: running"
-            fi
-            command_executed="/etc/init.d/snmpd status"
-        else
-            # 모든 확인 방법 실패 - 수동 진단으로 설정하고 계속 진행
-            diagnosis_result="MANUAL"
-            status="수동진단"
-            inspection_summary="SNMP 서비스 확인 방법을 알 수 없음 (systemctl, service, init.d 없음)"
-            local raw_snmp_check=$(which systemctl 2>&1; which service 2>&1; ls /etc/init.d/snmpd 2>&1)
-            command_result="[Cannot determine]${newline}${newline}Checked commands:${newline}- which systemctl${newline}- which service${newline}- ls /etc/init.d/snmpd${newline}${newline}Results:${newline}${raw_snmp_check}"
-            command_executed="which systemctl; which service; ls /etc/init.d/snmpd"
-            # 조기 return 제거 - 마지막에 save_dual_result 단 한 번만 호출
-        fi
-    fi
-
-    # 프로세스 확인 (백업 방법)
-    if ! $snmp_running && command -v pgrep >/dev/null 2>&1; then
-        if pgrep -x "snmpd" >/dev/null 2>&1; then
-            snmp_running=true
-            service_details="${service_details}snmpd 프로세스 실행 중"
-            command_executed="${command_executed}; pgrep -x snmpd"
-        fi
-    fi
-
-    # 최종 판정
-    if [ "$snmp_running" = true ]; then
-        diagnosis_result="VULNERABLE"
+    local invalid_users=$(awk -F: '$6 == "" || $6 == "/" {print $1}' /etc/passwd | xargs || echo "")
+    if [ -n "$invalid_users" ]; then
         status="취약"
-        inspection_summary="SNMP 서비스가 활성화되어 있습니다 (${service_details%, }). 불필요한 경우 서비스를 중지하고 비활성화해야 합니다: systemctl stop snmpd; systemctl disable snmpd"
-        command_result="${service_details%, }"
+        diagnosis_result="VULNERABLE"
+        inspection_summary="홈 디렉토리가 비어있거나 루트(/)로 지정된 계정이 발견되었습니다."
+        command_result="대상 계정: [ ${invalid_users} ]"
     else
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="SNMP 서비스가 비활성화되어 있습니다."
-        local raw_snmp_status=$(systemctl is-active snmpd 2>&1 || service snmpd status 2>&1 || /etc/init.d/snmpd status 2>&1)
-        command_result="[Command: systemctl is-active snmpd || service snmpd status]${newline}${raw_snmp_status}"
+        command_result="모든 계정에 유효한 홈 디렉토리 경로가 지정되어 있습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
+    command_result=$(echo "$command_result" | tr -d '\n\r')
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

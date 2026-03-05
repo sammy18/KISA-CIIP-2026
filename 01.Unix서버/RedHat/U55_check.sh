@@ -1,162 +1,85 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-55
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 중
-# @Title       : FTP 계정 Shell 제한
-# @Description : FTP 계정의 Shell 제한 설정 여부 확인
+# @Category    : UNIX > 4. 웹 서비스 관리
+# @Platform    : RedHat (Apache)
+# @Severity    : (상)
+# @Title       : Apache 링크 사용 금지
+# @Description : 웹 서버의 심볼릭 링크 사용 제한 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-55"
-ITEM_NAME="FTP 계정 Shell 제한"
-SEVERITY="중"
+ITEM_NAME="Apache 링크 사용 금지"
+SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="FTP 계정에 대해 Shell 접속을 제한하여 시스템 보안 강화"
-GUIDELINE_THREAT="FTP 계정이 일반 사용자 Shell을 사용할 경우 Shell 접속을 통해 시스템 명령어 실행 및 권한 상승 위험"
-GUIDELINE_CRITERIA_GOOD="FTP 계정의 Shell이 /bin/false, /sbin/nologin 등으로 제한된 경우"
-GUIDELINE_CRITERIA_BAD=" FTP 계정이 /bin/bash, /bin/sh 등 일반 Shell을 사용하는 경우 / N/A: FTP 서비스 미설치"
-GUIDELINE_REMEDIATION="FTP 계정의 Shell을 /bin/false 또는 /usr/sbin/nologin으로 변경: usermod -s /bin/false ftp_username"
+GUIDELINE_PURPOSE="심볼릭 링크 기능을 제한하여 웹 루트 디렉토리 외부의 파일이 웹 서비스에 노출되는 것을 방지하기 위함"
+GUIDELINE_THREAT="심볼릭 링크가 허용될 경우, 공격자가 시스템 주요 파일에 대한 링크를 생성하여 웹을 통해 기밀 정보를 획득할 위험이 있음"
+GUIDELINE_CRITERIA_GOOD="Options 설정에서 FollowSymLinks 옵션을 제거하거나 제한한 경우"
+GUIDELINE_CRITERIA_BAD="Options 설정에서 FollowSymLinks 옵션이 활성화되어 있는 경우"
+GUIDELINE_REMEDIATION="httpd.conf 파일의 <Directory> 섹션에서 Options -FollowSymLinks 설정"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="Apache 심볼릭 링크 사용 제한 설정이 적절합니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="grep -r 'Options' /etc/httpd/conf*"
 
-    # 진단 로직 구현
-    # FTP 계정의 Shell 제한 설정 확인
-
-    local ftp_users=()
-    local vulnerable_users=()
-    local secure_users=()
-    local all_users_info=""
-
-    # /etc/passwd에서 FTP 관련 사용자 찾기
-    # 일반적인 FTP 사용자: ftp, anonymous, ftpuser
-    while IFS=: read -r username x uid x gecos home shell; do
-        # FTP 관련 사용자 확인 (사용자명에 ftp 포함 또는 UID가 FTP 전용)
-        if [[ "$username" =~ [Ff][Tt][Pp] ]] || [[ "$username" =~ [Aa]nonymous ]]; then
-            ftp_users+=("$username:$shell")
-
-            # Shell 검사: /bin/false, /usr/sbin/nologin, /sbin/nologin은 안전함
-            if [ "$shell" = "/bin/false" ] || [ "$shell" = "/usr/sbin/nologin" ] || [ "$shell" = "/sbin/nologin" ]; then
-                secure_users+=("$username:${shell}")
-            else
-                # /bin/bash, /bin/sh 등 일반 Shell을 사용하는 경우 취약
-                vulnerable_users+=("$username:${shell}")
-            fi
-
-            all_users_info="${all_users_info}${username}: ${shell}, HOME: ${home}${newline}"
+    # 1. 실제 데이터 추출 (RHEL httpd.conf 및 conf.d 점검)
+    local httpd_conf="/etc/httpd/conf/httpd.conf"
+    if [ -f "$httpd_conf" ]; then
+        local follow_sym=$(grep -v '^#' "$httpd_conf" | grep "Options" | grep "FollowSymLinks" | head -n 1 || echo "")
+        
+        # 2. 판정 로직
+        if [ -n "$follow_sym" ]; then
+            status="취약"
+            diagnosis_result="VULNERABLE"
+            inspection_summary="Options 설정에서 FollowSymLinks가 활성화되어 있습니다."
+            command_result="발견된 설정: [ ${follow_sym} ]"
+        else
+            command_result="심볼릭 링크 허용 설정이 발견되지 않았습니다."
         fi
-    done < /etc/passwd
-
-    command_executed="grep -E 'ftp|anonymous' /etc/passwd"
-
-    # 최종 판정
-    if [ ${#ftp_users[@]} -eq 0 ]; then
-        diagnosis_result="N/A"
-        status="N/A"
-        inspection_summary="FTP 계정이 존재하지 않습니다."
-        command_result="FTP related users not found in /etc/passwd"
-    elif [ ${#vulnerable_users[@]} -eq 0 ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="모든 FTP 계정의 Shell이 적절하게 제한되어 있습니다. (${#secure_users[@]}개 계정 확인)"
-        command_result="${all_users_info}"
     else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        local vuln_list=""
-        for user in "${vulnerable_users[@]}"; do
-            vuln_list="${vuln_list}${user}, "
-        done
-        inspection_summary="FTP 계정이 제한되지 않은 Shell을 사용하고 있습니다 (${vuln_list%, }). usermod 명령어로 Shell을 /bin/false로 변경하세요."
-        command_result="${all_users_info}${newline}[Vulnerable Accounts]${newline}${vuln_list%, }"
+        command_result="Apache 설정 파일을 찾을 수 없습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
+    # [보정] JSON 파싱 에러 방지
+    command_result=$(echo "$command_result" | tr -d '\n\r')
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

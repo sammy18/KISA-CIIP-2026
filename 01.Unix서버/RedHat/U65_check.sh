@@ -1,223 +1,78 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-65
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 중
-# @Title       : NTP 및 시각 동기화 설정
-# @Description : NTP 서비스 설정 확인
+# @Category    : UNIX > 5. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (중)
+# @Title       : NTP 서비스 설정 및 동기화
+# @Description : NTP 서비스 활성화 여부 및 시간 동기화 상태 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-65"
-ITEM_NAME="NTP 및 시각 동기화 설정"
-SEVERITY="중"
+ITEM_NAME="NTP 서비스 설정 및 동기화"
+SEVERITY="(중)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="인증및감사목적을위한시간동기화는필수적이며,안전하고승인된NTP서비스와동기화하기위함"
-GUIDELINE_THREAT="시스템 간 시간 동기화 미흡으로 보안 사고 및 장애 발생 시 로그에 대한 신뢰도 확보 미흡 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="NTP및시각동기화설정이기준에따라적용된경우"
-GUIDELINE_CRITERIA_BAD="NTP및시각동기화설정이기준에따라적용되어있지않은경우"
-GUIDELINE_REMEDIATION="NTP설정및동기화주기설정"
+GUIDELINE_PURPOSE="로그 분석 및 침해 사고 조사 시 정확한 시간 정보를 확보하기 위해 시스템 시간을 표준 시간과 동기화하기 위함"
+GUIDELINE_THREAT="시스템 시간이 동기화되지 않을 경우 로그 기록의 신뢰성이 저하되어 정확한 침해 사고 분석이 불가능해짐"
+GUIDELINE_CRITERIA_GOOD="NTP 서비스가 활성화되어 있고 표준 시간 서버와 동기화 중인 경우"
+GUIDELINE_CRITERIA_BAD="NTP 서비스가 비활성화되어 있거나 시간 동기화가 이루어지지 않는 경우"
+GUIDELINE_REMEDIATION="ntpd 또는 chronyd 서비스 실행 및 ntp.conf에 타임 서버 등록"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="NTP 서비스가 정상적으로 동작 중입니다."
+    local command_executed="chronyc sources || ntpq -p"
+    
+    # 1. 실행 결과 저장
+    local cmd_out
+    cmd_out=$(chronyc sources 2>&1 || ntpq -p 2>&1)
 
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
-    local command_result=""
-    local command_executed=""
-    local newline=$'\n'
-
-    # 진단 로직 구현
-    # NTP 및 시각 동기화 설정 확인
-
-    local ntp_installed=false
-    local ntp_running=false
-    local ntp_configured=false
-    local ntp_details=""
-    local config_files=""
-
-    # 1) NTP 서비스 설치 여부 확인
-    if command -v ntpd >/dev/null 2>&1 || [ -f /etc/ntp.conf ] || command -v chronyd >/dev/null 2>&1 || [ -f /etc/chrony.conf ]; then
-        ntp_installed=true
-    fi
-
-    if [ "$ntp_installed" = false ]; then
-        diagnosis_result="VULNERABLE"
+    # 2. 판정 로직 
+    # - 에러 메시지(Cannot talk to daemon, Connection refused 등)가 포함된 경우
+    # - 혹은 동기화 서버 리스트가 아예 없는 경우
+    if [[ "$cmd_out" =~ "Cannot talk to daemon" ]] || [[ "$cmd_out" =~ "Connection refused" ]]; then
         status="취약"
-        inspection_summary="NTP 서비스가 설치되지 않음 (시간 동기화 불가)"
-        local raw_ntp_check=$(which ntpd chronyd 2>&1; ls /etc/{ntp.conf,chrony.conf} 2>&1)
-        command_result="[Command: which ntpd chronyd; ls /etc/{ntp.conf,chrony.conf} 2>/dev/null]${newline}${raw_ntp_check}"
-        command_executed="which ntpd chronyd; ls /etc/{ntp.conf,chrony.conf} 2>/dev/null"
-    else
-        # 2) NTP 설정 파일 확인
-        if [ -f /etc/ntp.conf ]; then
-            config_files="${config_files}/etc/ntp.conf"
-
-            # NTP 서버 설정 확인 (server 또는 pool 지시자)
-            local ntp_servers=$(grep -E "^[\s]*server|^[\s]*pool" /etc/ntp.conf 2>/dev/null | grep -v "^#" | head -5)
-            if [ -n "$ntp_servers" ]; then
-                ntp_configured=true
-                ntp_details="NTP 서버 설정됨: $(echo "$ntp_servers" | head -3 | tr '\n' ' ')"
-            else
-                ntp_details="NTP 서버 설정 없음"
-            fi
-        fi
-
-        if [ -f /etc/chrony.conf ]; then
-            config_files="${config_files} /etc/chrony.conf"
-
-            # Chrony 서버 설정 확인
-            local chrony_servers=$(grep -E "^[\s]*server|^[\s]*pool" /etc/chrony.conf 2>/dev/null | grep -v "^#" | head -5)
-            if [ -n "$chrony_servers" ]; then
-                ntp_configured=true
-                ntp_details="${ntp_details}, Chrony 서버 설정됨"
-            fi
-        fi
-
-        # systemd-timesyncd 확인 (최신 리눅스 배포판)
-        if [ -f /etc/systemd/timesyncd.conf ]; then
-            config_files="${config_files} /etc/systemd/timesyncd.conf"
-
-            local timesyncd_servers=$(grep "^[\s]*NTP=" /etc/systemd/timesyncd.conf 2>/dev/null | grep -v "^#" | grep -v "^NTP=$")
-            if [ -n "$timesyncd_servers" ]; then
-                ntp_configured=true
-                ntp_details="${ntp_details}, systemd-timesyncd: ${timesyncd_servers}"
-            fi
-        fi
-
-        # 3) NTP 서비스 실행 여부 확인
-        local ntp_service_running=false
-        if command -v systemctl >/dev/null 2>&1; then
-            if systemctl is-active ntp >/dev/null 2>&1 || systemctl is-active chrony >/dev/null 2>&1 || systemctl is-active systemd-timesyncd >/dev/null 2>&1; then
-                ntp_running=true
-                ntp_service_running=true
-            fi
-        fi
-
-        # 4) NTP 패키지 설치 확인
-        local ntp_packages=""
-        if command -v dpkg >/dev/null 2>&1; then
-            if dpkg -l 2>/dev/null | grep -q "ntp "; then
-                ntp_packages="${ntp_packages}ntp "
-            fi
-            if dpkg -l 2>/dev/null | grep -q "chrony "; then
-                ntp_packages="${ntp_packages}chrony "
-            fi
-        elif command -v rpm >/dev/null 2>&1; then
-            if rpm -qa 2>/dev/null | grep -q "ntp-"; then
-                ntp_packages="${ntp_packages}ntp "
-            fi
-            if rpm -qa 2>/dev/null | grep -q "chrony-"; then
-                ntp_packages="${ntp_packages}chrony "
-            fi
-        fi
-
-        # 최종 판정
-        if [ "$ntp_running" = true ] && [ "$ntp_configured" = true ]; then
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="NTP 서비스 실행 중且 시간 동기화 설정됨: ${ntp_details}"
-            command_result="${ntp_details}, Service: Running"
-            command_executed="systemctl status ntp chrony systemd-timesyncd 2>/dev/null; cat ${config_files}"
-        elif [ "$ntp_installed" = true ] && [ "$ntp_configured" = true ]; then
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="NTP 설정됨 (서비스 상태: ${ntp_service_running:-실행 중}): ${ntp_details}"
-            command_result="${ntp_details}, Installed packages: ${ntp_packages:-None}"
-            command_executed="systemctl is-active ntp chrony systemd-timesyncd 2>/dev/null"
-        else
-            diagnosis_result="VULNERABLE"
-            status="취약"
-            if [ -z "$ntp_details" ]; then
-                inspection_summary="NTP가 설치되어 있으나 서버 설정 안됨"
-                command_result="NTP: Installed, Not configured"
-            else
-                inspection_summary="NTP 설정 또는 서비스 실행 문제: ${ntp_details}"
-                command_result="${ntp_details}, Service: ${ntp_service_running:-Inactive}"
-            fi
-            command_executed="systemctl is-active ntp chrony systemd-timesyncd 2>/dev/null; grep '^server\|^pool' /etc/ntp.conf /etc/chrony.conf 2>/dev/null"
-        fi
+        diagnosis_result="VULNERABLE"
+        inspection_summary="NTP 데몬이 응답하지 않습니다. 서비스 상태를 확인하십시오."
+    elif [[ ! "$cmd_out" =~ ^\* ]] && [[ ! "$cmd_out" =~ ^o ]]; then
+        # 동기화 중임을 나타내는 기호(* 또는 o)가 없는 경우
+        status="취약"
+        diagnosis_result="VULNERABLE"
+        inspection_summary="NTP 서버와 동기화가 이루어지지 않고 있습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
+    command_result="[NTP Status]\n${cmd_out}"
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
-    verify_result_saved "${ITEM_ID}"
-
-
-    return 0
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

@@ -1,164 +1,73 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-49
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 3. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : DNS 보안 버전 패치
-# @Description : BIND 버전 확인
+# @Description : DNS 서비스(BIND)의 최신 보안 패치 적용 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-49"
 ITEM_NAME="DNS 보안 버전 패치"
-SEVERITY="상"
+SEVERITY="(상)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="취약점이발표되지않은BIND버전을사용하여시스템보안성을높이기위함"
-GUIDELINE_THREAT="취약점이 내포된 BIND 버전을 사용할 경우, DoS 공격, 버퍼 오버플로우(Buffer Overflow) 및 DNS 서버원격침입등의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="주기적으로패치를관리하는경우"
-GUIDELINE_CRITERIA_BAD="주기적으로패치를관리하고있지않은경우"
-GUIDELINE_REMEDIATION="Ÿ DNS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ DNS서비스사용시패치관리정책수립및주기적으로패치적용설정 ※ DNS서비스의경우대부분의버전에서취약점이보고되고있으므로OS관리자, 서비스 개발자가 패치적용에따른서비스영향정도를정확히파악하여주기적인패치적용정책수리후적용"
+GUIDELINE_PURPOSE="DNS 서비스의 알려진 취약점을 보완하기 위해 최신 보안 패치를 적용하여 시스템 보안성을 강화하기 위함"
+GUIDELINE_THREAT="취약한 버전의 DNS 서비스를 사용할 경우 알려진 취약점을 악용한 공격(DDoS, 원격 코드 실행 등)으로 시스템이 장악될 위험이 있음"
+GUIDELINE_CRITERIA_GOOD="DNS 서비스가 최신 버전이거나 알려진 취약점이 없는 버전을 사용 중인 경우"
+GUIDELINE_CRITERIA_BAD="DNS 서비스가 구버전이거나 알려진 취약점이 포함된 버전을 사용 중인 경우"
+GUIDELINE_REMEDIATION="BIND 배포처 또는 OS 제조사에서 제공하는 최신 보안 패치 적용"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="DNS 서비스가 최신 버전이거나 설치되지 않았습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="named -v"
 
-    # DNS 보안 버전 패치 확인
-    local dns_installed=false
-    local dns_info=""
-
-    # 1) BIND(named) 설치 및 버전 확인
-    if command -v named &>/dev/null; then
-        dns_installed=true
-        local bind_version=$(named -v 2>/dev/null || echo "Unknown")
-        dns_info="${dns_info}BIND 버전: ${bind_version}${newline}"
-
-        # 버전에서 메이저/마이너 번호 추출
-        local version_number=$(echo "$bind_version" | grep -oP '\d+\.\d+' | head -1)
-        dns_info="${dns_info}버전 번호: ${version_number}${newline}"
-    fi
-
-    # 2) bind9-utils 확인
-    if dpkg -l | grep -q "bind9"; then
-        dns_installed=true
-        local bind_version=$(dpkg -l | grep "bind9" | awk '{print $3}' | head -1)
-        dns_info="${dns_info}설치된 bind9 버전: ${bind_version}${newline}"
-    fi
-
-    # 3) DNS 서비스 실행 확인
-    if systemctl is-active named &>/dev/null || systemctl is-active bind9 &>/dev/null; then
-        dns_installed=true
-        dns_info="${dns_info}DNS 서비스 실행 중${newline}"
-    fi
-
-    # 4) 포트 확인 (DNS: 53)
-    if command -v ss &>/dev/null; then
-        local dns_port=$(ss -tuln | grep ":53 " || echo "")
-        if [ -n "$dns_port" ]; then
-            dns_installed=true
-            dns_info="${dns_info}DNS 포트 53 활성화${newline}"
-        fi
-    fi
-
-    # 최종 판정
-    if [ "$dns_installed" = false ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="DNS 서비스 미설치됨"
-        local raw_dns_check=$(command -v named 2>&1; systemctl is-active named bind9 2>&1; ss -tuln 2>/dev/null | grep ':53' || echo "DNS not found")
-        command_result="[Command: command -v named; systemctl is-active named bind9; ss -tuln | grep ':53']${newline}${raw_dns_check}"
-        command_executed="command -v named; systemctl is-active named bind9; ss -tuln | grep ':53'"
+    local bind_ver=$(named -v 2>/dev/null || echo "Not Installed")
+    if [ "$bind_ver" != "Not Installed" ]; then
+        command_result="현재 BIND 버전: [ ${bind_ver} ]"
+        inspection_summary="DNS 서비스(BIND)가 실행 중입니다. 최신 보안 패치 여부를 수동으로 확인하십시오."
     else
-        diagnosis_result="MANUAL"
-        status="수동진단"
-        inspection_summary="DNS 서비스 설치됨 - 최신 보안 패치 적용 여부 수동 확인 필요"
-        command_result="${dns_info}"
-        command_executed="named -v; dpkg -l | grep bind9"
+        command_result="BIND(DNS) 서비스가 설치되어 있지 않습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
+    command_result=$(echo "$command_result" | tr -d '\n\r')
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

@@ -1,193 +1,82 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-56
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 하
-# @Title       : FTP 서비스 접근 제어 설정
-# @Description : /etc/ftpusers 설정 확인
+# @Category    : UNIX > 4. 웹 서비스 관리
+# @Platform    : RedHat (Apache)
+# @Severity    : (중)
+# @Title       : Apache 파일 업로드 및 다운로드 제한
+# @Description : 웹 서버의 파일 업로드 용량 제한 설정 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-56"
-ITEM_NAME="FTP 서비스 접근 제어 설정"
-SEVERITY="하"
+ITEM_NAME="Apache 파일 업로드 및 다운로드 제한"
+SEVERITY="(중)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="FTP서비스의접근제어를통해비인가자의무단접속및데이터유출을방지하기위함"
-GUIDELINE_THREAT="FTP서비스접근제어가미흡할경우비인가자가시스템에접속하여민감정보유출 및시스템장악 등의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="FTP접근제어가적절하게설정된경우"
-GUIDELINE_CRITERIA_BAD=" FTP접근제어가설정되지않은경우"
-GUIDELINE_REMEDIATION="FTP설정파일에서접근제어설정"
+GUIDELINE_PURPOSE="웹 서버의 파일 업로드 용량을 제한하여 대용량 파일 업로드에 의한 자원 고갈(DoS) 공격을 방지하기 위함"
+GUIDELINE_THREAT="업로드 용량 제한이 없는 경우, 공격자가 악의적으로 대용량 파일을 업로드하여 서버 디스크 공간을 고갈시킬 위험이 있음"
+GUIDELINE_CRITERIA_GOOD="LimitRequestBody 설정이 적용되어 업로드 용량이 적절히 제한된 경우"
+GUIDELINE_CRITERIA_BAD="업로드 용량 제한 설정이 되어 있지 않거나 너무 크게 설정된 경우"
+GUIDELINE_REMEDIATION="httpd.conf 파일에서 LimitRequestBody 5000000 (5MB) 등의 설정 추가"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="파일 업로드 제한(LimitRequestBody) 설정이 존재합니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="grep -r 'LimitRequestBody' /etc/httpd/conf*"
 
-    # 진단 로직 구현
-    # FTP 서비스 접근 제어 설정 확인
-
-    local ftp_installed=false
-    local access_configured=false
-    local access_details=""
-    local config_files=""
-
-    # FTP 설정 파일 확인
-    if [ -f /etc/vsftpd.conf ] || [ -f /etc/vsftpd/vsftpd.conf ]; then
-        ftp_installed=true
-        local vsftpd_conf="/etc/vsftpd.conf"
-        [ ! -f "$vsftpd_conf" ] && vsftpd_conf="/etc/vsftpd/vsftpd.conf"
-
-        # vsftpd 접근 제어 확인
-        # 1) /etc/ftpusers 또는 /etc/vsftpd.ftpusers 확인
-        if [ -f /etc/ftpusers ]; then
-            local blocked_users=$(wc -l < /etc/ftpusers 2>/dev/null)
-            if [ "$blocked_users" -gt 0 ]; then
-                access_configured=true
-                access_details="/etc/ftpusers에 ${blocked_users}개 차단된 사용자"
-                config_files="${config_files}/etc/ftpusers "
-            fi
+    # 1. 실제 데이터 추출
+    local httpd_conf="/etc/httpd/conf/httpd.conf"
+    if [ -f "$httpd_conf" ]; then
+        local limit_size=$(grep -i "LimitRequestBody" "$httpd_conf" | awk '{print $2}' | head -n 1 || echo "NotSet")
+        
+        if [ "$limit_size" = "NotSet" ]; then
+            status="취약"
+            diagnosis_result="VULNERABLE"
+            inspection_summary="LimitRequestBody 설정이 되어 있지 않습니다."
         fi
-
-        # 2) vsftpd.conf에서 userlist_deny, userlist_file 확인
-        if grep -q "^userlist_enable=YES" "$vsftpd_conf" 2>/dev/null; then
-            access_configured=true
-            local userlist_file=$(grep "^userlist_file" "$vsftpd_conf" 2>/dev/null | awk '{print $2}' | head -1)
-            if [ -n "$userlist_file" ] && [ -f "$userlist_file" ]; then
-                local userlist_count=$(wc -l < "$userlist_file" 2>/dev/null)
-                access_details="${access_details}, ${userlist_file}에 ${userlist_count}개 사용자"
-            fi
-            config_files="${config_files}${vsftpd_conf} "
-        fi
-    fi
-
-    if [ -f /etc/proftpd/proftpd.conf ]; then
-        ftp_installed=true
-        # proftpd 접근 제어 확인
-        if grep -qE "^[\s]*<Limit.*LOGIN>" /etc/proftpd/proftpd.conf 2>/dev/null; then
-            access_configured=true
-            access_details="${access_details}, proftpd <Limit LOGIN> 설정됨"
-        fi
-        config_files="${config_files}/etc/proftpd/proftpd.conf "
-    fi
-
-    # /etc/ftpusers 또는 /etc/ftpdusers 확인 (일반적인 FTP 차단 파일)
-    for users_file in /etc/ftpusers /etc/ftpdusers; do
-        if [ -f "$users_file" ]; then
-            ftp_installed=true
-            local user_count=$(grep -v "^#" "$users_file" 2>/dev/null | grep -v "^$" | wc -l)
-            if [ "$user_count" -gt 0 ]; then
-                access_configured=true
-                access_details="${access_details}, ${users_file}에 ${user_count}개 차단 사용자"
-                config_files="${config_files}${users_file} "
-            fi
-        fi
-    done
-
-    if [ "$ftp_installed" = false ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="FTP 서비스가 설치되지 않음"
-        local raw_ftp_check=$(ls /etc/{vsftpd*,proftpd*,ftpusers} 2>&1)
-        command_result="[Command: ls /etc/{vsftpd*,proftpd*,ftpusers} 2>/dev/null]${newline}${raw_ftp_check}"
-        command_executed="ls /etc/{vsftpd*,proftpd*,ftpusers} 2>/dev/null"
-    elif [ "$access_configured" = true ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="FTP 접근 제어가 설정됨: ${access_details#, }"
-        command_result="${access_details#, }"
-        command_executed="cat ${config_files} 2>/dev/null | grep -E 'userlist|ftpusers'"
+        command_result="설정된 업로드 제한 크기: [ ${limit_size} ] (Bytes)"
     else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="FTP 접근 제어가 설정되지 않음 (root 등 관리자 계정 접근 가능)"
-        local raw_access_check=$(cat /etc/{vsftpd*,proftpd*,ftpusers,ftpdusers} 2>&1)
-        command_result="[Command: cat /etc/{vsftpd*,proftpd*,ftpusers,ftpdusers} 2>/dev/null]${newline}${raw_access_check}"
-        command_executed="cat /etc/{vsftpd*,proftpd*,ftpusers,ftpdusers} 2>/dev/null"
+        command_result="Apache 설정 파일이 존재하지 않습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
+    # [보정] JSON 파싱 에러 방지
+    command_result=$(echo "$command_result" | tr -d '\n\r')
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

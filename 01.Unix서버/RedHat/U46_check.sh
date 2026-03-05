@@ -1,187 +1,83 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-46
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 3. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : 일반 사용자의 메일 서비스 실행 방지
-# @Description : mail 실행 제한 확인
+# @Description : 일반 사용자가 메일 서비스를 임의로 실행하거나 제어하는 것을 방지하는 설정 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-46"
 ITEM_NAME="일반 사용자의 메일 서비스 실행 방지"
-SEVERITY="상"
+SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="일반 사용자의 q 옵션을 제한하여 메일 서비스 설정 및메일큐를강제적으로drop시킬수없게하여 비인가자에의한SMTP서비스오류방지하기위함"
-GUIDELINE_THREAT="일반사용자가q옵션을이용해서메일큐,메일서비스설정을보거나메일큐를강제적으로drop시킬 수있어악의적으로SMTP서버의오류를발생시킬위험이존재함"
-GUIDELINE_CRITERIA_GOOD="일반사용자의메일서비스실행방지가설정된경우"
-GUIDELINE_CRITERIA_BAD="일반사용자의메일서비스실행방지가설정되어있지않은경우"
-GUIDELINE_REMEDIATION="Ÿ 메일서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 메일서비스사용시메일서비스의q옵션제한설정"
+GUIDELINE_PURPOSE="일반 사용자가 메일 서비스 큐를 조작하거나 서비스를 중단시키는 행위를 차단하기 위함"
+GUIDELINE_THREAT="일반 사용자가 메일 서비스를 실행할 수 있는 경우, 메일 큐에 접근하여 중요 정보를 탈취하거나 서비스 거부 공격을 유발할 수 있음"
+GUIDELINE_CRITERIA_GOOD="SMTP 설정에서 일반 사용자의 서비스 실행 및 제어 권한이 제한되어 있는 경우(RestrictMailq, RestrictQueueRun 설정)"
+GUIDELINE_CRITERIA_BAD="일반 사용자가 메일 서비스를 임의로 실행하거나 제어할 수 있는 경우"
+GUIDELINE_REMEDIATION="Sendmail 설정 파일(sendmail.cf)에서 PrivacyOptions에 restrictmailq, restrictqrun 설정 추가"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="일반 사용자의 메일 서비스 실행 방지 설정이 적절합니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="grep -i 'PrivacyOptions' /etc/mail/sendmail.cf"
 
-    # 일반 사용자의 메일 서비스 실행 방지 확인
-    local mail_restricted=false
-    local restriction_info=""
-
-    # 1) Sendmail: smrsh 확인
-    if [ -f /etc/mail/smrsh ]; then
-        restriction_info="${restriction_info}Sendmail smrsh 설치됨${newline}"
-        if command -v smrsh &>/dev/null; then
-            mail_restricted=true
-            restriction_info="${restriction_info}smrsh: 사용 가능한 명령어 제한됨${newline}"
+    # 1. 실제 데이터 추출 (Sendmail 기준)
+    local cf_file="/etc/mail/sendmail.cf"
+    if [ -f "$cf_file" ]; then
+        local privacy_opts=$(grep -i "O PrivacyOptions" "$cf_file" | cut -d= -f2 || echo "")
+        
+        # 2. 판정 로직 (restrictmailq, restrictqrun 포함 여부 확인)
+        if [[ ! "$privacy_opts" =~ "restrictmailq" ]] || [[ ! "$privacy_opts" =~ "restrictqrun" ]]; then
+            status="취약"
+            diagnosis_result="VULNERABLE"
+            inspection_summary="PrivacyOptions 설정에 일반 사용자 제한 옵션이 누락되어 있습니다."
         fi
-    fi
-
-    # Sendmail 설정에서 restrict-mailrun 확인
-    if [ -f /etc/mail/sendmail.cf ] || [ -f /etc/sendmail.cf ]; then
-        local conf_file="/etc/mail/sendmail.cf"
-        [ ! -f "$conf_file" ] && conf_file="/etc/sendmail.cf"
-
-        local privacy_options=$(grep -i "PrivacyOptions" "$conf_file" | grep -v "^#" | head -1)
-        restriction_info="${restriction_info}Sendmail PrivacyOptions: ${privacy_options}${newline}"
-
-        if echo "$privacy_options" | grep -q "restrict-mailrun"; then
-            mail_restricted=true
-            restriction_info="${restriction_info}restrict-mailrun 설정됨${newline}"
-        fi
-    fi
-
-    # 2) Postfix: mail_owner 확인
-    if command -v postconf &>/dev/null; then
-        local mail_owner=$(postconf mail_owner 2>/dev/null | grep "mail_owner" | awk '{print $3}')
-        restriction_info="${restriction_info}Postfix mail_owner: ${mail_owner}${newline}"
-
-        if [ "$mail_owner" = "postfix" ] || [ "$mail_owner" = "mail" ]; then
-            mail_restricted=true
-            restriction_info="${restriction_info}mail_owner가 특정 사용자로 설정됨${newline}"
-        fi
-
-        # authorized_mail_users 확인
-        local auth_users=$(postconf authorized_mail_users 2>/dev/null | grep "authorized_mail_users" | awk '{print $3}')
-        if [ -n "$auth_users" ]; then
-            restriction_info="${restriction_info}authorized_mail_users: ${auth_users}${newline}"
-        fi
-
-        # authorized_submit_users 확인
-        local submit_users=$(postconf authorized_submit_users 2>/dev/null | grep "authorized_submit_users" | awk '{print $3}')
-        if [ -n "$submit_users" ]; then
-            restriction_info="${restriction_info}authorized_submit_users: ${submit_users}${newline}"
-            mail_restricted=true
-        fi
-    fi
-
-    # 3) 메일 큐 디렉토리 권한 확인
-    local mailq_dirs=("/var/spool/mqueue" "/var/spool/postfix" "/var/mail")
-    for dir in "${mailq_dirs[@]}"; do
-        if [ -d "$dir" ]; then
-            local perms=$(stat -c "%a" "$dir" 2>/dev/null || echo "000")
-            local owner=$(stat -c "%U" "$dir" 2>/dev/null || echo "unknown")
-            restriction_info="${restriction_info}${dir}: ${perms}, ${owner}${newline}"
-        fi
-    done
-
-    # 최종 판정
-    if [ "$mail_restricted" = true ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="일반 사용자의 메일 서비스 실행 제한됨"
-        command_result="${restriction_info}"
-        command_executed="postconf mail_owner authorized_submit_users; grep -i 'PrivacyOptions' /etc/mail/sendmail.cf 2>/dev/null"
+        command_result="설정된 PrivacyOptions: [ ${privacy_opts:-설정 없음} ]"
     else
-        diagnosis_result="MANUAL"
-        status="수동진단"
-        inspection_summary="메일 서비스 접근 제한 설정 수동 확인 필요"
-        command_result="${restriction_info}"
-        command_executed="postconf mail_owner; grep -i 'PrivacyOptions' /etc/mail/sendmail.cf"
+        command_result="Sendmail 설정 파일이 존재하지 않습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

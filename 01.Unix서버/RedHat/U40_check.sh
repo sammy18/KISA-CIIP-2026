@@ -1,205 +1,86 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-40
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 3. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : NFS 접근 통제
-# @Description : NFS exports 설정 확인
+# @Description : NFS 공유 설정 시 특정 호스트에 대한 접근 제한 설정 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-40"
 ITEM_NAME="NFS 접근 통제"
-SEVERITY="상"
+SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="접근권한이없는비인가자의접근을통제하기위함"
-GUIDELINE_THREAT="접근통제설정이적절하지않을경우,인증절차없이비인가자가디렉터리나파일의접근이가능하며, 해당공유시스템에원격으로마운트하여중요파일을변조하거나유출할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="접근통제가설정되어있으며NFS설정파일접근권한이644이하인경우"
-GUIDELINE_CRITERIA_BAD="접근통제가설정되어있지않고NFS설정파일접근권한이644를초과하는경우"
-GUIDELINE_REMEDIATION="Ÿ NFS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 불가피하게사용시접근통제설정및NFS설정파일접근권한644설정"
+GUIDELINE_PURPOSE="NFS 공유 시 허가된 호스트만 접근 가능하도록 제한하여 무단 파일 시스템 접근을 방지하기 위함"
+GUIDELINE_THREAT="NFS 접근 통제가 설정되지 않아 모든 호스트에 공유될 경우, 외부에서 네트워크를 통해 중요 데이터를 탈취할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="NFS 공유 설정 파일(/etc/exports)에 접근 허용 호스트가 명시되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="NFS 공유 설정을 모든 호스트('*' 등)에 허용하거나 접근 통제가 없는 경우"
+GUIDELINE_REMEDIATION="/etc/exports 파일에 특정 IP 주소 또는 네트워크 대역을 지정하여 공유 설정"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="NFS 접근 통제 설정이 적절하게 이루어져 있습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="cat /etc/exports"
 
-    # NFS 접근 통제 확인
-    local nfs_installed=false
-    local is_secure=true
-    local issues=()
-    local exports_info=""
-
-    # 1) NFS 서비스 설치 확인
-    if [ -f /etc/exports ]; then
-        nfs_installed=true
-        exports_info="NFS exports 파일 존재${newline}${newline}"
-
-        # exports 파일 내용 확인
-        if [ -s /etc/exports ]; then
-            exports_info="${exports_info}$(cat /etc/exports)${newline}${newline}"
-
-            # 각 exports 라인 확인
-            while IFS= read -r line; do
-                # 주석和无용行 무시
-                [[ "$line" =~ ^#.*$ ]] && continue
-                [[ -z "$line" ]] && continue
-
-                # 취약한 옵션 확인
-                if ! echo "$line" | grep -q "ro"; then
-                    if echo "$line" | grep -q "rw"; then
-                        is_secure=false
-                        issues+=("쓰기 권한(rw) 허용됨: $line")
-                    fi
-                fi
-
-                # root_squash 확인 (없으면 취약)
-                if ! echo "$line" | grep -q "root_squash"; then
-                    if echo "$line" | grep -q "no_root_squash"; then
-                        is_secure=false
-                        issues+=("root 권한 승급 가능(no_root_squash): $line")
-                    else
-                        # 기본값은 root_squash지만 명시적인 것이 좋음
-                        issues+=("root_squash 옵션 미명시: $line")
-                    fi
-                fi
-
-                # sync 확인
-                if ! echo "$line" | grep -q "sync"; then
-                    if echo "$line" | grep -q "async"; then
-                        issues+=("비동기 모드(async) 사용: $line")
-                    fi
-                fi
-
-                # insecure 옵션 확인 (1024 이상 포트 허용)
-                if echo "$line" | grep -q "insecure"; then
-                    is_secure=false
-                    issues+=("insecure 옵션 사용: $line")
-                fi
-            done < /etc/exports
+    # 1. 실제 데이터 추출
+    local exports_file="/etc/exports"
+    if [ -f "$exports_file" ]; then
+        # 와일드카드(*)를 사용하여 모든 호스트에 개방된 설정 탐색
+        local unsafe_configs=$(grep -v "^#" "$exports_file" | grep "*" || echo "")
+        
+        # 2. 판정 로직
+        if [ -n "$unsafe_configs" ]; then
+            status="취약"
+            diagnosis_result="VULNERABLE"
+            inspection_summary="NFS 공유가 모든 호스트(*)에 허용되어 있어 보안에 취약합니다."
+            command_result="취약 설정 내역: [ ${unsafe_configs} ]"
         else
-            exports_info="${exports_info}exports 파일이 비어있음 (안전)${newline}"
+            command_result="공유 설정 내역: [ $(grep -v "^#" "$exports_file" | xargs || echo "설정 없음") ]"
         fi
-    fi
-
-    # 2) NFS 서비스 실행 확인
-    if systemctl is-active nfs-server &>/dev/null || systemctl is-active nfs-kernel-server &>/dev/null; then
-        nfs_installed=true
-        exports_info="${exports_info}NFS 서비스 실행 중${newline}"
-    fi
-
-    # 3) 포트 확인 (NFS: 2049, mountd: 20048)
-    if command -v ss &>/dev/null; then
-        local nfs_port=$(ss -tuln | grep -E ":2049 |:20048 " || echo "")
-        if [ -n "$nfs_port" ]; then
-            nfs_installed=true
-            exports_info="${exports_info}NFS 포트 활성화 (2049/20048)${newline}"
-        fi
-    fi
-
-    # 최종 판정
-    if [ "$nfs_installed" = false ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="NFS 서비스 미사용"
-        command_result="NFS Disabled"
-        command_executed="systemctl is-active nfs-server nfs-kernel-server; ss -tuln | grep -E ':2049|:20048'"
-    elif [ "$is_secure" = true ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="NFS 접근 통제 적절히 설정됨"
-        command_result="${exports_info}"
-        command_executed="cat /etc/exports; systemctl is-active nfs-server"
     else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="NFS 접근 통제 미흡: ${issues[*]}"
-        command_result="${exports_info}"
-        command_executed="cat /etc/exports; exportfs -v 2>/dev/null"
+        command_result="NFS 설정 파일(/etc/exports)이 존재하지 않습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

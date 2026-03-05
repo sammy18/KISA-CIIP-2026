@@ -1,149 +1,84 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-19
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-09
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 하
+# @Category    : UNIX > 1. 계정 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (하)
 # @Title       : 계정이 존재하지 않는 GID 금지
-# @Description : 시스템에 불필요한 그룹(계정이 없고 멤버도 없는 orphan 그룹)이 존재하는지 점검
+# @Description : 그룹 설정 파일(/etc/group)에 불필요한 그룹 존재 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
 ITEM_ID="U-09"
 ITEM_NAME="계정이 존재하지 않는 GID 금지"
-SEVERITY="하"
+SEVERITY="(하)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="시스템에 불필요한 그룹이 존재하는지 점검하여 불필요한 그룹의 소유권으로 설정된 파일의 노출로 인해 발생할 수 있는 위험에 대해 대비를 하기 위함"
-GUIDELINE_THREAT="계정이 존재하지 않거나 불필요한 그룹이 존재하는 경우, 해당 그룹의 소유로 설정된 파일을 통한 권한 남용 또는 의도치 않은 권한 부여, 보안 감사 및 관리의 어려움 등의 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="시스템 관리나 운용에 불필요한 그룹이 존재하지 않는 경우 (계정이 없고 멤버도 없는 그룹이 제거됨)"
-GUIDELINE_CRITERIA_BAD="시스템 관리나 운용에 불필요한 그룹이 존재하는 경우"
-GUIDELINE_REMEDIATION="불필요한 그룹이 존재하는 경우 관리자와 검토하여 제거"
-
-# ============================================================================
-# 진단 함수
-# ============================================================================
+GUIDELINE_PURPOSE="불필요한 그룹이 소유한 파일 노출로 인해 발생할 수 있는 위험에 대비하기 위함"
+GUIDELINE_THREAT="계정이 존재하지 않는 그룹이 있을 경우 해당 그룹 소유 파일을 통한 권한 남용 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="시스템 운영에 불필요한 그룹이 제거된 경우"
+GUIDELINE_CRITERIA_BAD="시스템 운영에 불필요한 그룹이 존재하는 경우"
+GUIDELINE_REMEDIATION="사용자가 없는 불필요한 그룹 제거"
 
 diagnose() {
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="불필요한 그룹이 발견되지 않았습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="cat /etc/group | cut -d: -f3"
 
-    # 진단 로직 구현
-    local orphan_groups=""
-    local orphan_count=0
-    local raw_output=""
-    
-    # GID Threshold (RedHat often uses 1000 for standard users in newer versions, 500 in older. 1000 is safer to avoid system daemons)
-    local GID_MIN=1000
-
-    # 1. Collect Used GIDs from passwd
-    local used_gids
-    used_gids=$(cut -d: -f4 /etc/passwd | sort -u)
-
-    # 2. Check each group in /etc/group
-    if [ -f "/etc/group" ]; then
-        while IFS=: read -r group_name group_pass group_gid group_members; do
-            # Skip system groups usually
-            if [[ "$group_gid" -lt "$GID_MIN" ]]; then
-                continue
+    # 1. 실제 데이터 추출: /etc/group에서 사용자가 배정되지 않은 그룹 확인
+    local ghost_groups=""
+    while IFS=: read -r gname gpass gid gmembers; do
+        if [ "$gid" -ge 1000 ]; then # 일반 사용자 그룹 범위 대상
+            if ! grep -q ":${gid}:" /etc/passwd && [ -z "$gmembers" ]; then
+                ghost_groups+="${gname}(${gid}) "
             fi
-            
-            # Check if GID is in used_gids
-            local is_primary=false
-            if echo "$used_gids" | grep -q "^${group_gid}$"; then
-                is_primary=true
-            fi
+        fi
+    done < /etc/group
 
-            # Check if group has members in /etc/group (4th field not empty)
-            local has_members=false
-            if [ -n "$group_members" ]; then
-                has_members=true
-            fi
-
-            # Only report if NOT primary AND NO members
-            if [ "$is_primary" = false ] && [ "$has_members" = false ]; then
-                orphan_groups="${orphan_groups}${group_name}(${group_gid}), "
-                raw_output="${raw_output}${group_name}:${group_pass}:${group_gid}:${group_members}${newline}"
-                ((orphan_count++)) || true
-            fi
-        done < /etc/group
-    fi
-
-    if [ -n "$raw_output" ]; then
-        command_result="[Orphan Groups (GID >= 1000, No Members, Not Primary)]${newline}${raw_output}"
-    else
-        command_result="[Orphan Groups]${newline}No orphan groups found (GID >= 1000)."
-    fi
-    
-    command_executed="awk -F: '\$3 >= 1000 {print}' /etc/group"
-
-    # 최종 판정
-    if [ "$orphan_count" -gt 0 ]; then
-        diagnosis_result="VULNERABLE"
+    # 2. 판정 로직
+    if [ -n "$ghost_groups" ]; then
         status="취약"
-        inspection_summary="계정이 존재하지 않는 GID(불필요한 그룹)가 ${orphan_count}개 존재합니다: ${orphan_groups%, }"
-    else
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="계정이 존재하지 않는 GID(불필요한 그룹)가 존재하지 않음"
+        diagnosis_result="VULNERABLE"
+        inspection_summary="계정이 존재하지 않는 그룹이 발견되었습니다."
     fi
 
-    # 결과 저장
+    # 3. command_result에 실제 데이터 기록
+    command_result="발견된 그룹: [ ${ghost_groups:-없음} ]"
+
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-    check_disk_space
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

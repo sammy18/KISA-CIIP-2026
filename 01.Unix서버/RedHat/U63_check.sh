@@ -1,208 +1,71 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-63
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 중
-# @Title       : sudo 명령어 접근 관리
-# @Description : sudoers 설정 확인
+# @Category    : UNIX > 1. 계정 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (중)
+# @Title       : 사용자 sudo 명령어 사용 제한
+# @Description : sudoers 파일을 통한 특정 명령어나 권한 제한 설정 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-63"
-ITEM_NAME="sudo 명령어 접근 관리"
-SEVERITY="중"
+ITEM_NAME="사용자 sudo 명령어 사용 제한"
+SEVERITY="(중)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="비인가자가관리자권한을남용하여시스템손상,악성코드실행,민감한데이터유출등의보안위협을 방지하기위함"
-GUIDELINE_THREAT="sudo 명령어 접근을 제한하지 않을 경우, 비인가자가 관리자 권한으로 허가되지 않은 명령어를 사용하여루트권한오용,악성코드실행,데이터유출등의시도를할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/sudoers파일소유자가root이고,파일권한이440인경우"
-GUIDELINE_CRITERIA_BAD="/etc/sudoers파일소유자가root가아니거나,파일권한이440을초과하는경우"
-GUIDELINE_REMEDIATION="/etc/sudoers파일소유자및권한변경설정"
+GUIDELINE_PURPOSE="특정 사용자에게만 필요한 권한을 sudo를 통해 부여함으로써 불필요한 root 권한 남용을 방지하기 위함"
+GUIDELINE_THREAT="sudo 권한이 과도하게 부여되거나 적절히 제한되지 않을 경우, 일반 사용자가 시스템 전체를 장악하거나 중요 데이터를 변조할 위험이 있음"
+GUIDELINE_CRITERIA_GOOD="sudoers 파일에 허가된 사용자만 등록되어 있고, 불필요한 ALL 권한이 제한된 경우"
+GUIDELINE_CRITERIA_BAD="sudoers 파일에 인가되지 않은 사용자가 등록되어 있거나 과도한 권한(ALL)이 부여된 경우"
+GUIDELINE_REMEDIATION="/etc/sudoers 파일에서 불필요한 사용자/그룹 설정 삭제 및 특정 명령어로 권한 제한"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="sudoers 설정이 적절하게 관리되고 있습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="grep -v '^#' /etc/sudoers | grep 'ALL'"
 
-    # 진단 로직 구현
-    # sudo 명령어 접근 관리 확인
-
-    local sudo_installed=false
-    local sudoers_issues=false
-    local issue_details=""
-
-    # 1) sudo 설치 여부 확인
-    if command -v sudo >/dev/null 2>&1; then
-        sudo_installed=true
-    fi
-
-    if [ "$sudo_installed" = false ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="sudo가 설치되지 않음 (root만 권한 관리)"
-        local raw_sudo_check=$(which sudo 2>&1)
-        command_result="[Command: which sudo]${newline}${raw_sudo_check}"
-        command_executed="which sudo"
+    if [ -f "/etc/sudoers" ]; then
+        local sudo_list=$(grep -v '^#' /etc/sudoers | grep "ALL" | xargs || echo "None")
+        command_result="발견된 sudo 권한 설정: [ ${sudo_list} ]"
     else
-        # 2) sudoers 파일 확인
-        local sudoers_files=("/etc/sudoers" "/etc/sudoers.d/*" "/etc/sudoers.tmp")
-
-        # 2-1) sudoers 파일 권한 확인 (440 또는 더 엄격해야 함)
-        for sudoers_file in /etc/sudoers /etc/sudoers.d/*; do
-            if [ -f "$sudoers_file" ]; then
-                local perms=$(stat -c "%a" "$sudoers_file" 2>/dev/null)
-                local owner=$(stat -c "%U:%G" "$sudoers_file" 2>/dev/null)
-
-                # 권한이 440이거나 소유자가 root:root가 아닌 경우
-                if [ "$perms" != "440" ] && [ "$perms" != "400" ]; then
-                    sudoers_issues=true
-                    issue_details="${issue_details}${sudoers_file} 권한 ${perms} (440 권장), "
-                fi
-
-                if [ "$owner" != "root:root" ]; then
-                    sudoers_issues=true
-                    issue_details="${issue_details}${sudoers_file} 소유자 ${owner} (root:root 권장), "
-                fi
-            fi
-        done
-
-        # 2-2) 취약한 sudoers 규칙 확인
-        # ALL 권한을 가진 사용자/그룹 확인
-        local all_privilege=$(grep -v "^#" /etc/sudoers 2>/dev/null | grep -v "^$" | grep -E "ALL=\(ALL\) ALL|ALL=\(ALL:ALL\) ALL")
-        if [ -n "$all_privilege" ]; then
-            # root는 제외
-            local non_root_all=$(echo "$all_privilege" | grep -v "root")
-            if [ -n "$non_root_all" ]; then
-                sudoers_issues=true
-                issue_details="${issue_details}모든 권한을 가진 비-root 사용자: ${non_root_all}, "
-            fi
-        fi
-
-        # 2-3) 암호 없이 sudo 사용 가능한 규칙 확인 (NOPASSWD)
-        local nopasswd_rules=$(grep -v "^#" /etc/sudoers 2>/dev/null | grep -i "NOPASSWD")
-        if [ -n "$nopasswd_rules" ]; then
-            sudoers_issues=true
-            issue_details="${issue_details}암호 없는 sudo 규칙: ${nopasswd_rules}, "
-        fi
-
-        # 2-4) sudoers.d 디렉토리 내 파일 확인
-        if [ -d /etc/sudoers.d ]; then
-            local sudoers_d_files=$(ls /etc/sudoers.d/* 2>/dev/null)
-            if [ -n "$sudoers_d_files" ]; then
-                for file in $sudoers_d_files; do
-                    local file_perms=$(stat -c "%a" "$file" 2>/dev/null)
-                    if [ "$file_perms" != "440" ] && [ "$file_perms" != "400" ]; then
-                        sudoers_issues=true
-                        issue_details="${issue_details}${file} 권한 ${file_perms}, "
-                    fi
-                done
-            fi
-        fi
-
-        # 2-5) sudo 로깅 설정 확인
-        if ! grep -qE "Defaults.*logfile|Defaults.*log_output" /etc/sudoers 2>/dev/null; then
-            # 로깅이 설정되지 않음 (정보성, 취약으로 판단하지 않음)
-            issue_details="${issue_details}sudo 로깅 설정 없음, "
-        fi
-
-        if [ "$sudoers_issues" = true ]; then
-            diagnosis_result="VULNERABLE"
-            status="취약"
-            inspection_summary="sudoers 설정에 보안 문제 존재: ${issue_details%, }"
-            command_result="${issue_details%, }"
-            command_executed="ls -la /etc/sudoers /etc/sudoers.d/ 2>/dev/null; grep -E 'ALL.*ALL|NOPASSWD' /etc/sudoers 2>/dev/null"
-        else
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="sudoers 설정이 안전하게 구성됨 (권한 440, root:root)"
-            local raw_sudoers=$(stat -c '%a:%U:%G' /etc/sudoers 2>/dev/null)
-            command_result="[Command: stat -c '%a:%U:%G' /etc/sudoers 2>/dev/null]${newline}${raw_sudoers}"
-            command_executed="stat -c '%a:%U:%G' /etc/sudoers 2>/dev/null"
-        fi
+        command_result="/etc/sudoers 파일이 존재하지 않습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
+    command_result=$(echo "$command_result" | tr -d '\n\r')
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

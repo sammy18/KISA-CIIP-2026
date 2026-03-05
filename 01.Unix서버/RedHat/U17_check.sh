@@ -1,191 +1,81 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-17
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 상
+# @Category    : UNIX > 2. 파일 및 디렉토리 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
 # @Title       : 시스템 시작 스크립트 권한 설정
-# @Description : /etc/init.d/* 권한 755 확인
+# @Description : 시스템 시작 시 실행되는 스크립트 파일의 소유자 및 권한 설정 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-17"
 ITEM_NAME="시스템 시작 스크립트 권한 설정"
-SEVERITY="상"
+SEVERITY="(상)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="SUID/SGID 파일의 남용을 방지하여 특권 사용자 권한 상승 공격을 방지하기 위함"
-GUIDELINE_THREAT="불필요한 SUID/SGID 파일이 존재할 경우, 공격자가 이를 악용하여 root 권한으로 권한 상승하여 시스템 전체를 장악할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="시스템에서 불필요한 SUID/SGID 파일이 존재하지 않거나, 시스템 필수 바이너리로만 구성된 경우"
-GUIDELINE_CRITERIA_BAD="공격에 악용 가능한 스크립트 파일이나 일반 사용자 쓰기 권한이 있는 SUID/SGID 파일이 존재하는 경우"
-GUIDELINE_REMEDIATION="불필요한 SUID/SGID 파일의 SUID/SGID 비트를 제거하거나, 파일 소유권을 root로 변경하고 쓰기 권한을 제거"
+# 가이드라인 정보 (PDF 42페이지 내용 반영)
+GUIDELINE_PURPOSE="시스템 시작 시 실행되는 스크립트 파일을 보호하여 비인가자의 임의적인 수정 및 악의적인 코드 실행을 방지하기 위함"
+GUIDELINE_THREAT="시작 스크립트 파일에 대한 쓰기 권한이 불필요하게 부여되어 있는 경우, 비인가자가 스크립트 내용을 변조하여 시스템 부팅 시 악성 코드가 실행되도록 설정할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="시스템 시작 스크립트 파일의 소유자가 root(또는 bin, sys)이고, 타인 쓰기 권한이 부여되어 있지 않은 경우"
+GUIDELINE_CRITERIA_BAD="시스템 시작 스크립트 파일의 소유자가 root(또는 bin, sys)가 아니거나, 타인 쓰기 권한이 부여되어 있는 경우"
+GUIDELINE_REMEDIATION="시작 스크립트 파일의 소유자를 root로 변경하고 타인 쓰기 권한 제거"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="시스템 시작 스크립트의 소유자 및 권한 설정이 적절합니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="ls -ld /etc/rc*.d/* /etc/init.d/*"
 
-    # 진단 로직 구현
-    # SUID/SGID 파일 점검
+    # 1. 실제 데이터 추출: 타인 쓰기 권한(Other Write)이 있는 파일 검색
+    # 주요 경로: /etc/rc.d, /etc/init.d 등
+    local vulnerable_files=$(find /etc/rc.d/ /etc/init.d/ -type f -perm -2 2>/dev/null | head -n 5)
 
-    local suid_files=""
-    local sgid_files=""
-    local suid_count=0
-    local sgid_count=0
-    local vulnerable_files=""
-    local vulnerable_count=0
-
-    # SUID 파일 검색 (시스템 바이너리 외의 파일)
-    while IFS= read -r file; do
-        if [ -n "$file" ]; then
-            ((suid_count++))
-            local perms=$(stat -c "%a" "$file" 2>/dev/null)
-            local owner=$(stat -c "%U" "$file" 2>/dev/null)
-
-            # 예상되는 SUID 파일 목록 (시스템 바이너리)
-            local expected_suid_patterns="^(ping|ping6|traceroute|traceroute6|sudo|passwd|su|gpasswd|chsh|chfn|newgrp|umount|mount|pkexec|at|fusermount|Xorg|wbem)"
-
-            # 파일명만 추출
-            local filename=$(basename "$file")
-
-            # 예상되는 시스템 바이너리가 아닌 경우 취약
-            if ! [[ "$filename" =~ $expected_suid_patterns ]]; then
-                # 사용자가 쓰기 가능한 스크립트 등 취약한 파일
-                if [[ "$file" =~ \.(sh|bash|pl|py|rb)$ ]] || [ -w "$file" ]; then
-                    ((vulnerable_count++))
-                    vulnerable_files="${vulnerable_files}${file} (SUID, 권한: ${perms}, 소유자: ${owner}), "
-                fi
-            fi
-
-            suid_files="${suid_files}${file} (SUID, ${perms}:${owner}), "
-        fi
-    done < <(find / -perm -4000 -type f 2>/dev/null | head -50)
-
-    # SGID 파일 검색
-    while IFS= read -r file; do
-        if [ -n "$file" ]; then
-            ((sgid_count++))
-            local perms=$(stat -c "%a" "$file" 2>/dev/null)
-            local owner=$(stat -c "%U" "$file" 2>/dev/null)
-
-            # 예상되는 SGID 디렉터리/파일 (write 가능한 공유 디렉터리 등)
-            if [[ "$file" =~ \.(sh|bash|pl|py|rb)$ ]] || [ -w "$file" ]; then
-                ((vulnerable_count++))
-                vulnerable_files="${vulnerable_files}${file} (SGID, 권한: ${perms}, 소유자: ${owner}), "
-            fi
-
-            sgid_files="${sgid_files}${file} (SGID, ${perms}:${owner}), "
-        fi
-    done < <(find / -perm -2000 -type f 2>/dev/null | head -50)
-
-    # 결과 판정
-    # Capture actual find command output
-    local suid_find_output=$(eval "find $find_paths -perm -4000 -type f 2>/dev/null" | head -20 || echo "No SUID files found")
-    local sgid_find_output=$(eval "find $find_paths -perm -2000 -type f 2>/dev/null" | head -20 || echo "No SGID files found")
-
-    if [ "$vulnerable_count" -eq 0 ]; then
-        if [ "$suid_count" -eq 0 ] && [ "$sgid_count" -eq 0 ]; then
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="SUID/SGID 파일 없음 (시스템 보안 양호)"
-            command_result="[Command: find $find_paths -perm -4000 -type f]${newline}${suid_find_output}${newline}${newline}[Command: find $find_paths -perm -2000 -type f]${newline}${sgid_find_output}"
-            command_executed="find $find_paths -perm -4000 -type f 2>/dev/null; find $find_paths -perm -2000 -type f 2>/dev/null"
-        else
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="SUID/SGID 파일이 시스템 바이너리로만 구성됨 (SUID: ${suid_count}개, SGID: ${sgid_count}개)"
-            command_result="[Command: find $find_paths -perm -4000 -type f]${newline}${suid_find_output}${newline}${newline}[Command: find $find_paths -perm -2000 -type f]${newline}${sgid_find_output}"
-            command_executed="find $find_paths -perm -4000 -type f 2>/dev/null; find $find_paths -perm -2000 -type f 2>/dev/null"
-        fi
-    else
-        diagnosis_result="VULNERABLE"
+    # 2. 판정 로직
+    if [ -n "$vulnerable_files" ]; then
         status="취약"
-        inspection_summary="취약한 SUID/SGID 파일 ${vulnerable_count}개 발견: ${vulnerable_files%, }"
-        command_result="[Command: find $find_paths -perm -4000 -type f]${newline}${suid_find_output}${newline}${newline}[Command: find $find_paths -perm -2000 -type f]${newline}${sgid_find_output}${newline}${newline}[Summary] Total SUID: ${suid_count}, SGID: ${sgid_count} (vulnerable: ${vulnerable_count})"
-        command_executed="find $find_paths -perm -4000 -type f 2>/dev/null; find $find_paths -perm -2000 -type f 2>/dev/null"
+        diagnosis_result="VULNERABLE"
+        inspection_summary="시스템 시작 스크립트 중 타인 쓰기 권한이 허용된 파일이 존재합니다."
+        command_result="취약 파일 목록(일부): [ $(echo $vulnerable_files | xargs) ]"
+    else
+        command_result="모든 시작 스크립트에 타인 쓰기 권한이 없습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
     diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
+    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
+    exit 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main "$@"

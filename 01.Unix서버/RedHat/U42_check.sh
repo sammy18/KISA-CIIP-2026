@@ -1,174 +1,69 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-42
-# @Category    : Unix Server
-# @Platform    : RedHat/CentOS/RHEL
-# @Severity    : 중
-# @Title       : NFS 서비스 비활성화
-# @Description : nfs-server, rpcbind 서비스 비활성화 확인
+# @Category    : UNIX > 3. 서비스 관리
+# @Platform    : SOLARIS, LINUX, AIX, HP-UX 등
+# @Severity    : (상)
+# @Title       : 불필요한 RPC 서비스 비활성화
+# @Description : 취약점이 있는 불필요한 RPC 서비스의 활성화 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../../lib"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-42"
-ITEM_NAME="NFS 서비스 비활성화"
-SEVERITY="중"
+ITEM_NAME="불필요한 RPC 서비스 비활성화"
+SEVERITY="(상)"
 
-# 가이드라인 정보
-GUIDELINE_PURPOSE="많은 취약점(버퍼 오버플로우, DoS, 원격 실행 등)이 존재하는 RPC 서비스를 비활성화하여 시스템의 보안성을높이기위함"
-GUIDELINE_THREAT="RPC서비스의취약점을통해비인가자가root권한획득및각종공격을시도할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한RPC서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD=" 불필요한RPC서비스가활성화된경우"
-GUIDELINE_REMEDIATION="불필요한RPC서비스중지및비활성화설정"
+# 가이드라인 정보 (PDF 내용 반영)
+GUIDELINE_PURPOSE="보안에 취약한 불필요한 RPC 서비스를 비활성화하여 원격 공격 시도를 차단하기 위함"
+GUIDELINE_THREAT="rusersd, rwalld 등 불필요한 RPC 서비스가 활성화된 경우 버퍼 오버플로우 등을 통해 시스템 권한 탈취 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한 RPC 서비스(rusersd, rwalld, rstatd 등)가 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 RPC 서비스가 활성화되어 있는 경우"
+GUIDELINE_REMEDIATION="사용하지 않는 RPC 서비스 비활성화"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
-    diagnosis_result="unknown"
-    local status="미진단"
-    local inspection_summary=""
+    local status="양호"
+    local diagnosis_result="GOOD"
+    local inspection_summary="취약한 RPC 서비스가 비활성화되어 있습니다."
     local command_result=""
-    local command_executed=""
-    local newline=$'\n'
+    local command_executed="ps -ef | grep -E 'rusersd|rwalld|rstatd'"
 
-    # 진단 로직 구현
-    # nfs-server, rpcbind 서비스 상태 확인
+    # 1. 실제 데이터 추출
+    local rpc_procs=$(ps -ef | grep -Ei "rusersd|rwalld|rstatd|rpc.cmsd|rpc.ttdbserverd" | grep -v grep || echo "")
 
-    local is_secure=true
-    local service_status=""
-    local active_services=()
-
-    # 확인할 서비스 목록
-    local services=("nfs-server" "rpcbind" "nfs-client.target")
-
-    for service in "${services[@]}"; do
-        # systemd로 서비스 상태 확인
-        if systemctl list-unit-files | grep -q "^${service}.service"; then
-            local state=$(systemctl is-active "$service" 2>/dev/null || echo "unknown")
-            local enabled=$(systemctl is-enabled "$service" 2>/dev/null || echo "unknown")
-
-            if [ "$state" = "active" ]; then
-                is_secure=false
-                active_services+=("${service} (active, ${enabled})")
-            fi
-
-            service_status="${service_status}${service}: ${state} (${enabled})${newline}"
-        elif command -v service &>/dev/null; then
-            # service 명령어로 확인 (systemctl 없는 경우)
-            local state=$(service "$service" status 2>&1 | grep -E "running|active" || echo "")
-            if [ -n "$state" ]; then
-                is_secure=false
-                active_services+=("${service} (active)")
-            fi
-            service_status="${service_status}${service}: $([ -n "$state" ] && echo "active" || echo "inactive/not installed")${newline}"
-        fi
-    done
-
-    # 포트 확인 (NFS: 2049, rpcbind: 111)
-    if command -v ss &>/dev/null; then
-        local nfs_port=$(ss -tuln | grep ":2049 " || echo "")
-        local rpcbind_port=$(ss -tuln | grep ":111 " || echo "")
-
-        if [ -n "$nfs_port" ]; then
-            is_secure=false
-            service_status="${service_status}NFS 포트 2049 활성화${newline}"
-        fi
-        if [ -n "$rpcbind_port" ]; then
-            is_secure=false
-            service_status="${service_status}rpcbind 포트 111 활성화${newline}"
-        fi
-    fi
-
-    # 최종 판정
-    if [ "$is_secure" = true ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="NFS 관련 서비스 비활성화됨"
-        command_result="${service_status}"
-        command_executed="systemctl is-active nfs-server rpcbind; ss -tuln | grep -E ':2049|:111'"
-    else
-        diagnosis_result="VULNERABLE"
+    # 2. 판정 로직
+    if [ -n "$rpc_procs" ]; then
         status="취약"
-        inspection_summary="NFS 관련 서비스 활성화됨: ${active_services[*]}"
-        command_result="${service_status}"
-        command_executed="systemctl is-active nfs-server rpcbind; ss -tuln | grep -E ':2049|:111'"
+        diagnosis_result="VULNERABLE"
+        inspection_summary="보안에 취약한 RPC 서비스가 활성화되어 있습니다."
+        command_result="취약 RPC 프로세스 발견: [ $(echo $rpc_procs | awk '{print $8}' | xargs) ]"
+    else
+        command_result="불필요한 RPC 서비스가 탐지되지 않았습니다."
     fi
 
-    #echo ""
-    #echo "진단 결과: ${status}"
-    #echo "판정: ${diagnosis_result}"
-    #echo "설명: ${inspection_summary}"
-    #echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
-
-    # 결과 저장 확인
-    verify_result_saved "${ITEM_ID}"
-
-
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+    
     return 0
 }
 
-# ============================================================================
-# 메인 실행
-# ============================================================================
-
-main() {
-    # 진단 시작 표시
-    show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
-    check_disk_space
-
-    # 진단 수행
-    diagnose
-
-    # 진단 완료 표시
-    show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
-    return 0
-}
-
-# 스크립트 직접 실행 시에만 진단 수행
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    main "$@"
-fi
+main() { [ "$EUID" -ne 0 ] && exit 1; diagnose; }
+main "$@"
