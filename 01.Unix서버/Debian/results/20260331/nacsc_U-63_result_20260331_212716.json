@@ -1,0 +1,20 @@
+{
+  "item_id": "U-63",
+  "item_name": "sudo 명령어 접근 관리",
+  "inspection": {
+    "summary": "sudoers 설정이 안전하게 구성됨 (권한 440, root:root)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "stat -c '%a:%U:%G' /etc/sudoers 2>/dev/null",
+  "command_result": "No sudoers files",
+  "guideline": {
+    "purpose": "비인가자가관리자권한을남용하여시스템손상,악성코드실행,민감한데이터유출등의보안위협을 방지하기위함",
+    "security_threat": "sudo 명령어 접근을 제한하지 않을 경우, 비인가자가 관리자 권한으로 허가되지 않은 명령어를 사용하여루트권한오용,악성코드실행,데이터유출등의시도를할위험이존재함",
+    "judgment_criteria_good": "/etc/sudoers파일소유자가root이고,파일권한이440인경우",
+    "judgment_criteria_bad": "/etc/sudoers파일소유자가root가아니거나,파일권한이440을초과하는경우",
+    "remediation": "/etc/sudoers파일소유자및권한변경설정"
+  },
+  "timestamp": "2026-03-31T21:27:18+09:00",
+  "hostname": "nacsc"
+}

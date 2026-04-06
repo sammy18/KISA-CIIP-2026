@@ -64,11 +64,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = '주기적 보안 패치 및 벤더 권고사항 적용으로 알려진 취약점 제거 및 시스템 보안 강화'
-$threat = '보안 패치 미적용 시 알려진 취약점 공격 가능성 높으며, 제로디 공격 등 악용 위험 존재'
-$criteria_good = 'Windows 자동 업데이트 설정됨'
-$criteria_bad = '자동 업데이트 설정 안 됨'
-$remediation = 'Windows 업데이트 설정: 설정 > 업데이트 및 보안 > Windows 업데이트 > 고급 옵션 > 자동 업데이트 구성에서 ''자동화된 업데이트 설치'' 또는 ''업데이트 확인 및 설치'' 선택'
+$purpose = '공개된취약점을통한침해사고발생을방지하기위함'
+$threat = 'HOT FIX및최신보안패치적용을시키지않을경우, 이미공개된취약점을통하여비인가자의시스템 접근및관리자권한획득이가능해지는위험이존재함'
+$criteria_good = 'HOTFIX설치및자동업데이트설정이되어있고내부적으로관리절차를수립하여이행한경우'
+$criteria_bad = 'HOTFIX설치되어있지않거나내부적으로관리절차가수립되지않은경우'
+$remediation = 'WindowsUpdate사이트에접속하여최신패치존재여부확인및패치적용'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

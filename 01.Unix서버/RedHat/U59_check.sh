@@ -29,11 +29,11 @@ ITEM_ID="U-59"
 ITEM_NAME="안전한 SNMP 버전 사용"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="보안성이 강화된 SNMPv3를 사용하도록 유도하여 네트워크 모니터링 데이터 탈취를 방지하기 위함"
-GUIDELINE_THREAT="SNMP v1, v2c는 Community String이 평문으로 전송되어 공격자에게 노출될 위험이 매우 높음"
-GUIDELINE_CRITERIA_GOOD="SNMPv3를 사용하거나 취약한 설정이 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD="SNMP v1, v2c 버전을 사용하여 데이터를 주고받는 경우"
-GUIDELINE_REMEDIATION="snmpd.conf에서 취약 버전 비활성화 및 SNMPv3 암호화 설정 적용"
+GUIDELINE_PURPOSE="안전한SNMP버전사용으로전송되는데이터를보호하기위함"
+GUIDELINE_THREAT="SNMP버전이기준보다낮을경우,응답패킷이평문으로전송되어스니핑위험이존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP서비스를v3이상으로사용하는경우"
+GUIDELINE_CRITERIA_BAD="SNMP서비스를v2이하로사용하는경우"
+GUIDELINE_REMEDIATION="Ÿ SNMP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ SNMP서비스사용시SNMP버전을v3이상으로적용하도록설정"
 
 diagnose() {
     local status="양호"

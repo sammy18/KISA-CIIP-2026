@@ -1,0 +1,20 @@
+{
+  "item_id": "U-32",
+  "item_name": "홈 디렉토리로 지정한 디렉토리의 존재 관리",
+  "inspection": {
+    "summary": "모든 사용자 계정의 홈 디렉토리가 존재합니다. (확인된 사용자: 0명, 시스템 계정 제외)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "while IFS=: read -r user pw uid gid gecos home shell; do [ -d \"$home\" ] || echo \"$user $home\"; done < /etc/passwd",
+  "command_result": "[Home directory existence check]\\n",
+  "guideline": {
+    "purpose": "/home디렉토리이외의사용자의홈디렉토리존재여부를점검하여비인가자가시스템명령어의무단 사용을방지하기위함",
+    "security_threat": "/etc/passwd 파일에 설정된 홈 디렉토리가 존재하지 않는 경우, 해당 계정으로 로그인 시 홈 디렉토리가루트디렉토리(/)로할당되어접근이가능한위험이존재함",
+    "judgment_criteria_good": "홈디렉토리가존재하지않는계정이발견되지않는경우",
+    "judgment_criteria_bad": "홈디렉토리가존재하지않는계정이발견된경우",
+    "remediation": "홈디렉토리가존재하지않는계정에홈디렉토리설정또는계정제거하도록설정"
+  },
+  "timestamp": "2026-03-31T21:05:08+09:00",
+  "hostname": "nacsc"
+}

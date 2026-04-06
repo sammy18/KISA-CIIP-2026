@@ -69,11 +69,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = 'OS 침입차단기능(방화벽) 활성화로 무단 접속 차단 및 네트워크 보안 강화'
-$threat = '방화벽 비활성화 시 외부 공격자의 무단 접속 가능하며, 포트 스캔, 서비스 공격, 데이터 유출 위험 심각'
-$criteria_good = 'Windows 방화벽 활성화됨 (도메인, 사설, 공용 모두)'
-$criteria_bad = '하나 이상 프로필에서 방화벽 비활성화됨'
-$remediation = 'Windows 방화벽 활성화. 제어판 > Windows Defender 방화벽 > 사용자 지정 설정 켬. 또는 PowerShell: Set-NetFirewallProfile -Enabled True -Profile Domain,Private,Public'
+$purpose = '방화벽기능활성화여부를점검하여시스템에서외부망의비인가접근및외부망으로통신을시도하는 프로그램에대해통제하고있는지확인하기위함'
+$threat = '방화벽 기능이 비활성화되어 있으면, 외부 및 내부의 접근통제가 되지 않아 유해 정보가 유입되거나 시스템사용자의파일이나폴더가외부로유출될위험이존재함'
+$criteria_good = 'Windows방화벽''사용''으로설정된경우또는유·무료기타방화벽을사용한경우'
+$criteria_bad = 'Windows방화벽''사용안함''으로설정된경우또는유·무료기타방화벽을사용하지않은경우'
+$remediation = 'Windows방화벽''사용''으로설정또는유·무료기타방화벽을사용'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

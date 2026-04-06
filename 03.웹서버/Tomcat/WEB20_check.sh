@@ -33,11 +33,11 @@ ITEM_ID="WEB-20"
 ITEM_NAME="SSL/TLS활성화"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="HTTPS(SSL/TLS) 활성화로 통신 암호화 및 데이터 보호"
-GUIDELINE_THREAT="HTTP 사용 시 평문 통신으로 중간자 공격 및 데이터 도청 위험"
-GUIDELINE_CRITERIA_GOOD="HTTPS(443)가 활성화된 경우"
-GUIDELINE_CRITERIA_BAD="HTTP(80/8080)만 사용하는 경우"
-GUIDELINE_REMEDIATION="server.xml에 SSL Connector 설정(SSLEngine, scheme, secure) 및 443 포트 Listen"
+GUIDELINE_PURPOSE="서버와 클라이언트 간 통신 시 데이터의 평문 전송을 사용하지 않고 데이터가 암호화되는 SSL/TLS 인증암호화접속을통해스니핑을통한정보유출의위험을방지하기위함"
+GUIDELINE_THREAT="Ÿ 웹상의데이터통신시서버와클라이언트간에데이터를평문전송하는경우,간단한도청(스니핑)을 통해정보가탈취및도용될위험이존재함 Ÿ SSL/TLS가 활성화되어 있지 않을 경우, 데이터는 암호화되지 않아 공격자가 중간에서 데이터를 가로채거나 도청할 수 있으며, 더 나아가 평문으로 전송되어 중간에서 변경될 우려가 있어 데이터의 정확성이훼손될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="SSL/TLS설정이활성화되어있는경우"
+GUIDELINE_CRITERIA_BAD="SSL/TLS설정이비활성화되어있는경우"
+GUIDELINE_REMEDIATION="웹서비스내SSL/TLS활성화설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

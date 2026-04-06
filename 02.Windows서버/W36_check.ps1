@@ -83,11 +83,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = '원격터미널 접속 후 일정 시간 동안 이벤트가 발생하지 않은 호스트의 접속을 차단하여 비인가자의 불필요한 접근을 차단하고 정보의 노출을 방지'
-$threat = '접속 Timeout 값이 설정되지 않으면 유휴 시간 내 비인가자의 시스템 접근으로 인해 불필요한 내부 정보의 노출 위험 존재'
-$criteria_good = '원격제어시 Timeout 제어 설정을 30분 이하로 설정한 경우'
-$criteria_bad = '원격제어시 Timeout 제어 설정을 적용하지 않거나 30분 초과로 설정한 경우'
-$remediation = 'Timeout 제어 설정 적용 (30분 이하)'
+$purpose = "조직에서 부득이 원격터미널 접속을 허용해야 할 경우, 원격터미널 접속 후 일정 시간 동안 이벤트가 발생하지 않은 호스트의 접속을 차단하여 비인가자의 불필요한 접근을 차단하고 정보의 노출을 방지하기위함"
+$threat = "접속 Timeout 값이 설정되지 않으면 유휴 시간 내 비인가자의 시스템 접근으로 인해 불필요한 내부 정보의노출위험이존재함"
+$criteria_good = "원격제어시Timeout제어설정을30분이하로설정한경우"
+$criteria_bad = "원격제어시Timeout제어설정을적용하지않거나30분초과로설정한경우"
+$remediation = "Timeout제어설정적용"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

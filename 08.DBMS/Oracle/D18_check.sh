@@ -40,11 +40,11 @@ ITEM_ID="D-18"
 ITEM_NAME="응용프로그램또는DBA계정의Role이Public으로설정되지않도록조정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="Public role에 불필요한 권한 부여 방지로 권한 상승 공격 방지"
-GUIDELINE_THREAT="Public role에 과도한 권한 부여 시 모든 사용자에게 권한 부여 효과로 보안 위험"
-GUIDELINE_CRITERIA_GOOD="Public role에 최소한의 권한만 부여된 경우"
-GUIDELINE_CRITERIA_BAD="Public role에 불필요한 권한이 다수 부여된 경우"
-GUIDELINE_REMEDIATION="REVOKE privilege FROM PUBLIC 명령어로 Public role에서 불필요한 권한 취소"
+GUIDELINE_PURPOSE="응용 프로그램 또는 DBA 계정의 Role을 점검하여 일반 계정으로 응용 프로그램 테이블이나 DBA 테이블의접근을차단하기위함"
+GUIDELINE_THREAT="응용 프로그램 또는 DBA 계정의 Role이 Public으로 설정된 경우 일반 계정에서도 응용 프로그램 테이블및DBA테이블로접근할수있으므로중요정보유출의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DBA계정의Role이Public으로설정되지않은경우"
+GUIDELINE_CRITERIA_BAD="DBA 계정의Role이Public으로설정된경우"
+GUIDELINE_REMEDIATION="DBA계정의Role설정에서Public그룹권한취소"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)

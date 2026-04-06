@@ -40,11 +40,11 @@ ITEM_ID="D-24"
 ITEM_NAME="레지스트리접근제한"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="레지스트리 접근 제한으로 설정 무단 변경 방지"
-GUIDELINE_THREAT="레지스트리 접근이 과도하게 허용될 경우 데이터베이스 설정 무단 변경 위험"
-GUIDELINE_CRITERIA_GOOD="레지스트리 접근 권한이 적절하게 제한된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 레지스트리 접근 권한이 부여된 경우"
-GUIDELINE_REMEDIATION="MSSQL: SQL Server 계정에 최소한의 레지스트리 권한만 부여"
+GUIDELINE_PURPOSE="불필요한RegistryProcedure의권한설정을확인하고제한하여시스템의보안및안정성을강화하기 위함"
+GUIDELINE_THREAT="불필요한 레지스트리 접근 권한이 제한되지 않는 경우, 공격자가 시스템을 변경하거나 악성 소프트웨어를설치하여권한상승,데이터유출,시스템장애를발생시킬위험이존재함"
+GUIDELINE_CRITERIA_GOOD="제한이필요한시스템확장저장프로시저들이DBA외guest/public에게부여되지않은경우"
+GUIDELINE_CRITERIA_BAD="제한이필요한시스템확장저장프로시저들이DBA외guest/public에게부여된경우"
+GUIDELINE_REMEDIATION="guest/public에게부여된시스템확장저장프로시저권한제거"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)

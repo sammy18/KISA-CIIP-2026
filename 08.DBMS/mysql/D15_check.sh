@@ -32,11 +32,11 @@ ITEM_ID="D-15"
 ITEM_NAME="DBMS CREATE 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="CREATE 권한을 제어하여 데이터베이스/테이블 무단 생성 방지"
-GUIDELINE_THREAT="CREATE 권한 과도 부여 시 스토리지 낭비 및 시스템 리소스 고갈 위험"
-GUIDELINE_CRITERIA_GOOD="CREATE 권한이 적절하게 제한된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 CREATE 권한 부여"
-GUIDELINE_REMEDIATION="불필요한 CREATE 권한 취소 및 필요 사용자에게만 부여 권장"
+GUIDELINE_PURPOSE="Listener 설정 파일 및 파라미터 변경 방지 옵션을 설정하여 비인가자의 Listener를 이용한 파라미터 변경을방지하여trace파일및Listener로그의신뢰도를유지하기위함"
+GUIDELINE_THREAT="비인가자가 Oracle의 LSNRCTL 유틸리티를 이용하여 Listener에 직접 접근할 경우, 명령어를 통해 Listener의 모든 파라미터를 변경할 수 있으며, 이로 인해 trace 파일이나 Listener 로그 파일을 변경할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="Listener 관련 설정 파일에 대한 권한이 관리자로 설정되어 있으며, Listener로 파라미터를 변경할수없게옵션이설정된경우"
+GUIDELINE_CRITERIA_BAD="Listener 관련 설정 파일에 대한 권한이 일반 사용자로 설정되어 있고, Listener로 파라미터를 변경할수없게옵션이설정되지않은경우"
+GUIDELINE_REMEDIATION="주요파일및로그파일에대한권한을관리자로제한"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

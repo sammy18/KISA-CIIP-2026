@@ -29,11 +29,11 @@ ITEM_ID="U-52"
 ITEM_NAME="Apache HTTPD 버전 정보 숨김"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="웹 서버의 종류 및 버전 정보를 노출하지 않음으로써 공격자가 특정 버전에 존재하는 알려진 취약점을 이용하는 것을 차단하기 위함"
-GUIDELINE_THREAT="에러 페이지나 응답 헤더에 버전 정보가 노출될 경우 공격자가 해당 버전의 취약점을 악용하여 공격을 시도할 수 있음"
-GUIDELINE_CRITERIA_GOOD="ServerTokens Prod 및 ServerSignature Off 설정이 적용된 경우"
-GUIDELINE_CRITERIA_BAD="ServerTokens 또는 ServerSignature 설정이 노출 위주로 설정되어 있는 경우"
-GUIDELINE_REMEDIATION="httpd.conf 파일에서 ServerTokens Prod, ServerSignature Off 설정 추가 및 수정"
+GUIDELINE_PURPOSE="취약한Telnet프로토콜을비활성화함으로써계정및중요정보유출방지하기위함"
+GUIDELINE_THREAT="원격접속시Telnet 프로토콜을 사용할 경우, 데이터가 평문으로 전송되어 비인가자가 스니핑을 통해 계정및중요정보를외부로유출할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="원격접속시Telnet프로토콜을비활성화하고있는경우"
+GUIDELINE_CRITERIA_BAD="원격접속시Telnet프로토콜을사용하는경우"
+GUIDELINE_REMEDIATION="Telnet,FTP등안전하지않은서비스사용을중지하고SSH설치및사용하도록설정"
 
 diagnose() {
     local status="양호"

@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-04",
+  "item_name": "웹서비스디렉터리리스팅방지설정",
+  "inspection": {
+    "summary": "Apache 설정 파일을 찾을 수 없습니다. httpd.conf 또는 apache2.conf 파일에서 Options Indexes 설정을 수동으로 확인하세요.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "ls -la /etc/apache2/apache2.conf /etc/httpd/conf/httpd.conf /usr/local/apache2/conf/httpd.conf",
+  "command_result": "Apache configuration file not found",
+  "guideline": {
+    "purpose": "웹서버에대한디렉터리리스팅기능을차단하여디렉터리내의모든파일에대한접근및정보노출을 차단하기위함",
+    "security_threat": "디렉터리 리스팅 기능이 차단되지 않은 경우, 비인가자가 해당 디렉터리 내의 모든 파일의 리스트 확인 및 접근이 가능하고, 웹 서버의 구조 및 백업 파일이나 소스 파일 등 공개되면 안 되는 중요 파일들이 노출될위험이존재함",
+    "judgment_criteria_good": "디렉터리리스팅이설정되지않은경우",
+    "judgment_criteria_bad": "디렉터리리스팅이설정된경우",
+    "remediation": "디렉터리리스팅기능차단설정"
+  },
+  "timestamp": "2026-03-31T21:21:01+09:00",
+  "hostname": "nacsc"
+}

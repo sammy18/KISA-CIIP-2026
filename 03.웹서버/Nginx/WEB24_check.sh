@@ -33,11 +33,11 @@ ITEM_ID="WEB-24"
 ITEM_NAME="웹서비스관리자페이지노출제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="관리자 페이지 접근 제한으로 무단 접속 방지"
-GUIDELINE_THREAT="관리자 페이지 노출 시 무단 접속 및 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="관리자 페이지에 접근 제한이 설정된 경우"
-GUIDELINE_CRITERIA_BAD="접근 제한이 없는 경우"
-GUIDELINE_REMEDIATION="location /admin { allow x.x.x.x; deny all; } 또는 auth_basic 설정"
+GUIDELINE_PURPOSE="웹 서버 루트 디렉터리 내 업로드 경로가 아닌 별도의 디렉터리에서 파일을 업로드할 수 있도록 하여 루트디렉터리내악의적인파일업로드및실행을방지하기위함"
+GUIDELINE_THREAT="웹서버내별도의파일업로드경로사용및적절한권한설정을하지않을경우,악의적인목적을가진 파일을업로드하여시스템침투,중요정보유출및변조등의침해사고의가능성이있음"
+GUIDELINE_CRITERIA_GOOD="별도의업로드경로를사용하고일반사용자의접근권한이부여되지않은경우"
+GUIDELINE_CRITERIA_BAD="별도의업로드경로를사용하지않거나,일반사용자의접근권한이부여된경우"
+GUIDELINE_REMEDIATION="기본 경로가 아닌 별도의 업로드 경로를 지정하고, 해당 경로에 대한 일반 사용자의 접근 권한을 제한하도록설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -29,11 +29,11 @@ ITEM_ID="U-49"
 ITEM_NAME="DNS 보안 버전 패치"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="DNS 서비스의 알려진 취약점을 보완하기 위해 최신 보안 패치를 적용하여 시스템 보안성을 강화하기 위함"
-GUIDELINE_THREAT="취약한 버전의 DNS 서비스를 사용할 경우 알려진 취약점을 악용한 공격(DDoS, 원격 코드 실행 등)으로 시스템이 장악될 위험이 있음"
-GUIDELINE_CRITERIA_GOOD="DNS 서비스가 최신 버전이거나 알려진 취약점이 없는 버전을 사용 중인 경우"
-GUIDELINE_CRITERIA_BAD="DNS 서비스가 구버전이거나 알려진 취약점이 포함된 버전을 사용 중인 경우"
-GUIDELINE_REMEDIATION="BIND 배포처 또는 OS 제조사에서 제공하는 최신 보안 패치 적용"
+GUIDELINE_PURPOSE="취약점이발표되지않은BIND버전을사용하여시스템보안성을높이기위함"
+GUIDELINE_THREAT="취약점이 내포된 BIND 버전을 사용할 경우, DoS 공격, 버퍼 오버플로우(Buffer Overflow) 및 DNS 서버원격침입등의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="주기적으로패치를관리하는경우"
+GUIDELINE_CRITERIA_BAD="주기적으로패치를관리하고있지않은경우"
+GUIDELINE_REMEDIATION="Ÿ DNS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ DNS서비스사용시패치관리정책수립및주기적으로패치적용설정 ※ DNS서비스의경우대부분의버전에서취약점이보고되고있으므로OS관리자, 서비스 개발자가 패치적용에따른서비스영향정도를정확히파악하여주기적인패치적용정책수리후적용"
 
 diagnose() {
     local status="양호"

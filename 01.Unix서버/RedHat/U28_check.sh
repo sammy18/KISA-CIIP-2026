@@ -32,11 +32,11 @@ ITEM_NAME="접속 IP 및 포트 제한"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 55페이지 내용 반영)
-GUIDELINE_PURPOSE="허용한 호스트만 서비스를 사용하게 하여 서비스 취약점을 이용한 외부자 공격을 방지하기 위함"
-GUIDELINE_THREAT="접속제한 설정이 되어 있지 않을 경우, 외부에서 서비스 취약점을 이용한 공격을 시도하여 시스템 권한을 획득할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="접속을 허용할 특정 호스트에 대한 IP 주소 및 포트 제한을 설정한 경우"
-GUIDELINE_CRITERIA_BAD="접속을 허용할 특정 호스트에 대한 IP 주소 및 포트 제한을 설정하지 않은 경우"
-GUIDELINE_REMEDIATION="TCP Wrapper(/etc/hosts.allow, /etc/hosts.deny) 설정 또는 iptables 등 방화벽 설정 적용"
+GUIDELINE_PURPOSE="허용한호스트만서비스를사용하게하여서비스취약점을이용한외부자공격을방지하기위함"
+GUIDELINE_THREAT="허용할 호스트에 대한 IP 및 포트 제한이 적용되지 않을 경우, Telnet, FTP 같은 보안에 취약한 네트워크서비스를통하여불법적인접근및시스템침해사고가발생할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="접속을허용할특정호스트에대한IP주소및포트제한을설정한경우"
+GUIDELINE_CRITERIA_BAD="접속을허용할특정호스트에대한IP주소및포트제한을설정하지않은경우"
+GUIDELINE_REMEDIATION="OS에 기본으로 제공하는 방화벽 애플리케이션이나 TCP Wrapper와 같은 호스트별 서비스 제한 애플리케이션을사용하여접근허용IP등록설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지

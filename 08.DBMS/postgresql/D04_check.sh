@@ -32,11 +32,11 @@ ITEM_ID="D-04"
 ITEM_NAME="데이터베이스 관리자 권한을 꼭 필요한 계정 및 그룹에 대해서만 허용"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="관리자 권한이 필요한 계정과 그룹에만 관리자 권한을 부여하였는지 점검하여 관리자 권한의 남용을 방지하여 계정 유출로 인한 비인가자의 DB 접근 가능성을 최소화하고자 함"
-GUIDELINE_THREAT="과도한 SUPERUSER 권한 부여 시 데이터 조작 및 파괴 위험"
-GUIDELINE_CRITERIA_GOOD="필수 계정만 SUPERUSER 권한 보유"
-GUIDELINE_CRITERIA_BAD="불필요한 SUPERUSER 권한 다수 부여"
-GUIDELINE_REMEDIATION="불필요한 SUPERUSER 권한 취소: REVOKE SUPERUSER FROM user;"
+GUIDELINE_PURPOSE="관리자 권한이 필요한 계정과 그룹에만 관리자 권한을 부여하였는지 점검하여 관리자 권한의 남용을 방지하여계정유출로인한비인가자의DB접근가능성을최소화하고자함"
+GUIDELINE_THREAT="관리자 권한이 필요한 계정 및 그룹에만 관리자 권한을 부여하지 않으면 관리자 권한이 부여된 계정이 비인가자에게유출될경우DB에접근할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="관리자권한이필요한계정및그룹에만관리자권한이부여된경우"
+GUIDELINE_CRITERIA_BAD="관리자권한이필요없는계정및그룹에관리자권한이부여된경우"
+GUIDELINE_REMEDIATION="관리자권한이필요한계정및그룹에만관리자권한부여"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -74,11 +74,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'NetBIOS over TCP/IP 비활성화 여부 점검으로 NetBIOS 관련 공격 방지'
-$threat = 'NetBIOS over TCP/IP 활성화 시 NetBIOS 이름 서포핑 및 정보 유출 공격에 취약하며, 네트워크 스캔으로 시스템 정보 노출 위험 존재'
-$criteria_good = 'TCP/IP와 NetBIOS 간의 바인딩이 제거된 경우'
-$criteria_bad = 'TCP/IP와 NetBIOS 간의 바인딩이 활성화된 경우'
-$remediation = '네트워크 어댑터 속성 > IPv4 > 고급 > WINS 탭 > NetBIOS 설정 '
+$purpose = "NetBIOS와TCP/IP바인딩을제거하여TCP/IP를거치게되는파일공유서비스를제공하지못하도록 하고,인터넷에서의공유자원에대한접근시도를방지하고자함"
+$threat = "인터넷에 직접 연결된 윈도우 시스템에서 NetBIOS TCP/IP 바인딩이 활성화되어 있으면 공격자가 네트워크공유자원을사용할위험이존재함"
+$criteria_good = "TCP/IP와NetBIOS간의바인딩이제거되어있는경우"
+$criteria_bad = "TCP/IP와NetBIOS간의바인딩이제거되어있지않은경우"
+$remediation = "네트워크제어판을이용하여TCP/IP와NetBIOS 간의바인딩(binding)제거"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

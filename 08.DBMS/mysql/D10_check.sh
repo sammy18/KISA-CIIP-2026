@@ -32,11 +32,11 @@ ITEM_ID="D-10"
 ITEM_NAME="원격에서DB서버로의접속제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="지정된 IP 주소만 DB 서버에 접근 가능하도록 설정되어있는지 점검"
-GUIDELINE_THREAT="DB 서버 접속 시 IP 주소 제한이 적용되지 않은 경우 비인가자가 내·외부망 위치에 상관없이 DB 서버에 접근할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="DB 서버에 지정된 IP 주소에서만 접근 가능하도록 제한한 경우"
-GUIDELINE_CRITERIA_BAD="DB 서버에 지정된 IP 주소에서만 접속 가능하도록 제한하지 않은 경우"
-GUIDELINE_REMEDIATION="MySQL 사용자의 host 필드를 특정 IP 또는 localhost로 제한: UPDATE user SET host='192.168.1.100' WHERE user='app_user' AND host='%';"
+GUIDELINE_PURPOSE="지정된 IP주소만 DB 서버에 접근 가능하도록 설정되어 있는지 점검하여 비인가자의 DB 서버 접근을 원천적으로차단하고자함"
+GUIDELINE_THREAT="DB서버접속시IP주소제한이적용되지않은경우비인가자가내·외부망위치에상관없이DB서버에 접근할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DB서버에지정된IP주소에서만접근가능하도록제한한경우"
+GUIDELINE_CRITERIA_BAD="DB서버에지정된IP주소에서만접근가능하도록제한하지않은경우"
+GUIDELINE_REMEDIATION="DB서버에대해지정된IP주소에서만접근가능하도록설정"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

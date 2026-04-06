@@ -29,11 +29,11 @@ ITEM_ID="U-66"
 ITEM_NAME="SNMP 서비스 실행 권한 제한"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="SNMP 서비스를 최소 권한(일반 사용자)으로 실행하여 서비스 취약점 공격 시 시스템 전체 권한 탈취를 방지하기 위함"
-GUIDELINE_THREAT="SNMP 서비스가 root 권한으로 실행될 경우, SNMP 취약점을 통해 공격자가 시스템 최고 권한을 획득할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="SNMP 서비스가 root가 아닌 일반 사용자 권한으로 실행 중인 경우"
-GUIDELINE_CRITERIA_BAD="SNMP 서비스가 root 권한으로 실행 중인 경우"
-GUIDELINE_REMEDIATION="SNMP 실행 옵션에 일반 사용자 계정 지정 (예: snmpd -u snmp)"
+GUIDELINE_PURPOSE="보안사고발생시원인파악및각종침해사실확인을하기위함"
+GUIDELINE_THREAT="로깅 설정이 되어 있지 않을 경우, 원인 규명이 어려우며 법적 대응을 위한 충분한 증거로 사용할 수 없는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="로그기록정책이보안정책에따라설정되어수립되어있으며,로그를남기고있는경우"
+GUIDELINE_CRITERIA_BAD="로그기록정책미수립또는정책에따라설정되어있지않거나,로그를남기고있지않은경우"
+GUIDELINE_REMEDIATION="로그기록정책을수립하고,정책에따라(r)syslog.conf파일을설정"
 
 diagnose() {
     local status="양호"

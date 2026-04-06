@@ -30,11 +30,11 @@ ITEM_NAME="계정 잠금 임계값 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="로그인 시도 실패 횟수에 따른 계정 잠금 임계값을 설정하여 무차별 대입 공격을 차단하기 위함"
-GUIDELINE_THREAT="계정 잠금 임계값이 설정되지 않은 경우, 비인가자가 무차별 대입 공격을 통해 비밀번호를 탈취할 수 있음"
-GUIDELINE_CRITERIA_GOOD="계정 잠금 임계값이 5회 이하로 설정되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="계정 잠금 임계값이 설정되어 있지 않거나 5회를 초과하는 경우"
-GUIDELINE_REMEDIATION="/etc/pam.d/system-auth 및 password-auth 파일에 pam_faillock.so 또는 pam_tally2.so 모듈 설정 (deny=5 이하)"
+GUIDELINE_PURPOSE="계정 탈취 목적의 무차별 대입 공격 시 해당 계정을 잠금으로써 인증 요청에 응답하는 리소스 낭비를 차단하고대입공격으로인한비밀번호노출공격을무력화하기위함"
+GUIDELINE_THREAT="계정 잠금 임계값이 설정되어 있지 않을 경우, 비밀번호 탈취 공격(무차별 대입 공격, 사전 대입 공격, 추측 공격 등)의 인증 요청에 대해 설정된 비밀번호가 일치할 때까지 지속적으로 응답하여 해당 계정의 비밀번호가유출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="계정잠금임계값이10회이하의값으로설정된경우"
+GUIDELINE_CRITERIA_BAD="계정잠금임계값이설정되어있지않거나,10회이하의값으로설정되지않은경우"
+GUIDELINE_REMEDIATION="계정잠금임계값을10회이하로설정"
 
 diagnose() {
     local status="양호"

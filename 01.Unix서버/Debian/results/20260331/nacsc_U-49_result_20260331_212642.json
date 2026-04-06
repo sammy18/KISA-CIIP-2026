@@ -1,0 +1,20 @@
+{
+  "item_id": "U-49",
+  "item_name": "DNS 보안 버전 패치",
+  "inspection": {
+    "summary": "DNS 서비스 미설치됨",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "command -v named; systemctl is-active named bind9; ss -tuln | grep ':53'",
+  "command_result": "[DNS Service Check]\\nnamed not found\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U49_check.sh: line 101: systemctl: command not found\\ninactive\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U49_check.sh: line 101: systemctl: command not found\\ninactive\\n\\n[Port 53 Check]\\nNo DNS service listening on port 53",
+  "guideline": {
+    "purpose": "취약점이발표되지않은BIND버전을사용하여시스템보안성을높이기위함",
+    "security_threat": "취약점이 내포된 BIND 버전을 사용할 경우, DoS 공격, 버퍼 오버플로우(Buffer Overflow) 및 DNS 서버원격침입등의위험이존재함",
+    "judgment_criteria_good": "주기적으로패치를관리하는경우",
+    "judgment_criteria_bad": "주기적으로패치를관리하고있지않은경우",
+    "remediation": "Ÿ DNS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ DNS서비스사용시패치관리정책수립및주기적으로패치적용설정 ※ DNS서비스의경우대부분의버전에서취약점이보고되고있으므로OS관리자, 서비스 개발자가 패치적용에따른서비스영향정도를정확히파악하여주기적인패치적용정책수리후적용"
+  },
+  "timestamp": "2026-03-31T21:26:44+09:00",
+  "hostname": "nacsc"
+}

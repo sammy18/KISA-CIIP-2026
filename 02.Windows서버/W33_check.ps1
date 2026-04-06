@@ -88,11 +88,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = 'HTTP/FTP/SMTP 서비스 접속 배너를 통한 불필요한 정보 노출을 방지'
-$threat = '서비스 접속 배너가 차단되지 않는 경우 임의의 사용자가 HTTP, FTP, SMTP 접속 시도 시 노출되는 접속 배너 정보를 수집하여 악의적인 공격에 이용할 위험 존재'
-$criteria_good = 'HTTP, FTP, SMTP 접속 시 배너 정보가 보이지 않는 경우'
-$criteria_bad = 'HTTP, FTP, SMTP 접속 시 배너 정보가 보이는 경우'
-$remediation = '사용하지 않는 경우 IIS 서비스 중지/사용 안 함, 사용 시 속성값 수정'
+$purpose = "HTTP/FTP/SMTP서비스접속배너를통한불필요한정보노출을방지하기위함"
+$threat = "서비스 접속 배너가 차단되지 않는 경우 임의의 사용자가 HTTP, FTP, SMTP 접속 시도 시 노출되는 접속배너정보를수집하여악의적인공격에이용할위험이존재함"
+$criteria_good = "HTTP,FTP,SMTP접속시배너정보가보이지않는경우"
+$criteria_bad = "HTTP,FTP,SMTP접속시배너정보가보이는경우"
+$remediation = "사용하지않는경우IIS서비스중지/사용안함,사용시속성값수정"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

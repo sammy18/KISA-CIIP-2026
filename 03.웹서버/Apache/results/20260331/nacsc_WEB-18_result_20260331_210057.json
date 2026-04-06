@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-18",
+  "item_name": "웹서비스WebDAV비활성화",
+  "inspection": {
+    "summary": "WebDAV가 비활성화되어 있거나 로드되지 않았습니다. (보안 권고사항 준수)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "grep -r 'DAV.*On' /etc/apache2 /etc/httpd 2>/dev/null | grep -v '^\\s*#' | head -3",
+  "command_result": "DAV disabled or not loaded",
+  "guideline": {
+    "purpose": "WebDAV 비활성화로 불필요한 HTTP 확장 메서드 차단",
+    "security_threat": "WebDAV 활성화 시 파일 수정/업로드 등 악의적 조작 위험",
+    "judgment_criteria_good": "WebDAV가 비활성화된 경우",
+    "judgment_criteria_bad": "WebDAV가 활성화된 경우",
+    "remediation": "DAV Off 설정 또는 mod_dav 모듈 비활성화"
+  },
+  "timestamp": "2026-03-31T21:00:59+09:00",
+  "hostname": "nacsc"
+}

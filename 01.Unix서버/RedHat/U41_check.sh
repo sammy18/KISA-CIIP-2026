@@ -32,11 +32,11 @@ ITEM_NAME="불필요한 automountd 제거"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="불필요한 automountd 서비스를 비활성화하여 비인가자의 파일 시스템 자동 마운트 접근을 차단하기 위함"
-GUIDELINE_THREAT="automountd가 활성화된 경우 비인가자가 원격 파일 시스템을 자동으로 마운트하여 정보 유출 및 시스템 장악 위협이 존재함"
-GUIDELINE_CRITERIA_GOOD="automountd(또는 autofs) 서비스가 비활성화되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="automountd(또는 autofs) 서비스가 실행 중인 경우"
-GUIDELINE_REMEDIATION="automountd 서비스 비활성화 (systemctl stop autofs)"
+GUIDELINE_PURPOSE="로컬 공격자가 automountd 데몬에 RPC(Remote Procedure Call)를 보낼 수 있는 취약점이 존재하기때문에해당서비스를중지시키기위함"
+GUIDELINE_THREAT="파일 시스템의 마운트 옵션을 변경하여 root 권한을 획득할 수 있으며, 로컬 공격자가 automountd 프로세스권한으로임의의명령을실행할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="automountd서비스가비활성화된경우"
+GUIDELINE_CRITERIA_BAD="automountd서비스가활성화된경우"
+GUIDELINE_REMEDIATION="automountd서비스비활성화설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 초기값 설정

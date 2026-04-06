@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-15",
+  "item_name": "불필요한스크립트매핑제거",
+  "inspection": {
+    "summary": "스크립트 매핑이 발견되지 않았습니다. (정적 콘텐츠 전용 서버)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "grep -E '^\\s*(location.*\\.(php|pl|cgi|py)|fastcgi_pass|scgi_pass|uwsgi_pass)' /etc/nginx/nginx.conf /etc/nginx/conf.d/*.conf 2>/dev/null | grep -v '^\\s*#' | head -5",
+  "command_result": "No script mappings found",
+  "guideline": {
+    "purpose": "불필요한 스크립트 핸들러 제거로 공격 표면 최소화",
+    "security_threat": "불필요한 스크립트 매핑 시 악의적 스크립트 실행 위험",
+    "judgment_criteria_good": "필요한 스크립트 매핑만 존재하는 경우",
+    "judgment_criteria_bad": "다수의 불필요한 스크립트 매핑이 있는 경우",
+    "remediation": "불필요한 location ~ \\.(php|pl|cgi|py)$ 블록 제거"
+  },
+  "timestamp": "2026-03-31T21:28:04+09:00",
+  "hostname": "nacsc"
+}

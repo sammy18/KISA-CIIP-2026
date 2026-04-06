@@ -1,0 +1,20 @@
+{
+  "item_id": "D-03",
+  "item_name": "비밀번호사용기간및복잡도를기관의정책에맞도록설정",
+  "inspection": {
+    "summary": "MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "비밀번호 사용기간 및 복잡도 설정 유무를 점검하여 비인가자의 비밀번호 추측 공격(무차별 대입 공격, 사전 대입 공격 등)에 대한 대비가 되어 있는지 확인하기 위함",
+    "security_threat": "약한 비밀번호 정책 시 쉽게 유추 가능한 비밀번호 사용으로 인한 무단 접근 위험",
+    "judgment_criteria_good": "비밀번호 정책이 적절히 설정된 경우",
+    "judgment_criteria_bad": "비밀번호 정책이 설정되지 않은 경우",
+    "remediation": "validate_password 플러그인 설치 및 정책 설정: INSTALL PLUGIN validate_password SONAME 'validate_password.so';"
+  },
+  "timestamp": "2026-03-31T20:59:02+09:00",
+  "hostname": "nacsc"
+}

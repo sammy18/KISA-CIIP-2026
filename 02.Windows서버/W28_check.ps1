@@ -42,9 +42,9 @@ try {
         $commandOutput = "MinEncryptionLevel: $encryptionLevel"
 
         # 암호화 수준: 1=Low(56bit), 2=Medium(128bit), 3=High(256bit), 4=FIPS 140-1
-        if ($encryptionLevel -ge 3) {
+        if ($encryptionLevel -ge 2) {
             $finalResult = "GOOD"
-            $summary = "RDP 암호화 수준이 High(Level 3) 이상으로 설정됨"
+            $summary = "RDP 암호화 수준이 Medium(Level 2) 이상으로 설정됨"
             $status = "양호"
         } else {
             $finalResult = "VULNERABLE"
@@ -68,11 +68,11 @@ try {
 $commandExecuted = "Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name MinEncryptionLevel"
 
 # 2. lib를 통한 결과 저장
-$purpose = 'RDP 암호화 수준 상향으로 원격 접속 시 데이터 도청 방지'
-$threat = '낮은 RDP 암호화 수준 사용 시 네트워크 패킷 감청으로 RDP 세션 정보 탈취 가능'
-$criteria_good = '암호화 수준이 High(Level 3) 이상인 경우'
-$criteria_bad = '암호화 수준이 Low/Medium인 경우'
-$remediation = '레지스트리 편집기에서 MinEncryptionLevel 값 3으로 설정 후 시스템 재시작'
+$purpose = "원격 데스크톱 서비스 암호화 설정으로 데이터를 암호화하여 클라이언트와 서버 간의 통신에서 전송되는데이터를보호하기위함"
+$threat = "서버 접속 시에 낮은 암호화 수준을 적용할 경우 악의적인 사용자에 의해 서버와 클라이언트 간 주고받는정보가노출될위험이존재함"
+$criteria_good = "원격데스크톱서비스를사용하지않거나사용시암호화수준을'클라이언트와호환가능(중간)' 이상으로설정한경우"
+$criteria_bad = "원격데스크톱서비스를사용하고암호화수준이'낮음'으로설정한경우"
+$remediation = "원격 데스크톱 서비스의 가동을 '중지' 및 '사용 안 함' 설정을 하거나, 부득이하게 사용할 경우 암호화 수준설정적용"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

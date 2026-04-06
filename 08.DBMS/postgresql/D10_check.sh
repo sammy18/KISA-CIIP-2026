@@ -32,11 +32,11 @@ ITEM_ID="D-10"
 ITEM_NAME="원격에서DB서버로의접속제한"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="불필요한 원격 접속을 제한하여 DB 서버로의 무단 접근 방지"
-GUIDELINE_THREAT="원격에서 제한없이 DB 접속 가능 시 무단 접근 및 데이터 유출 위험"
-GUIDELINE_CRITERIA_GOOD="원격 접속이 적절하게 제한된 경우"
-GUIDELINE_CRITERIA_BAD="원격에서 모든 호스트의 접속이 허용된 경우"
-GUIDELINE_REMEDIATION="pg_hba.conf에서 특정 IP 대역만 허용하도록 설정: host all all 192.168.1.0/24 md5"
+GUIDELINE_PURPOSE="지정된 IP주소만 DB 서버에 접근 가능하도록 설정되어 있는지 점검하여 비인가자의 DB 서버 접근을 원천적으로차단하고자함"
+GUIDELINE_THREAT="DB서버접속시IP주소제한이적용되지않은경우비인가자가내·외부망위치에상관없이DB서버에 접근할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DB서버에지정된IP주소에서만접근가능하도록제한한경우"
+GUIDELINE_CRITERIA_BAD="DB서버에지정된IP주소에서만접근가능하도록제한하지않은경우"
+GUIDELINE_REMEDIATION="DB서버에대해지정된IP주소에서만접근가능하도록설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

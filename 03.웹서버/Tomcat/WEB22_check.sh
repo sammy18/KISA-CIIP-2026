@@ -33,11 +33,11 @@ ITEM_ID="WEB-22"
 ITEM_NAME="에러페이지관리"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="커스텀 에러 페이지 설정으로 서버 정보 노출 방지"
-GUIDELINE_THREAT="기본 에러 페이지 노출 시 서버 버전, 경로 등 민감 정보 유출 위험"
-GUIDELINE_CRITERIA_GOOD="커스텀 에러 페이지가 설정된 경우"
-GUIDELINE_CRITERIA_BAD="기본 에러 페이지를 사용하는 경우"
-GUIDELINE_REMEDIATION="web.xml에 error-page 설정으로 커스텀 에러 페이지 구성"
+GUIDELINE_PURPOSE="에러 페이지에서 웹 서버 버전 및 종류, OS 정보 등 웹 서버와 관련된 불필요한 정보 및 에러 코드를 통한기술적취약점이노출되는것을최소화하기위함"
+GUIDELINE_THREAT="Ÿ 에러 페이지에서 불필요한 정보가 노출될 경우 공격자에 의해 해당 버전의 알려진 취약점 등을 이용하여시스템구조와특성노출및해당취약점을통한공격의위험이존재함 Ÿ 필수 에러 코드에 대해 일원화된 에러 페이지로 관리하지 않는 경우 에러 코드를 통해 각종 정보 유추의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹서비스에러페이지가별도로지정된경우"
+GUIDELINE_CRITERIA_BAD="웹서비스에러페이지가별도로지정되지않거나에러발생시중요정보가노출되는경우"
+GUIDELINE_REMEDIATION="필수에러코드에대해일원화된에러페이지사용및에러페이지내불필요정보노출제한설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

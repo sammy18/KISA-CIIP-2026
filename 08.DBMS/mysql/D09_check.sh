@@ -32,11 +32,11 @@ ITEM_NAME="일정횟수의로그인실패시이에대한잠금정책설정"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="일정 횟수의 로그인 실패 시 계정 잠금 정책을 설정하여 비인가자의 무차별 대입 공격, 사전 대입 공격 등을 통한 사용자 계정 비밀번호 유출 방지"
-GUIDELINE_THREAT="일정한 횟수의 로그인 실패 횟수를 설정하여 제한하지 않으면 자동화된 방법으로 계정 및 비밀번호를 획득하여 데이터베이스에 접근하여 정보가 유출될 위험 존재"
+GUIDELINE_PURPOSE="일정 횟수의 로그인 실패 시 계정 잠금 정책을 설정하여 비인가자의 자동화된 무차별 대입 공격, 사전 대입공격등을통한사용자계정비밀번호유출을방지하기위함"
+GUIDELINE_THREAT="일정한 횟수의 로그인 실패 횟수를 설정하여 제한하지 않으면 자동화된 방법으로 계정 및 비밀번호를 획득하여데이터베이스에접근하여정보가유출될위험이존재함"
 GUIDELINE_CRITERIA_GOOD="로그인시도횟수를제한하는값을설정한경우"
 GUIDELINE_CRITERIA_BAD="로그인시도횟수를제한하는값을설정하지않은경우"
-GUIDELINE_REMEDIATION="connection_control 플러그인 설치 및 임계값 설정"
+GUIDELINE_REMEDIATION="로그인시도횟수제한값설정"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

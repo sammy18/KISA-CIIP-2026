@@ -1,0 +1,25 @@
+============================================================
+[WEB-13] Nginx 디렉토리 리스팅(autoindex) 비활성화
+============================================================
+[WEB-13-START]
+
+Nginx 웹 서버가 실행 중이 아닙니다.
+
+[현황]
+1) 진단 확인
+command: pgrep -x nginx
+command_result:
+Nginx process not found
+
+[WEB-13-END]
+
+[WEB-13]Result : N/A
+
+[참고]
+진단 목적: 디렉토리 내용 노출 방지
+보안 위협: autoindex on인 경우 디렉토리 내 파일 목록 노출
+양호 기준: autoindex off 또는 설정되지 않음
+취약 기준: autoindex on
+조치 방법: nginx.conf에서 autoindex off; 설정
+
+============================================================

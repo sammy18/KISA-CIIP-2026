@@ -30,11 +30,11 @@ ITEM_NAME="Finger 서비스 비활성화"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="사용자 정보(로그인 아이디, 이름, 접속 시간 등) 유출을 차단하여 공격자의 정보 수집을 방지하기 위함"
-GUIDELINE_THREAT="Finger 서비스 활성화 시 외부에서 시스템 사용자 목록을 획득하여 무차별 대입 공격에 활용될 수 있음"
-GUIDELINE_CRITERIA_GOOD="Finger 서비스가 비활성화되어 있거나 설치되지 않은 경우"
-GUIDELINE_CRITERIA_BAD="Finger 서비스가 실행 중이거나 xinetd 등에서 활성화된 경우"
-GUIDELINE_REMEDIATION="관련 서비스 중단 및 xinetd 설정에서 disable = yes 적용"
+GUIDELINE_PURPOSE="Finger 서비스를 통해 네트워크 외부에서 해당 시스템에 등록된 사용자 정보를 확인할 수 있어 비인가자에게사용자정보가조회되는것을방지하기위함"
+GUIDELINE_THREAT="Finger 서비스가 활성화되어 있을 경우, 비인가자가 Finger 서비스를 사용하여 사용자 정보를 조회한 후비밀번호공격을통해계정을탈취할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="Finger서비스가비활성화된경우"
+GUIDELINE_CRITERIA_BAD="Finger서비스가활성화된경우"
+GUIDELINE_REMEDIATION="Finger서비스비활성화설정"
 
 diagnose() {
     local status="양호"

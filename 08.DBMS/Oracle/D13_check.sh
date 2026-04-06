@@ -40,11 +40,11 @@ ITEM_ID="D-13"
 ITEM_NAME="불필요한ODBC/OLE-DB데이터소스와드라이브를제거하여사용"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="불필요한 ODBC/OLE-DB 데이터소스와 드라이버 제거로 공격 표면 최소화"
-GUIDELINE_THREAT="불필요한 데이터소스와 드라이버 존재 시 악용될 수 있는 공격 경로 증가"
-GUIDELINE_CRITERIA_GOOD="필요한 데이터소스와 드라이버만 존재하는 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 데이터소스와 드라이버가 다수 존재하는 경우"
-GUIDELINE_REMEDIATION="ODBC 데이터소스 관리자에서 불필요한 DSN 삭제 및 사용하지 않는 드라이버 제거"
+GUIDELINE_PURPOSE="불필요한데이터소스및드라이버를제거함으로써비인가자에의한데이터베이스접속및자료유출을 차단하기위함"
+GUIDELINE_THREAT="불필요한 ODBC/OLE-DB 데이터 소스를 통한 비인가자의 데이터베이스 접속 및 주요 정보유출에 대한위험이발생할수있음"
+GUIDELINE_CRITERIA_GOOD="불필요한ODBC/OLE-DB가설치되지않은경우"
+GUIDELINE_CRITERIA_BAD="불필요한ODBC/OLE-DB가설치된경우"
+GUIDELINE_REMEDIATION="불필요한ODBC/OLE-DB제거"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)

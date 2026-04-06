@@ -1,0 +1,20 @@
+{
+  "item_id": "U-47",
+  "item_name": "스팸 메일 릴레이 제한",
+  "inspection": {
+    "summary": "메일 릴레이 제한 미흡 - open relay 가능성",
+    "status": "취약"
+  },
+  "final_result": "VULNERABLE",
+  "command": "postconf smtpd_relay_restrictions; grep -i 'PrivacyOptions' /etc/mail/sendmail.cf 2>/dev/null",
+  "command_result": "",
+  "guideline": {
+    "purpose": "스팸메일서버로의악용방지및서버과부하를방지하기위함",
+    "security_threat": "SMTP 서버의 릴레이 기능을 제한하지 않을 경우, 악의적인 사용 목적을 가진 사용자들이 스팸 메일 서버로사용하거나DoS공격의위험이존재함",
+    "judgment_criteria_good": "릴레이제한이설정된경우",
+    "judgment_criteria_bad": "릴레이제한이설정되어있지않은경우",
+    "remediation": "Ÿ 메일서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 메일서비스사용시릴레이방지설정또는릴레이대상접근제어설정"
+  },
+  "timestamp": "2026-03-31T21:06:02+09:00",
+  "hostname": "nacsc"
+}

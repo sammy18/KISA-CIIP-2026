@@ -30,11 +30,11 @@ ITEM_ID="D-06"
 ITEM_NAME="DB사용자계정을개별적으로부여하여사용"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="DB 사용자 계정을 개별 부여하여 공유 계정 사용을 방지하고 사용자별 책임성을 확보하기 위함"
-GUIDELINE_THREAT="공유 계정 사용 시 보안 incident 발생 시 책임 소재 파악 어려움"
-GUIDELINE_CRITERIA_GOOD="사용자별 개별 계정을 부여하여 사용하는 경우"
-GUIDELINE_CRITERIA_BAD="다중 사용자가 공유 계정을 사용하는 경우"
-GUIDELINE_REMEDIATION="사용자별 개별 계정 생성 및 공유 계정 삭제"
+GUIDELINE_PURPOSE="사용자별별도DBMS계정을사용하여DB에접근하는지점검하여DB계정공유사용으로발생할수 있는로그감사추적문제를대비하고자함"
+GUIDELINE_THREAT="DB 계정을 공유하여 사용할 경우 비인가자의 DB 접근 발생 시 계정 공유 사용으로 인해 로그 감사 추적의어려움이발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="사용자별계정을사용하고있는경우"
+GUIDELINE_CRITERIA_BAD="공용계정을사용하고있는경우"
+GUIDELINE_REMEDIATION="사용자별계정생성및권한부여"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

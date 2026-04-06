@@ -33,11 +33,11 @@ ITEM_ID="WEB-13"
 ITEM_NAME="웹서비스디렉터리리스팅제거"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="웹서버에 대한 디렉터리 리스팅 기능을 차단하여 디렉터리 내의 모든 파일에 대한 접근 및 정보 노출을 차단하기 위함"
-GUIDELINE_THREAT="디렉터리 리스팅 기능이 차단되지 않은 경우, 비인가자가 해당 디렉터리 내의 모든 파일의 리스트 확인 및 접근이 가능하고, 웹 서버의 구조 및 백업 파일이나 소스 파일 등 공개되면 안 되는 중요 파일들이 노출될 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="디렉터리 리스팅이 설정되지 않은 경우"
-GUIDELINE_CRITERIA_BAD="디렉터리 리스팅이 설정된 경우"
-GUIDELINE_REMEDIATION="httpd.conf 또는 apache2.conf 내 모든 디렉터리의 Options 지시자에서 Indexes 옵션 제거 또는 -Indexes 설정"
+GUIDELINE_PURPOSE="웹 서비스에서 DB 연결 파일에 대한 접근 권한 제한 및 불필요한 스크립트 매핑을 제거하여, DB 연결 정보(사용자 이름, 비밀번호 등)가 외부에 노출되거나 공격자의 DB 접근 및 관리자 권한 획득 등의 다양한공격을방지하기위함"
+GUIDELINE_THREAT="웹서비스에서DB연결파일에대한접근권한제한및불필요한스크립트매핑을제거하지않을경우, DB 연결 파일에 존재하는 데이터베이스 관련 정보(IP주소, DB명, 비밀번호), 서버 내부 IP주소, 웹 서비스환경설정정보등보안상민감한내용이악의적인사용자에게노출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="일반사용자의DB연결파일에대한접근을제한하고,불필요한스크립트매핑이제거된경우"
+GUIDELINE_CRITERIA_BAD="일반사용자의DB연결파일에대한접근을제한하지않거나,불필요한스크립트매핑이제거되지 않은경우"
+GUIDELINE_REMEDIATION="DB 연결 파일에 대한 접근 권한 제한 또는 불필요한 스크립트 매핑 제거 등을 통한 웹 서비스 내 DB 연결취약점제거설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -33,11 +33,11 @@ ITEM_ID="D-22"
 ITEM_NAME="데이터베이스 자원 제한 기능 설정"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="RESOURCE_LIMIT를 TRUE로 설정하여 자원의 과도한 사용 방지 및 데이터베이스 안정성 보장"
-GUIDELINE_THREAT="자원 제한 기능이 FALSE인 경우 특정 사용자가 과도하게 자원을 소비하여 시스템 과부하 위험"
-GUIDELINE_CRITERIA_GOOD="RESOURCE_LIMIT이 TRUE로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="RESOURCE_LIMIT이 FALSE로 설정된 경우"
-GUIDELINE_REMEDIATION="ALTER SYSTEM SET RESOURCE_LIMIT=TRUE SCOPE=SPFILE;"
+GUIDELINE_PURPOSE="RESOURCE_LIMIT값을TRUE로설정하여자원의과도한사용을방지하여데이터베이스의안정성을 보장하고,효율적인자원관리를수행하기위함"
+GUIDELINE_THREAT="자원제한기능을TRUE로설정하지않을경우,특정사용자가과도하게많은자원을소비할수있으며 이로인해시스템에과부하가발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="RESOURCE_LIMIT설정이TRUE로되어있는경우"
+GUIDELINE_CRITERIA_BAD="RESOURCE_LIMIT설정이FALSE로되어있는경우"
+GUIDELINE_REMEDIATION="RESOURCE_LIMIT설정을TRUE로설정변경"
 
 # Oracle 연결 정보 초기화 (fallback if library not loaded)
 ORACLE_USER="${ORACLE_USER:-system}"

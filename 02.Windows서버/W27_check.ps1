@@ -70,11 +70,11 @@ try {
 $commandExecuted = "[System.Environment]::OSVersion.Version; Get-CimInstance Win32_OperatingSystem"
 
 # 2. lib를 통한 결과 저장
-$purpose = '최신 Windows OS Build 버전 유지로 알려진 보안 취약점 방지'
-$threat = '오래된 OS 빌드 사용 시 알려진 취약점으로 인한 공격 위험 존재'
-$criteria_good = '최신 OS 빌드 버전이 적용된 경우'
-$criteria_bad = '오래된 OS 빌드 버전 사용 중인 경우'
-$remediation = 'Windows Update 실행 또는 수동으로 최신 누적 업데이트(Cumulative Update) 설치'
+$purpose = "시스템을 최신 버전으로 유지하여 새로운 위협 및 진행 중인 위협으로부터 중요 정보와 시스템을 보호하기위함"
+$threat = "보안 업데이트를 적용하지 않으면 시스템 및 응용 프로그램의 취약성으로 인해 권한 상승, 원격 코드 실행,보안기능우회등의위험이존재함"
+$criteria_good = "최신Build가설치되어있으며적용절차및방법이수립된경우"
+$criteria_bad = "최신Build가설치되지않거나,적용절차및방법이수립되지않은경우"
+$remediation = "설치에따른영향도확인후최신Build설치(설치후시스템재시작필요)"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

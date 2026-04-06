@@ -33,11 +33,11 @@ ITEM_ID="WEB-09"
 ITEM_NAME="웹서비스프로세스권한제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="Tomcat 프로세스가 root가 아닌 전용 계정으로 실행되도록 제한"
-GUIDELINE_THREAT="root 권한으로 Tomcat 실행 시 프로세스 탈취 시 시스템 권한 노출 위험"
-GUIDELINE_CRITERIA_GOOD="Tomcat이 root가 아닌 계정으로 실행 중인 경우"
+GUIDELINE_PURPOSE="웹프로세스가웹서비스운영에필요한최소한의권한만을갖도록제한함으로써웹사이트방문자가웹 서비스의 취약점을 이용해 시스템에 대한 어떤 권한도 획득할 수 없도록 하여 침해사고 발생 시 피해 범위확산을방지하기위함"
+GUIDELINE_THREAT="웹 프로세스 권한을 제한하지 않은 경우, 웹 사이트 방문자가 웹 서비스의 취약점을 이용하여 시스템 권한을 획득할 수 있으며, 웹 취약점을 통해 접속 권한을 획득한 경우에는 관리자 권한을 획득하여 서버에접속후정보의변경,훼손및유출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹프로세스(웹서비스)가관리자권한이부여된계정이아닌운영에필요한최소한의권한을가진 별도의계정으로구동되고있는경우"
 GUIDELINE_CRITERIA_BAD="Tomcat이 root로 실행 중인 경우"
-GUIDELINE_REMEDIATION="tomcat 전용 계정 생성 및 권한 설정"
+GUIDELINE_REMEDIATION="웹서비스프로세스구동시관리자권한이아닌운영에필요한최소한의권한을가진계정으로구동설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

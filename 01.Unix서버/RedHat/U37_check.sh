@@ -29,11 +29,11 @@ ITEM_ID="U-37"
 ITEM_NAME="crontab 설정파일 권한 설정 미흡"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="정기적으로 실행되는 작업 설정 파일을 보호하여 비인가자의 악의적인 명령어 등록을 차단하기 위함"
-GUIDELINE_THREAT="crontab 파일의 권한이 부적절할 경우 비인가자가 악성 스크립트를 주기적으로 실행하도록 등록하여 시스템을 장악할 수 있음"
-GUIDELINE_CRITERIA_GOOD="crontab 관련 파일의 소유자가 root이고 권한이 640 이하인 경우"
-GUIDELINE_CRITERIA_BAD="crontab 관련 파일의 소유자가 root가 아니거나 권한이 640을 초과하는 경우"
-GUIDELINE_REMEDIATION="crontab 파일의 소유자를 root로 변경하고 권한을 640으로 설정 (chmod 640 /etc/crontab)"
+GUIDELINE_PURPOSE="관리자외에는서비스를사용할수없도록설정하고있는지점검하기위함"
+GUIDELINE_THREAT="일반 사용자가 crontab 및 at 서비스를 사용할 수 있을 경우, 고의 또는 실수로 불법적인 예약 파일 실행으로시스템피해를일으킬수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="crontab및at명령어에일반사용자실행권한이제거되어있으며,cron및at관련파일권한이 640이하인경우"
+GUIDELINE_CRITERIA_BAD="crontab및at명령어에일반사용자실행권한이부여되어있으며,cron및at관련파일권한이 640이상인경우"
+GUIDELINE_REMEDIATION="crontab및at명령어파일권한750이하,cron및at관련파일소유자및파일권한640이하설정"
 
 diagnose() {
     local status="양호"

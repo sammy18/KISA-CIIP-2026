@@ -1,0 +1,20 @@
+{
+  "item_id": "U-44",
+  "item_name": "tftp, talk 서비스 비활성화",
+  "inspection": {
+    "summary": "tftp, talk 서비스 비활성화됨",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "systemctl is-active tftp talk ntalk; ss -tuln | grep -E ':69|:517|:518'",
+  "command_result": "/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U44_check.sh: line 127: systemctl: command not found\\ninactive\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U44_check.sh: line 127: systemctl: command not found\\ninactive\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U44_check.sh: line 127: systemctl: command not found\\ninactive\\n\\n[Port Check]\\nNo tftp/talk services listening",
+  "guideline": {
+    "purpose": "안전하지않거나불필요한서비스를제거함으로써시스템보안성및리소스의효율적운용하기위함",
+    "security_threat": "사용하지않는서비스나취약점이발표된서비스운용시공격시도가능한위험이존재함",
+    "judgment_criteria_good": "tftp, talk, ntalk서비스가비활성화된경우",
+    "judgment_criteria_bad": "tftp, talk, ntalk서비스가활성화된경우",
+    "remediation": "불필요한tftp, talk, ntalk서비스비활성화설정"
+  },
+  "timestamp": "2026-03-31T21:26:31+09:00",
+  "hostname": "nacsc"
+}

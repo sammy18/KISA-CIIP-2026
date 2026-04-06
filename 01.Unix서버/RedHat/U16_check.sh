@@ -32,11 +32,11 @@ ITEM_NAME="/etc/passwd 파일 소유자 및 권한 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="/etc/passwd 파일의 사용자 정보를 보호하여 비인가자가 사용자 정보를 변조하는 것을 방지하기 위함"
-GUIDELINE_THREAT="/etc/passwd 파일의 권한 설정이 부적절할 경우, 비인가자가 사용자 정보를 변조하여 관리자 권한을 획득하거나 시스템을 마비시킬 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/passwd 파일의 소유자가 root이고, 권한이 644 이하인 경우"
-GUIDELINE_CRITERIA_BAD="/etc/passwd 파일의 소유자가 root가 아니거나, 권한이 644 이하가 아닌 경우"
-GUIDELINE_REMEDIATION="/etc/passwd 파일의 소유자를 root로 변경하고, 권한을 644로 설정"
+GUIDELINE_PURPOSE="/etc/passwd파일을관리자만제어할수있게하여비인가자들의임의적인파일변조를방지하기위함"
+GUIDELINE_THREAT="비인가자가 /etc/passwd 파일의 사용자 정보를 변조하여 Shell 변경, 사용자 추가/제거 등 root 계정을포함한사용자권한획득위험이존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/passwd파일의소유자가root이고,권한이644이하인경우"
+GUIDELINE_CRITERIA_BAD="/etc/passwd파일의소유자가root가아니거나,권한이644이하가아닌경우"
+GUIDELINE_REMEDIATION="/etc/passwd파일소유자및권한변경설정"
 
 diagnose() {
     # 파싱 안정성을 위한 초기값 설정

@@ -1,0 +1,20 @@
+{
+  "item_id": "D-15",
+  "item_name": "DBMS CREATE 권한 점검",
+  "inspection": {
+    "summary": "MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "CREATE 권한을 제어하여 데이터베이스/테이블 무단 생성 방지",
+    "security_threat": "CREATE 권한 과도 부여 시 스토리지 낭비 및 시스템 리소스 고갈 위험",
+    "judgment_criteria_good": "CREATE 권한이 적절하게 제한된 경우",
+    "judgment_criteria_bad": "불필요한 CREATE 권한 부여",
+    "remediation": "불필요한 CREATE 권한 취소 및 필요 사용자에게만 부여 권장"
+  },
+  "timestamp": "2026-03-31T21:20:16+09:00",
+  "hostname": "nacsc"
+}

@@ -1,0 +1,20 @@
+{
+  "item_id": "U-64",
+  "item_name": "주기적 보안 패치 및 벤더 권고 사항 적용",
+  "inspection": {
+    "summary": "시스템이 최신 상태임: 커널: 3.6.6-1cdd4371.x86_64, 패키지 매니저: 확인 불가",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "uname -r; apt list --upgradable 2>/dev/null | wc -l",
+  "command_result": "=== Kernel Version ===\\n3.6.6-1cdd4371.x86_64",
+  "guideline": {
+    "purpose": "주기적인패치적용을통해시스템안정성및보안성을확보하기위함",
+    "security_threat": "최신 보안패치가 적용되지 않을 경우, 이미 알려진 취약점을 통하여 공격자에 의해 시스템 침해사고 발생할위험이존재함",
+    "judgment_criteria_good": "패치 적용 정책을 수립하여 주기적으로 패치 관리를 하고 있으며, 패치 관련 내용을 확인하고 적용하였을경우",
+    "judgment_criteria_bad": " 패치 적용 정책이 미수립되었거나 주기적으로 패치 관리를 하지 않는 경우",
+    "remediation": "OS 관리자, 서비스 개발자가 패치 적용에 따른 서비스 영향 정도를 파악하여 OS 관리자 및 벤더에서 적용하도록설정 ※ OS패치의경우지속해서취약점이발표되고있으므로O/S관리자,서비스개발자가패치적용에 따른서비스영향정도를정확히파악하여주기적인패치적용정책을수립하여적용해야함"
+  },
+  "timestamp": "2026-03-31T21:27:21+09:00",
+  "hostname": "nacsc"
+}

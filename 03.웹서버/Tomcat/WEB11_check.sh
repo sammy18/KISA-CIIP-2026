@@ -33,11 +33,11 @@ ITEM_ID="WEB-11"
 ITEM_NAME="웹서비스링크사용금지"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="심볼릭 링크 사용 제한으로 경로 탐색 공격 방지"
-GUIDELINE_THREAT="심볼릭 링크 사용 시 경로 탐색 및 파일 시스템 접근 위험"
-GUIDELINE_CRITERIA_GOOD="심볼릭 링크가 비활성화되거나 제한적으로 사용된 경우"
-GUIDELINE_CRITERIA_BAD="심볼릭 링크가 활성화된 경우"
-GUIDELINE_REMEDIATION="context.xml에 allowLinking=\"false\" 설정"
+GUIDELINE_PURPOSE="웹서비스영역내불필요한경로를분리해웹서비스의침해가시스템영역으로확장될가능성을최소화하기위함"
+GUIDELINE_THREAT="웹 서비스 경로를 기타 업무와 영역이 분리되지 않은 경로로 설정하거나, 불필요한 경로가 존재할 경우 외부에서시스템중요파일이나기능에비인가접근이발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹서버경로를기타업무와영역이분리된경로로설정및불필요한경로가존재하지않는경우"
+GUIDELINE_CRITERIA_BAD="웹서버경로를기타업무와영역이분리되지않은경로로설정하거나불필요한경로가있는경우"
+GUIDELINE_REMEDIATION="웹서버의경로를별도의경로로변경및불필요한경로제거설정"false\" 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -30,11 +30,11 @@ ITEM_NAME="/etc/shadow 파일 소유자 및 권한 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 43페이지 내용 반영)
-GUIDELINE_PURPOSE="/etc/shadow 파일의 계정 패스워드 정보를 보호하여 비인가자가 암호화된 패스워드에 접근하는 것을 차단하기 위함"
-GUIDELINE_THREAT="/etc/shadow 파일의 권한 설정이 부적절할 경우, 비인가자가 사용자 패스워드 해시값을 획득하여 무차별 대입 공격 등을 통해 비밀번호를 해독할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/shadow 파일의 소유자가 root이고, 권한이 400 이하인 경우"
-GUIDELINE_CRITERIA_BAD="/etc/shadow 파일의 소유자가 root가 아니거나, 권한이 400 이하가 아닌 경우"
-GUIDELINE_REMEDIATION="/etc/shadow 파일의 소유자를 root로 변경하고, 권한을 400으로 설정"
+GUIDELINE_PURPOSE="/etc/shadow파일을관리자만제어할수있게하여비인가자들의임의적인파일변조를방지하기위함"
+GUIDELINE_THREAT="/etc/shadow파일에저장된암호화된해시값을복호화하여(크래킹)비밀번호를탈취할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/shadow파일의소유자가root이고,권한이400이하인경우"
+GUIDELINE_CRITERIA_BAD="/etc/shadow파일의소유자가root가아니거나,권한이400이하가아닌경우"
+GUIDELINE_REMEDIATION="/etc/shadow파일소유자및권한변경설정"
 
 diagnose() {
     local status="양호"

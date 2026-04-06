@@ -29,11 +29,11 @@ ITEM_ID="U-51"
 ITEM_NAME="DNS 서비스의 취약한 동적 업데이트 설정 금지"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="인가되지 않은 사용자의 동적 업데이트를 금지하여 임의의 레코드 수정을 방지하고 DNS 데이터의 무결성을 유지하기 위함"
-GUIDELINE_THREAT="동적 업데이트가 제한되지 않은 경우 공격자가 임의의 DNS 레코드를 등록/수정하여 파밍 공격이나 트래픽 우회 공격을 시도할 수 있음"
-GUIDELINE_CRITERIA_GOOD="DNS 동적 업데이트가 제한되어 있거나 특정 호스트에 대해서만 안전하게 허용된 경우"
-GUIDELINE_CRITERIA_BAD="DNS 동적 업데이트가 모든 호스트(any)에 대해 허용되어 있는 경우"
-GUIDELINE_REMEDIATION="named.conf 파일의 zone 섹션에서 allow-update { none; }; 또는 특정 호스트 설정"
+GUIDELINE_PURPOSE="DNS 서비스의 동적 업데이트를 비활성화함으로써 신뢰할 수 없는 원본으로부터 업데이트를 받아들이는위험을차단하기위함"
+GUIDELINE_THREAT="DNS 서버에서 동적 업데이트를 사용할 경우, 악의적인 사용자에 의해 신뢰할 수 없는 데이터가 받아들여질위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DNS서비스의동적업데이트기능이비활성화되었거나,활성화시적절한접근통제를수행하고 있는경우"
+GUIDELINE_CRITERIA_BAD="DNS서비스의동적업데이트기능이활성화중이며적절한접근통제를수행하고있지않은경우"
+GUIDELINE_REMEDIATION="Ÿ DNS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ DNS서비스사용시일반적으로동적업데이트기능이필요없으나확인필요함"
 
 diagnose() {
     local status="양호"

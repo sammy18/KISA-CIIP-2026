@@ -29,11 +29,11 @@ ITEM_ID="U-62"
 ITEM_NAME="로그인 시 경고 메시지 설정"
 SEVERITY="(하)"
 
-GUIDELINE_PURPOSE="비인가자에게 시스템 사용의 위법성을 알리고 불법적인 접근 시도를 심리적으로 차단하기 위함"
-GUIDELINE_THREAT="배너가 설정되지 않은 경우, 비인가자가 호기심이나 무지에 의한 불법 침입을 시도할 가능성이 높으며 법적 대응 시 불리할 수 있음"
-GUIDELINE_CRITERIA_GOOD="motd 또는 issue.net 파일 등에 경고 메시지가 설정되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="접속 시 아무런 경고 메시지도 출력되지 않는 경우"
-GUIDELINE_REMEDIATION="/etc/motd 또는 /etc/issue.net 파일에 경고 문구 삽입"
+GUIDELINE_PURPOSE="비인가자들에게 서버에 대한 불필요한 정보를 제공하지 않고, 서버 접속 시 관계자만 접속해야 한다는 경각심을심어주기위함"
+GUIDELINE_THREAT="로그온 시 경고 메시지가 설정되어 있지 않을 경우, 기본 설정값엔 서버 OS 버전 및 서비스 버전이 비인가자에게노출되어해당정보를통해서비스의취약점을이용하여공격을시도할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="서버및Telnet,FTP,SMTP,DNS서비스에로그온시경고메시지가설정된경우"
+GUIDELINE_CRITERIA_BAD="서버및Telnet,FTP,SMTP,DNS서비스에로그온시경고메시지가설정되어있지않은경우"
+GUIDELINE_REMEDIATION="Telnet,FTP,SMTP,DNS서비스를사용하는경우설정파일을통해로그온시경고메시지설정"
 
 diagnose() {
     local status="양호"

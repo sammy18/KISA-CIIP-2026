@@ -73,11 +73,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '하드디스크 기본 공유(C$, D$, ADMIN$) 제거 여부 점검'
-$threat = '기본 공유 폴더(C$, ADMIN$)는 시스템 드라이브 전체를 개방하는 것과 같은 위험 존재. Everyone 권한 시 정보 유출 및 악성코드 유포 위험 심각'
-$criteria_good = '기본 공유(C$, D$, ADMIN$)가 제거된 경우'
-$criteria_bad = '기본 공유가 존재하는 경우'
-$remediation = '레지스트리 AutoShareServer 값을 0으로 설정 (HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters\AutoShareServer=0)'
+$purpose = "하드디스크기본공유를제거하여시스템정보노출을차단하고자함"
+$threat = "Windows는 프로그램 및 서비스를 네트워크나 컴퓨터 환경에서 관리하기 위해 시스템 기본 공유 항목을자동으로생성함.이를제거하지않으면비인가자가모든시스템자원에접근할수있는위험한 상황이발생할수있으며이러한공유기능의경로를이용하여바이러스가침투위험이존재함"
+$criteria_good = "레지스트리의AutoShareServer (WinNT: AutoShareWks)가0이며기본공유가존재하지않 는경우"
+$criteria_bad = "레지스트리의AutoShareServer (WinNT: AutoShareWks)가1이거나기본공유가존재하는 경우"
+$remediation = "기본공유중지후레지스트리값설정(IPC$,일반공유제외)"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

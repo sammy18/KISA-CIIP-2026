@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-25",
+  "item_name": "X-XSS-Protection 헤더 설정 (Apache)",
+  "inspection": {
+    "summary": "X-XSS-Protection 헤더 설정을 확인하세요. Apache/Nginx: add_header X-XSS-Protection '1; mode=block'",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "",
+  "command_result": "",
+  "guideline": {
+    "purpose": "XSS 필터 활성화",
+    "security_threat": "XSS 공격에 취약",
+    "judgment_criteria_good": "보안 헤더 설정됨",
+    "judgment_criteria_bad": "보안 헤더 미설정",
+    "remediation": ""
+  },
+  "timestamp": "2026-03-31T21:01:19+09:00",
+  "hostname": "nacsc"
+}

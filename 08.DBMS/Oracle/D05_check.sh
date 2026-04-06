@@ -32,11 +32,11 @@ ITEM_ID="D-05"
 ITEM_NAME="비밀번호재사용에대한제약설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="비밀번호 재사용에 대한 제약 설정이 적용되어 있는지 점검하여 비밀번호 재사용으로 인한 보안 위협을 방지하고 있는지 확인하기 위함"
-GUIDELINE_THREAT="비밀번호 재사용 제약 설정이 되어있지 않으면 사용자가 이전에 사용했던 비밀번호를 재사용하여 비밀번호 추측 공격의 위험성이 증가됨"
-GUIDELINE_CRITERIA_GOOD="기관 정책에 맞게 비밀번호 재사용 제약 설정이 적용된 경우"
-GUIDELINE_CRITERIA_BAD="기관 정책에 맞게 비밀번호 재사용 제약 설정이 적용되지 않은 경우"
-GUIDELINE_REMEDIATION="기관 정책에 맞게 비밀번호 재사용 제약 정책 설정: ALTER PROFILE DEFAULT LIMIT PASSWORD_REUSE_MAX <숫자> PASSWORD_REUSE_TIME <숫자>;"
+GUIDELINE_PURPOSE="비밀번호 재사용 제약 설정 적용 여부를 점검하여 비밀번호 변경 시 이전 비밀번호 재사용을 제약하여 형식적인비밀번호변경을원천적으로차단하기위함"
+GUIDELINE_THREAT="비밀번호 재사용 제약 설정이 적용되어 있지 않을 경우 비밀번호 변경 전 사용했던 비밀번호를 재사용함으로써 비인가자의 계정 비밀번호 추측 공격에 대한 시간을 더 많이 허용하여 비밀번호 유출 위험이증가함"
+GUIDELINE_CRITERIA_GOOD="비밀번호재사용제한설정을적용한경우"
+GUIDELINE_CRITERIA_BAD="비밀번호재사용제한설정을적용하지않은경우"
+GUIDELINE_REMEDIATION="PASSWORD_REUSE_TIME, PASSWORD_REUSE_MAX파라미터설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

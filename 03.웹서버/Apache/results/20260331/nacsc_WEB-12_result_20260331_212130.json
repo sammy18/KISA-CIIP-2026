@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-12",
+  "item_name": "웹서비스링크사용금지",
+  "inspection": {
+    "summary": "FollowSymLinks 설정이 발견되지 않았습니다. (보안 권고사항 준수)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "grep -E '^\\s*Options' /etc/apache2/apache2.conf /etc/httpd/conf/httpd.conf /etc/apache2/sites-enabled/*.conf 2>/dev/null | grep -v '^\\s*#'",
+  "command_result": "No Options found",
+  "guideline": {
+    "purpose": "심볼릭 링크, aliases 등을 제한하여 경로 검증 우회 접근 방지",
+    "security_threat": "심볼릭 링크 허용 시 허용하지 않은 경로에서 시스템 파일 접근 위험",
+    "judgment_criteria_good": "FollowSymLinks가 비활성화된 경우",
+    "judgment_criteria_bad": "FollowSymLinks가 활성화된 경우",
+    "remediation": "Apache 설정 파일에서 'Options -FollowSymLinks' 설정"
+  },
+  "timestamp": "2026-03-31T21:21:32+09:00",
+  "hostname": "nacsc"
+}

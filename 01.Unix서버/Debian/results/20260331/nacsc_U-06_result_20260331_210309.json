@@ -1,0 +1,20 @@
+{
+  "item_id": "U-06",
+  "item_name": "사용자 계정 su 기능 제한",
+  "inspection": {
+    "summary": "su 명령어가 특정 그룹(wheel) 또는 권한 제어를 통해 제한되고 있음 (File Permission)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "grep pam_wheel.so /etc/pam.d/su; ls -l /bin/su; getent group wheel",
+  "command_result": "[File: /etc/pam.d/su]\\n[pam_wheel.so not configured]\\n\\n[File: /bin/su]\\n\\n\\n[Group: wheel]\\nGroup not found",
+  "guideline": {
+    "purpose": "su 관련 그룹만 su 명령어 사용 권한이 부여되어 있는지 점검하여 su 그룹에 포함되지 않은 일반 사용자의su명령사용을원천적으로차단하는지확인하기위함",
+    "security_threat": "무분별한 사용자 변경으로 타 사용자 소유의 파일을 변경할 수 있으며 root 계정으로 변경하는 경우 관리자권한을획득할수있는위험이존재함",
+    "judgment_criteria_good": "su명령어를특정그룹에속한사용자만사용하도록제한된경우",
+    "judgment_criteria_bad": "su명령어를모든사용자가사용하도록설정된경우",
+    "remediation": "PAM모듈설정또는su명령어허용그룹생성후su명령어일반사용자권한제거하도록설정"
+  },
+  "timestamp": "2026-03-31T21:03:11+09:00",
+  "hostname": "nacsc"
+}

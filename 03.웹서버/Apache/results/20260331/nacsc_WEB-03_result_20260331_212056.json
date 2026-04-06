@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-03",
+  "item_name": "비밀번호파일권한관리",
+  "inspection": {
+    "summary": "이 항목은 Tomcat/IIS/JEUS 대상이며 Apache는 해당하지 않습니다. Apache는 .htpasswd 파일을 사용하지만 이는 OS 파일 권한 관리(600 또는 640 권한 권장)에 따르며, KISA 가이드라인의 WEB-03은 Tomcat(tomcat-users.xml), IIS(SAM), JEUS(accounts.xml) 대상입니다.",
+    "status": "N/A"
+  },
+  "final_result": "N/A",
+  "command": "N/A",
+  "command_result": "N/A",
+  "guideline": {
+    "purpose": "비밀번호 파일의 접근 권한을 적절하게 설정하여 비인가자가 비밀번호 파일에 무단 접근 및 유출 등을 방지하기 위함",
+    "security_threat": "비밀번호 파일의 권한을 적절하게 설정하지 않은 경우, 비인가자에게 비밀번호 정보가 노출될 수 있고 웹 서버에 접속하는 등의 침해사고가 발생할 위험이 존재함",
+    "judgment_criteria_good": "대상: Tomcat, IIS, JEUS (Apache는 해당하지 않음)",
+    "judgment_criteria_bad": "대상: Tomcat, IIS, JEUS (Apache는 해당하지 않음)",
+    "remediation": "Apache는 이 항목이 적용되지 않음 (Tomcat/IIS/JEUS만 해당). Apache는 .htpasswd 파일 권한은 600 이하로 권장하지만 이는 OS 파일 권한 관리 영역"
+  },
+  "timestamp": "2026-03-31T21:20:58+09:00",
+  "hostname": "nacsc"
+}

@@ -29,11 +29,11 @@ ITEM_ID="U-58"
 ITEM_NAME="홈 디렉토리로 지정되지 않은 계정 금지"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="홈 디렉토리가 없는 불필요한 계정을 제거하여 공격자의 시스템 침투 경로를 차단하기 위함"
-GUIDELINE_THREAT="홈 디렉토리가 적절히 관리되지 않는 계정은 관리의 사각지대에 놓여 악용될 가능성이 높음"
-GUIDELINE_CRITERIA_GOOD="모든 계정에 대해 유효한 홈 디렉토리가 지정되어 있고 존재하는 경우"
-GUIDELINE_CRITERIA_BAD="홈 디렉토리가 지정되지 않았거나 존재하지 않는 계정이 있는 경우"
-GUIDELINE_REMEDIATION="불필요한 계정 삭제 또는 유효한 홈 디렉토리 생성 및 지정"
+GUIDELINE_PURPOSE="불필요한SNMP서비스를비활성화하여필요이상의정보가노출되는것을방지하기위함"
+GUIDELINE_THREAT="SNMP 서비스가 활성화되어 있을 경우, 비인가자가 시스템의 중요 정보를 유출하거나 불법적으로 수정할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP서비스를사용하지않는경우"
+GUIDELINE_CRITERIA_BAD="SNMP서비스를사용하는경우"
+GUIDELINE_REMEDIATION="SNMP서비스를사용하지않는경우서비스중지및비활성화설정"
 
 diagnose() {
     local status="양호"

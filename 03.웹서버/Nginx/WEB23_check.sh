@@ -33,11 +33,11 @@ ITEM_ID="WEB-23"
 ITEM_NAME="웹서비스웹쉘(shell)삭제"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="웹쉘 파일 삭제로 시스템 악의적 코드 실행 방지"
-GUIDELINE_THREAT="웹쉘 존재 시 원격 코드 실행 및 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="웹쉘 파일이 없음"
-GUIDELINE_CRITERIA_BAD="웹쉘 의심 파일 발견"
-GUIDELINE_REMEDIATION="발견된 웹쉘 파일 즉시 삭제 및 출처 추적"
+GUIDELINE_PURPOSE="LDAP연결시안전한비밀번호다이제스트알고리즘을사용하여비밀번호평문전송시발생할수있는 스니핑등의공격에대비하기위함"
+GUIDELINE_THREAT="취약한 다이제스트 알고리즘을 사용하는 경우 공격자의 스니핑, 무차별 공격 등을 통해 인증 정보가 노출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="LDAP연결인증시안전한비밀번호다이제스트알고리즘을사용하는경우"
+GUIDELINE_CRITERIA_BAD="LDAP연결인증시안전한비밀번호다이제스트알고리즘을사용하지않는경우"
+GUIDELINE_REMEDIATION="LDAP연결인증시SHA-256이상의알고리즘을사용하도록설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -30,11 +30,11 @@ ITEM_NAME="/etc/services 파일 소유자 및 권한 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 가이드 내용 반영)
-GUIDELINE_PURPOSE="네트워크 서비스 포트 정보를 보호하여 비인가자가 서비스 포트를 변경하거나 변조하는 것을 방지하기 위함"
-GUIDELINE_THREAT="포트 정보가 변조될 경우, 정상적인 서비스가 차단되거나 공격자가 의도한 악성 포트로 연결되어 시스템 보안 사고가 발생할 수 있음"
-GUIDELINE_CRITERIA_GOOD="/etc/services 파일의 소유자가 root(또는 bin, sys)이고, 권한이 644 이하인 경우"
-GUIDELINE_CRITERIA_BAD="소유자가 root(또는 bin, sys)가 아니거나, 권한이 644 이하가 아닌 경우"
-GUIDELINE_REMEDIATION="소유자를 root로 변경하고 권한을 644로 설정 (chmod 644 /etc/services)"
+GUIDELINE_PURPOSE="/etc/services 파일을 관리자만 제어할 수 있게 하여 비인가자들의 임의적인 파일 변조를 방지하기 위함"
+GUIDELINE_THREAT="/etc/services 파일의 접근 권한이 적절하지 않을 경우, 비인가 사용자가 운영 포트 번호를 변경하여 정상적인 서비스를 제한하거나 허용되지 않은 포트를 오픈하여 악성 서비스를 의도적으로 실행할 수 있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/services 파일의소유자가root(또는bin, sys)이고,권한이644이하인경우"
+GUIDELINE_CRITERIA_BAD="/etc/services 파일의소유자가root(또는bin, sys)가아니거나,권한이644이하가아닌경우"
+GUIDELINE_REMEDIATION="/etc/services파일소유자및권한변경설정"
 
 diagnose() {
     local status="양호"

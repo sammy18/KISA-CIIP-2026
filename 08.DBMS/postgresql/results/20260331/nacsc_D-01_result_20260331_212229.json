@@ -1,0 +1,20 @@
+{
+  "item_id": "D-01",
+  "item_name": "기본계정의 비밀번호, 정책 등을 변경하여 사용",
+  "inspection": {
+    "summary": "PostgreSQL 클라이언트 도구가 설치되지 않았습니다. psql, pg_isready (optional) 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "DBMS 기본 계정의 초기 비밀번호와 정책을 변경하여 무단 접근을 방지하기 위함",
+    "security_threat": "기본 계정의 초기 비밀번호를 변경하지 않을 경우, 알려진 비밀번호로 시스템에 접근하여 데이터 유출, 변조, 삭제 등의 피해가 발생할 수 있음",
+    "judgment_criteria_good": "DBMS 기본 계정의 비밀번호 및 권한 정책이 변경된 경우",
+    "judgment_criteria_bad": "DBMS 기본 계정의 초기 비밀번호가 그대로 사용되는 경우",
+    "remediation": "기본 계정의 비밀번호 변경 및 보안 정책 강화"
+  },
+  "timestamp": "2026-03-31T21:22:31+09:00",
+  "hostname": "nacsc"
+}

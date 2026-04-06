@@ -33,11 +33,11 @@ ITEM_ID="WEB-19"
 ITEM_NAME="웹서비스SSI사용제한"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="SSI(Server Side Includes) 사용 제한으로 코드 실행 취약점 방지"
-GUIDELINE_THREAT="SSI 활성화 시 원격 코드 실행 취약점 위험"
-GUIDELINE_CRITERIA_GOOD="SSI가 비활성화되거나 제한적으로 사용된 경우"
-GUIDELINE_CRITERIA_BAD="SSI가 활성화된 경우"
-GUIDELINE_REMEDIATION="ssi off; 설정 또는 ssi on; 제거"
+GUIDELINE_PURPOSE="웹서비스내SSI사용을제한하여불법적인데이터접근을차단하여웹서버의보안을강화하기위함"
+GUIDELINE_THREAT="Ÿ 웹서비스내SSI사용을제한하지않을경우,공격자가SSI기능을이용하여시스템명령실행및중요 파일탈취등공격이가능하며,이를통해서버시스템침해,데이터유출등이발생할위험이존재함 Ÿ SSI 공격 시 HTML 페이지에 스크립트를 삽입하거나 원격으로 코드를 실행하여 웹 서비스를 악용할 위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹서비스SSI사용설정이비활성화되어있는경우"
+GUIDELINE_CRITERIA_BAD="웹서비스SSI사용설정이활성화되어있는경우"
+GUIDELINE_REMEDIATION="웹서비스내불필요한SSI사용제한설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

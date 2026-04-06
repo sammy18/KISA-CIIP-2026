@@ -33,11 +33,11 @@ ITEM_ID="WEB-04"
 ITEM_NAME="웹서비스디렉터리리스팅방지설정"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="디렉터리 리스팅 기능 차단으로 디렉터리 내 모든 파일에 대한 접근 및 정보 노출 방지"
-GUIDELINE_THREAT="디렉터리 리스팅 활성화 시 비인가자가 해당 디렉터리 내 모든 파일 리스트 확인 및 접근 가능, 웹 서버 구조 및 중요 파일 노출 위험"
-GUIDELINE_CRITERIA_GOOD="디렉터리 리스팅이 설정되지 않은 경우(listings=false)"
-GUIDELINE_CRITERIA_BAD="디렉터리 리스팅이 설정된 경우(listings=true)"
-GUIDELINE_REMEDIATION="web.xml에 <init-param><param-name>listings</param-name><param-value>false</param-value></init-param> 설정"
+GUIDELINE_PURPOSE="웹서버에대한디렉터리리스팅기능을차단하여디렉터리내의모든파일에대한접근및정보노출을 차단하기위함"
+GUIDELINE_THREAT="디렉터리 리스팅 기능이 차단되지 않은 경우, 비인가자가 해당 디렉터리 내의 모든 파일의 리스트 확인 및 접근이 가능하고, 웹 서버의 구조 및 백업 파일이나 소스 파일 등 공개되면 안 되는 중요 파일들이 노출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="디렉터리리스팅이설정되지않은경우"
+GUIDELINE_CRITERIA_BAD="디렉터리리스팅이설정된경우"
+GUIDELINE_REMEDIATION="디렉터리리스팅기능차단설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

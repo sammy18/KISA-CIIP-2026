@@ -9,11 +9,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DI
 source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"
 
 ITEM_ID="U-25"; ITEM_NAME="world writable 파일 점검"; SEVERITY="(상)"
-GUIDELINE_PURPOSE="world writable 파일을 이용한 시스템 접근 및 악의적인 코드 실행을 방지하기 위함"
-GUIDELINE_THREAT="중요 파일에 world writable이 적용될 경우, 일반 사용자 및 비인가자가 파일을 임의로 수정하여 시스템 변조 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="world writable 파일이 존재하지 않거나, 존재 시 설정 이유를 인지하고 있는 경우"
-GUIDELINE_CRITERIA_BAD="world writable 파일이 존재하나 설정 이유를 인지하지 못하고 있는 경우"
-GUIDELINE_REMEDIATION="불필요한 world writable 파일 제거 또는 권한 변경 (chmod o-w <file>)"
+GUIDELINE_PURPOSE="worldwritable파일을이용한시스템접근및악의적인코드실행을방지하기위함"
+GUIDELINE_THREAT="시스템 파일과 같은 중요 파일에 world writable이 적용될 경우, 일반 사용자 및 비인가자가 해당 파일을임의로수정,제거할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="worldwritable파일이존재하지않거나,존재시설정이유를인지하고있는경우"
+GUIDELINE_CRITERIA_BAD="worldwritable파일이존재하나설정이유를인지하지못하고있는경우"
+GUIDELINE_REMEDIATION="worldwritable파일존재여부를확인하고불필요한경우제거하도록설정"
 
 diagnose() {
     local status="양호"; local diagnosis_result="GOOD"

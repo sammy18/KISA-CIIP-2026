@@ -36,11 +36,11 @@ ITEM_NAME="기본계정의 비밀번호, 정책 등을 변경하여 사용"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="DBMS 기본 계정의 초기 비밀번호와 정책을 변경하여 무단 접근을 방지하기 위함"
-GUIDELINE_THREAT="기본 계정의 초기 비밀번호를 변경하지 않을 경우, 알려진 비밀번호로 시스템에 접근하여 데이터 유출, 변조, 삭제 등의 피해가 발생할 수 있음"
-GUIDELINE_CRITERIA_GOOD="DBMS 기본 계정의 비밀번호 및 권한 정책이 변경된 경우"
-GUIDELINE_CRITERIA_BAD="DBMS 기본 계정의 초기 비밀번호가 그대로 사용되는 경우"
-GUIDELINE_REMEDIATION="기본 계정의 비밀번호 변경 및 보안 정책 강화"
+GUIDELINE_PURPOSE="DBMS기본계정의초기비밀번호및권한정책변경사용유무를점검하여비인가자의초기비밀번호 대입공격을차단하고있는지확인하기위함"
+GUIDELINE_THREAT="DBMS 기본 계정 초기 비밀번호 및 권한 정책을 변경하지 않을 경우 비인가자가 인터넷 통해 DBMS 기본 계정의 초기 비밀번호를 획득하여 초기 비밀번호를 그대로 사용하고 있는 DB에 접근하여 기본 계정에부여된권한의취약점을이용하여DB정보를유출할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="기본계정의초기비밀번호를변경하거나잠금설정한경우"
+GUIDELINE_CRITERIA_BAD="기본계정의초기비밀번호를변경하지않거나잠금설정을하지않은경우"
+GUIDELINE_REMEDIATION="기본(관리자)계정의초기비밀번호및권한정책변경"
 
 # 데이터베이스 연결 정보
 DB_ADMIN_USER="${DB_ADMIN_USER:-postgres}"

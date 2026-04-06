@@ -29,11 +29,11 @@ ITEM_ID="U-60"
 ITEM_NAME="SNMP 서비스 Community String 복잡성 설정"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="추측하기 쉬운 SNMP Community String을 변경하여 비인가자의 정보 수집을 차단하기 위함"
-GUIDELINE_THREAT="public, private 등 기본 문자열을 사용할 경우 외부 공격자가 시스템 정보를 무단으로 획득하거나 설정을 변경할 수 있음"
-GUIDELINE_CRITERIA_GOOD="Community String이 유추하기 어려운 복잡한 문자열로 변경된 경우"
-GUIDELINE_CRITERIA_BAD="public, private 등 기본 Community String을 사용 중인 경우"
-GUIDELINE_REMEDIATION="snmpd.conf에서 community 문자열을 복잡하게 변경"
+GUIDELINE_PURPOSE="SNMP 서비스의 Community String의 복잡성 설정을 통해 비인가자의 비밀번호 추측 공격에 대비하기위함"
+GUIDELINE_THREAT="Community String에 복잡성 설정이 되어 있지 않을 경우, 비인가자가 비밀번호 추측 공격을 통해 계정탈취시환경설정파일열람및수정,각종정보수집,관리자권한획득등다양한위험이존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP Community String 기본값인 'public', 'private'이 아닌 영문자, 숫자 포함 10자리 이상또는영문자,숫자,특수문자포함8자리이상인경우 ※ SNMPv3의경우별도인증기능을사용하고,해당비밀번호가복잡도를만족하는경우양호"
+GUIDELINE_CRITERIA_BAD="아래의내용중하나라도해당되는경우 1. SNMP Community String 기본값인'public', 'private'일경우 2.영문자,숫자포함10자리미만인경우 3.영문자,숫자,특수문자포함8자리미만인경우"
+GUIDELINE_REMEDIATION="Ÿ SNMP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ SNMP 서비스 사용 시 SNMP Community String 기본값인 'public', 'private'이 아닌 영문자, 숫자포함10자리이상또는영문자,숫자,특수문자포함8자리이상으로설정"
 
 diagnose() {
     local status="양호"

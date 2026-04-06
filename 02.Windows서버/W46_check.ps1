@@ -84,11 +84,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'Administrator및System그룹만SAM파일에접근할수있도록제한하여악의적인계정정보유출을차단하기위함'
-$threat = 'SAM파일이노출될경우비밀번호공격시도로인해계정및비밀번호데이터베이스정보가탈취될위험존재'
-$criteria_good = 'SAM파일접근권한에Administrator,System그룹만모든권한으로설정된경우'
-$criteria_bad = 'SAM파일접근권한에Administrator,System그룹외다른그룹에권한이설정된경우'
-$remediation = 'SAM파일권한확인후Administrator,System그룹외다른그룹에설정된권한제거(%systemroot%\system32\config\SAM > 속성 > 보안)'
+$purpose = "Administrator 및 System 그룹만 SAM 파일에 접근할 수 있도록 제한하여 악의적인 계정 정보 유출을차단하기위함"
+$threat = "SAM 파일이 노출될 경우 비밀번호 공격 시도로 인해 계정 및 비밀번호 데이터베이스 정보가 탈취될 위험이존재함"
+$criteria_good = "SAM파일접근권한에Administrator,System그룹만모든권한으로설정된경우"
+$criteria_bad = "SAM파일접근권한에Administrator,System그룹외다른그룹에권한이설정된경우"
+$remediation = "SAM파일권한확인후Administrator,System그룹외다른그룹에설정된권한제거"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

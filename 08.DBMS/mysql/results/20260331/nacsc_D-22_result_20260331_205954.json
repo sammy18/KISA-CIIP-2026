@@ -1,0 +1,20 @@
+{
+  "item_id": "D-22",
+  "item_name": "DBMS symbolic-links 설정 점검",
+  "inspection": {
+    "summary": "MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "symbolic-links 비활성화로 심볼릭 링크 조작 취약점 방지",
+    "security_threat": "symbolic-links 활성화시 데이터베이스 테이블을 통해 시스템 파일 접근 가능",
+    "judgment_criteria_good": "symbolic-links가 비활성화된 경우",
+    "judgment_criteria_bad": "symbolic-links가 활성화된 경우",
+    "remediation": "my.cnf에 symbolic-links=0 설정 후 MySQL 서비스 재시작"
+  },
+  "timestamp": "2026-03-31T20:59:55+09:00",
+  "hostname": "nacsc"
+}

@@ -1,0 +1,20 @@
+{
+  "item_id": "D-06",
+  "item_name": "DB사용자계정을개별적으로부여하여사용",
+  "inspection": {
+    "summary": "PostgreSQL 클라이언트 도구가 설치되지 않았습니다. psql, pg_isready (optional) 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "DB 사용자 계정을 개별적으로 부여하여 공유 계정 사용 방지",
+    "security_threat": "공유 계정 사용 시 개별 식별 불가능하여 감사 추적 어려움",
+    "judgment_criteria_good": "사용자별 개별 계정이 부여된 경우",
+    "judgment_criteria_bad": "여러 사용자가 동일한 계정을 공유하는 경우",
+    "remediation": "사용자별 개별 계정 생성 및 권한 부여: CREATE USER username WITH PASSWORD 'password';"
+  },
+  "timestamp": "2026-03-31T21:22:46+09:00",
+  "hostname": "nacsc"
+}

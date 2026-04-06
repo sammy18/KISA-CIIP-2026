@@ -1,0 +1,30 @@
+============================================================
+[WEB-21] HTTP리디렉션
+============================================================
+[WEB-21-START]
+
+SSL 모듈이 활성화되지 않았습니다.
+
+[현황]
+1) 진단 확인
+command: apache2ctl -M | grep ssl; grep -r 'Redirect.*https' /etc/apache2 /etc/apache2/sites-enabled
+command_result:
+[Apache Configuration Check]
+Apache Config: Not found
+Sites Enabled: Not found
+SSL Module: false
+Redirect Found: false
+
+
+[WEB-21-END]
+
+[WEB-21]Result : VULNERABLE
+
+[참고]
+진단 목적: HTTP 차단 및 HTTPS로 Redirection 활성화를 통해 평문으로 전송되는 데이터를 암호화하여 공격자의데이터스니핑에대비하기위함
+보안 위협: HTTP 통신은 암호화 전송이 아닌 평문 전송을 하므로 공격자가 스니핑을 시도할 경우 관리자의 ID, 비밀번호가노출되어악의적사용자가관리자계정을탈취할수있는위험이존재함
+양호 기준: HTTP 접근시HTTPSRedirection이활성화된경우
+취약 기준: HTTP 접근시HTTPSRedirection이비활성화된경우
+조치 방법: HTTP Redirection활성화설정
+
+============================================================

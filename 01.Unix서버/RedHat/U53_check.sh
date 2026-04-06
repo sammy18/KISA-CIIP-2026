@@ -30,11 +30,11 @@ ITEM_NAME="Apache 상위 디렉토리 접근 제한"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="사용자 홈 디렉토리 서비스 등을 비활성화하여 웹 서버의 상위 디렉토리나 다른 사용자의 파일에 접근하는 것을 차단하기 위함"
-GUIDELINE_THREAT="상위 디렉토리 접근이 제한되지 않을 경우, 공격자가 웹 서비스를 통해 시스템 설정 파일이나 다른 사용자의 개인 정보에 접근할 위험이 있음"
-GUIDELINE_CRITERIA_GOOD="사용자별 홈 디렉토리 서비스(UserDir)가 비활성화되어 있거나 접근이 적절히 제한된 경우"
-GUIDELINE_CRITERIA_BAD="사용자별 홈 디렉토리 서비스(UserDir)가 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="httpd.conf 또는 userdir.conf 파일에서 UserDir disabled 설정 적용"
+GUIDELINE_PURPOSE="FTP서비스접속배너를통한불필요한정보노출을방지하기위함"
+GUIDELINE_THREAT="서비스 접속 배너가 차단되지 않을 경우, 비인가자가 FTP 접속 시도 시 노출되는 접속 배너 정보를 수집하여악의적인공격에이용할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="FTP접속배너에노출되는정보가없는경우"
+GUIDELINE_CRITERIA_BAD="FTP접속배너에노출되는정보가있는경우"
+GUIDELINE_REMEDIATION="Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP서비스사용시FTP설정파일을통해접속배너설정 ※ 접속배너에서비스이름이나버전정보를노출하지않는것을권고"
 
 diagnose() {
     local status="양호"

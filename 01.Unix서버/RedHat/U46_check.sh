@@ -32,11 +32,11 @@ ITEM_NAME="일반 사용자의 메일 서비스 실행 방지"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="일반 사용자가 메일 서비스 큐를 조작하거나 서비스를 중단시키는 행위를 차단하기 위함"
-GUIDELINE_THREAT="일반 사용자가 메일 서비스를 실행할 수 있는 경우, 메일 큐에 접근하여 중요 정보를 탈취하거나 서비스 거부 공격을 유발할 수 있음"
-GUIDELINE_CRITERIA_GOOD="SMTP 설정에서 일반 사용자의 서비스 실행 및 제어 권한이 제한되어 있는 경우(RestrictMailq, RestrictQueueRun 설정)"
-GUIDELINE_CRITERIA_BAD="일반 사용자가 메일 서비스를 임의로 실행하거나 제어할 수 있는 경우"
-GUIDELINE_REMEDIATION="Sendmail 설정 파일(sendmail.cf)에서 PrivacyOptions에 restrictmailq, restrictqrun 설정 추가"
+GUIDELINE_PURPOSE="일반 사용자의 q 옵션을 제한하여 메일 서비스 설정 및메일큐를강제적으로drop시킬수없게하여 비인가자에의한SMTP서비스오류방지하기위함"
+GUIDELINE_THREAT="일반사용자가q옵션을이용해서메일큐,메일서비스설정을보거나메일큐를강제적으로drop시킬 수있어악의적으로SMTP서버의오류를발생시킬위험이존재함"
+GUIDELINE_CRITERIA_GOOD="일반사용자의메일서비스실행방지가설정된경우"
+GUIDELINE_CRITERIA_BAD="일반사용자의메일서비스실행방지가설정되어있지않은경우"
+GUIDELINE_REMEDIATION="Ÿ 메일서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 메일서비스사용시메일서비스의q옵션제한설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지

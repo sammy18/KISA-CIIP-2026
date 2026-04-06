@@ -61,11 +61,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '시스템 복구 시 자동 로그온을 금지하여 무단 접근 방지'
-$threat = '복구 콘솔 자동 로그온이 허용될 경우, 물리적 접근이 가능한 공격자가 권한 상승 가능'
-$criteria_good = 'DisableAutomaticRebootLogon = 1'
-$criteria_bad = '0 또는 값 없음'
-$remediation = '레지스트리 편집기 또는 reg add 명령으로 HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\DisableAutomaticRebootLogon = 1 (DWORD) 설정'
+$purpose = '복구콘솔자동로그온허용을''사용안함''으로설정함으로써비인가자의복구콘솔을통한관리자권한 탈취등의위험을방지하기위함'
+$threat = 'Windows 복구 콘솔(Recovery Console) 자동로그온설정은시스템액세스허가전Administrator 계정의 비밀번호 제공 여부를 결정하는 것으로 이 옵션을 사용하면 비인가자도 복구 콘솔을 이용해 관리자권한으로시스템에자동으로로그온할수있는위험이존재함'
+$criteria_good = '복구콘솔자동로그온허용이''사용안함''으로설정된경우'
+$criteria_bad = '복구콘솔자동로그온허용이''사용''으로설정된경우'
+$remediation = '복구콘솔자동로그온허용''사용안함''으로설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

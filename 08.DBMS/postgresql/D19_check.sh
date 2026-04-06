@@ -32,11 +32,11 @@ ITEM_ID="D-19"
 ITEM_NAME="DBMS INSERT 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="INSERT 권한을 제어하여 데이터 무단 삽입 방지"
-GUIDELINE_THREAT="INSERT 권한 과도 부여 시 스토리지 낭비 및 데이터 무결성 훼손 위험"
-GUIDELINE_CRITERIA_GOOD="INSERT 권한이 적절하게 제한된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 INSERT 권한 부여"
-GUIDELINE_REMEDIATION="불필요한 INSERT 권한 취소 및 필요 사용자에게만 부여 권장"
+GUIDELINE_PURPOSE="OS_ROLES, REMOTE_OS_AUTHENTICATION, REMOTE_OS_ROLES의 설정을 점검하여 비인가자들의 데이터베이스 접근을 막고 데이터베이스 관리자에 의한 사용자 Role 설정이 가능하게 하기위함"
+GUIDELINE_THREAT="Ÿ OS_ROLES가 TRUE로 설정된 경우, 데이터베이스 접근 제어로 컨트롤되지 않는 OS 그룹에 의해 GRANT된권한이허락되어악의적인사용자가시스템권한을악용할위험이존재 Ÿ REMOTE_OS_ROLES가 TRUE로 설정된 경우, 원격 사용자가 OS의 다른 사용자로 속여 데이터베이스에접근할수있으므로중요정보에대한무단접근및권한상승의위험이존재함 Ÿ REMOTE_OS_AUTHENT가 TRUE로 설정된 경우, 신뢰하는 원격 호스트에서 인증 절차 없이 데이터베이스에접속할수있으므로중요정보의유출위험이존재함"
+GUIDELINE_CRITERIA_GOOD="OS_ROLES, REMOTE_OS_AUTHENTICATION, REMOTE_OS_ROLES 설정이FALSE로 설정된경우"
+GUIDELINE_CRITERIA_BAD="OS_ROLES, REMOTE_OS_AUTHENTICATION, REMOTE_OS_ROLES 설정이 TRUE로 설정되지않은경우"
+GUIDELINE_REMEDIATION="OS_ROLES, REMOTE_OS_AUTHENTICATION, REMOTE_OS_ROLES설정을FALSE로변경"
 
 # PostgreSQL 연결 정보 초기화
 DB_ADMIN_USER="${DB_ADMIN_USER:-postgres}"

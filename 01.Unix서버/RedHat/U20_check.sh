@@ -32,11 +32,11 @@ ITEM_NAME="/etc/shadow 파일 소유자 및 권한 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 49페이지 내용 반영)
-GUIDELINE_PURPOSE="/etc/shadow 파일의 암호화된 비밀번호 정보를 보호하여 비인가자가 비밀번호 해시값을 획득하는 것을 방지하기 위함"
-GUIDELINE_THREAT="/etc/shadow 파일의 권한 설정이 부적절할 경우, 비인가자가 비밀번호 해시값을 획득하여 오프라인 사전 공격 등을 통해 비밀번호를 복호화할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/shadow 파일의 소유자가 root이고, 권한이 400 이하인 경우"
-GUIDELINE_CRITERIA_BAD="/etc/shadow 파일의 소유자가 root가 아니거나, 권한이 400 이하가 아닌 경우"
-GUIDELINE_REMEDIATION="/etc/shadow 파일의 소유자를 root로 변경하고, 권한을 400으로 설정"
+GUIDELINE_PURPOSE="/etc/(x)inetd.conf파일을관리자만제어하여비인가자들의임의적인파일변조를방지하기위함"
+GUIDELINE_THREAT="/etc/(x)inetd.conf 파일에 소유자 외 쓰기 권한이 부여된 경우, 일반 사용자 권한으로 해당 파일에 등록된서비스를변조하거나악의적인프로그램(서비스)을등록할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/(x)inetd.conf파일의소유자가root이고,권한이600이하인경우"
+GUIDELINE_CRITERIA_BAD="/etc/(x)inetd.conf파일의소유자가root가아니거나,권한이600이하가아닌경우"
+GUIDELINE_REMEDIATION="/etc/(x)inetd.conf파일소유자및권한변경설정"
 
 diagnose() {
     # 파싱 안정성을 위한 초기값 설정

@@ -33,11 +33,11 @@ ITEM_ID="WEB-21"
 ITEM_NAME="HTTP리디렉션"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="HTTP에서 HTTPS로 자동 리디렉션으로 암호화 통신 유도"
-GUIDELINE_THREAT="HTTP 접속 허용 시 평문 통신으로 중간자 공격 및 데이터 도청 위험"
-GUIDELINE_CRITERIA_GOOD="HTTP 접속 시 HTTPS로 리디렉션되는 경우"
-GUIDELINE_CRITERIA_BAD="HTTP 접속이 그대로 허용되는 경우"
-GUIDELINE_REMEDIATION="web.xml에 security-constraint 설정으로 HTTP 요청 HTTPS로 리디렉션"
+GUIDELINE_PURPOSE="HTTP 차단 및 HTTPS로 Redirection 활성화를 통해 평문으로 전송되는 데이터를 암호화하여 공격자의데이터스니핑에대비하기위함"
+GUIDELINE_THREAT="HTTP 통신은 암호화 전송이 아닌 평문 전송을 하므로 공격자가 스니핑을 시도할 경우 관리자의 ID, 비밀번호가노출되어악의적사용자가관리자계정을탈취할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="HTTP 접근시HTTPSRedirection이활성화된경우"
+GUIDELINE_CRITERIA_BAD="HTTP 접근시HTTPSRedirection이비활성화된경우"
+GUIDELINE_REMEDIATION="HTTP Redirection활성화설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -72,11 +72,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '이동식미디어의NTFS포맷및꺼내기가허용되는사용자를관리권한자로제한함으로써관리권한이없는사용자및비인가자에의한불법적인이동식미디어의포맷및이동을차단하기위함'
-$threat = '관리자이외사용자에게해당정책이설정된경우비인가자에의한불법적인매체처리를허용할위험존재'
-$criteria_good = '''이동식미디어포맷및꺼내기허용''정책이''Administrators''로되어있는경우'
-$criteria_bad = '''이동식미디어포맷및꺼내기허용''정책이''Administrators''로되어있지않은경우'
-$remediation = '''이동식NTFS미디어꺼내기허용''정책을''Administrators''로설정(로컬보안정책>로컬정책>보안옵션)'
+$purpose = "이동식미디어의NTFS포맷및꺼내기가허용되는사용자를관리권한자로제한함으로써관리권한이 없는사용자및비인가자에의한불법적인이동식미디어의포맷및이동을차단하기위함"
+$threat = "관리자이외사용자에게해당정책이설정된경우비인가자에의한불법적인매체처리를허용할위험이 존재함"
+$criteria_good = "'이동식미디어포맷및꺼내기허용'정책이'Administrators'로되어있는경우"
+$criteria_bad = "'이동식미디어포맷및꺼내기허용'정책이'Administrators'로되어있지않은경우"
+$remediation = "'이동식NTFS 미디어꺼내기허용'정책을'Administrators'로설정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

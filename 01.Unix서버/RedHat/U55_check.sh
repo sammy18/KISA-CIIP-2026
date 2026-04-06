@@ -30,11 +30,11 @@ ITEM_NAME="Apache 링크 사용 금지"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="심볼릭 링크 기능을 제한하여 웹 루트 디렉토리 외부의 파일이 웹 서비스에 노출되는 것을 방지하기 위함"
-GUIDELINE_THREAT="심볼릭 링크가 허용될 경우, 공격자가 시스템 주요 파일에 대한 링크를 생성하여 웹을 통해 기밀 정보를 획득할 위험이 있음"
-GUIDELINE_CRITERIA_GOOD="Options 설정에서 FollowSymLinks 옵션을 제거하거나 제한한 경우"
-GUIDELINE_CRITERIA_BAD="Options 설정에서 FollowSymLinks 옵션이 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="httpd.conf 파일의 <Directory> 섹션에서 Options -FollowSymLinks 설정"
+GUIDELINE_PURPOSE="FTP계정의쉘을통한시스템접근을차단하기위함"
+GUIDELINE_THREAT="FTP기본계정에쉘이부여될경우,비인가자가해당기본계정으로시스템에접근할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="FTP 계정에/bin/false(/sbin/nologin)쉘이부여된경우"
+GUIDELINE_CRITERIA_BAD="FTP 계정에/bin/false(/sbin/nologin)쉘이부여되어있지않은경우"
+GUIDELINE_REMEDIATION="Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP 서비스사용시FTP계정에/bin/false쉘부여설정"
 
 diagnose() {
     local status="양호"

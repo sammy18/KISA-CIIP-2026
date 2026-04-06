@@ -1,0 +1,20 @@
+{
+  "item_id": "U-12",
+  "item_name": "세션 종료시간 설정",
+  "inspection": {
+    "summary": "세션 종료시간이 설정되지 않음 (보안 위험)현재 세션 TMOUT: 未설定/etc/profile: TMOUT 설정 없음",
+    "status": "취약"
+  },
+  "final_result": "VULNERABLE",
+  "command": "echo $TMOUT && grep -h TMOUT /etc/profile /etc/bash.bashrc",
+  "command_result": "현재 세션 TMOUT: 未설定\\n/etc/profile: TMOUT 설정 없음",
+  "guideline": {
+    "purpose": "사용자의고의또는실수로시스템에계정이접속된상태로방치됨을차단하기위함",
+    "security_threat": "Sessiontimeout값이설정되지않을경우,유휴시간내비인가자가시스템에접근하여불필요한내부 정보를노출할위험이존재함",
+    "judgment_criteria_good": "Session Timeout이600초(10분)이하로설정된경우",
+    "judgment_criteria_bad": "Session Timeout이600초(10분)이하로설정되지않은경우",
+    "remediation": "600초(10분)동안입력이없는경우접속된Session을끊도록설정"
+  },
+  "timestamp": "2026-03-31T21:03:26+09:00",
+  "hostname": "nacsc"
+}

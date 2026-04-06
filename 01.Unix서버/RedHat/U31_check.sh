@@ -29,11 +29,11 @@ ITEM_ID="U-31"
 ITEM_NAME="홈 디렉토리 소유자 및 권한 설정"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="사용자 홈 디렉터리를 보호하여 타 사용자에 의한 무단 접근 및 정보 유출을 차단하기 위함"
-GUIDELINE_THREAT="홈 디렉터리 권한이 과도하게 개방된 경우 사용자 비밀정보 노출 및 악의적인 파일 변조 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="홈 디렉터리 소유자가 해당 계정이고, 타인 쓰기 권한이 없는 경우"
-GUIDELINE_CRITERIA_BAD="홈 디렉터리 소유자가 해당 계정이 아니거나, 타인 쓰기 권한이 부여된 경우"
-GUIDELINE_REMEDIATION="홈 디렉터리 소유자를 해당 계정으로 변경하고 타인 쓰기 권한 제거"
+GUIDELINE_PURPOSE="사용자홈디렉토리내설정파일이비인가자에의한변조를방지하기위함"
+GUIDELINE_THREAT="홈디렉토리내설정파일변조시정상적인서비스이용이제한될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="홈디렉토리소유자가해당계정이고,타사용자쓰기권한이제거된경우"
+GUIDELINE_CRITERIA_BAD="홈디렉토리소유자가해당계정이아니거나,타사용자쓰기권한이부여된경우"
+GUIDELINE_REMEDIATION="사용자별홈디렉토리소유주를해당계정으로변경하고,타사용자의쓰기권한제거하도록설정 (/etc/passwd파일에서홈디렉토리확인,사용자홈디렉토리외개별적으로만들어사용하는사용자 디렉토리존재여부확인하여점검)"
 
 diagnose() {
     # 전역 변수로 설정하여 main에서 참조 가능하게 함

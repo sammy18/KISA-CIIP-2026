@@ -72,11 +72,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '불필요한 IIS 서비스 구동 여부 점검으로 웹 서비스 취약점 방지'
-$threat = '불필요한 IIS 서비스 구동 시 웹 서비스 관련 취약점 노출 및 리소스 낭비 위험 존재'
-$criteria_good = 'IIS 서비스가 설치되지 않았거나 비활성화된 경우'
-$criteria_bad = 'IIS 서비스가 활성화된 경우'
-$remediation = 'IIS 관리자 > IIS 서비스 중지 또는 제거'
+$purpose = "불필요한 IIS 서비스가 구동 상태인지를 점검하여 제거하고, 해당 서비스가 취약점이 제거되지 않은 상태로외부위협에노출되지않도록하기위함"
+$threat = "IIS 서비스의 WEB, FTP 등 기능이 보편적으로 사용되나, 프로파일링, 서비스 거부, 불법적인 접근, 임의의코드실행,정보공개,바이러스,웜,트로이목마등의공격위험이존재함"
+$criteria_good = "IIS서비스를사용하지않는경우또는필요에의해IIS서비스를사용하는경우"
+$criteria_bad = "IIS서비스를불필요하게사용하는경우"
+$remediation = "IIS서비스가불필요한경우IIS서비스중지"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

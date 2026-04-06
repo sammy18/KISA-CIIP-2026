@@ -20,11 +20,11 @@ source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${
 
 ITEM_ID="U-44"; ITEM_NAME="tftp, talk 서비스 비활성화"; SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="인증 기능이 없거나 보안에 취약한 tftp, talk 서비스 비활성화를 통해 보안을 강화하기 위함"
-GUIDELINE_THREAT="tftp는 별도의 인증 절차 없이 파일 전송이 가능하여 중요 파일 유출 위험이 크며, talk는 서비스 거부 공격 등에 악용될 수 있음"
-GUIDELINE_CRITERIA_GOOD="tftp, talk 서비스가 비활성화되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="tftp, talk 서비스 중 하나라도 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="tftp/talk 서비스 비활성화"
+GUIDELINE_PURPOSE="안전하지않거나불필요한서비스를제거함으로써시스템보안성및리소스의효율적운용하기위함"
+GUIDELINE_THREAT="사용하지않는서비스나취약점이발표된서비스운용시공격시도가능한위험이존재함"
+GUIDELINE_CRITERIA_GOOD="tftp, talk, ntalk서비스가비활성화된경우"
+GUIDELINE_CRITERIA_BAD="tftp, talk, ntalk서비스가활성화된경우"
+GUIDELINE_REMEDIATION="불필요한tftp, talk, ntalk서비스비활성화설정"
 
 diagnose() {
     local status="양호"; local diagnosis_result="GOOD"

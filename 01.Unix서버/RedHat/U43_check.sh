@@ -30,11 +30,11 @@ ITEM_NAME="NIS, NIS+ 점검"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 내용 반영)
-GUIDELINE_PURPOSE="보안상 취약한 NIS 서비스 비활성화를 통해 네트워크 정보 유출을 차단하기 위함"
-GUIDELINE_THREAT="NIS는 전송 데이터를 암호화하지 않아 스니핑을 통한 계정 정보 및 시스템 데이터 가로채기가 가능함"
-GUIDELINE_CRITERIA_GOOD="NIS 관련 서비스(ypserv, ypbind 등)가 중지되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="NIS 관련 서비스가 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="NIS 서비스 중지"
+GUIDELINE_PURPOSE="안전하지 않은 NIS 서비스를 비활성화하고 안전한 NIS+ 서비스를 활성화하여 시스템의 보안성을 높이기위함"
+GUIDELINE_THREAT="NIS서비스가활성화된경우,비인가자가타시스템의root권한까지탈취할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="NIS서비스가비활성화되어있거나,불가피하게사용시NIS+서비스를사용하는경우"
+GUIDELINE_CRITERIA_BAD="NIS서비스가활성화된경우"
+GUIDELINE_REMEDIATION="NIS관련서비스비활성화설정"
 
 diagnose() {
     local status="양호"

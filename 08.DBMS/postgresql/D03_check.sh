@@ -32,11 +32,11 @@ ITEM_ID="D-03"
 ITEM_NAME="비밀번호 사용기간 및 복잡도를 기관의 정책에 맞도록 설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="비밀번호 사용기간 및 복잡도 설정 유무를 점검하여 비인가자의 비밀번호 추측 공격(무차별 대입 공격, 사전 대입 공격 등)에 대한 대비가 되어 있는지 확인하기 위함"
-GUIDELINE_THREAT="약한 비밀번호 정책 시 쉽게 유추 가능한 비밀번호 사용으로 인한 무단 접근 위험"
-GUIDELINE_CRITERIA_GOOD="비밀번호 정책이 적절히 설정된 경우"
-GUIDELINE_CRITERIA_BAD="비밀번호 정책이 설정되지 않은 경우"
-GUIDELINE_REMEDIATION="passwordcheck 확장 모듈 설치: CREATE EXTENSION passwordcheck; (shared_preload_libraries에 passwordcheck 추가 필요)"
+GUIDELINE_PURPOSE="비밀번호사용기간및복잡도설정유무를점검하여비인가자의비밀번호추측공격(무차별대입공격, 사전대입공격등)에대한대비가되어있는지확인하기위함"
+GUIDELINE_THREAT="비밀번호 사용 기간 및 복잡도 설정이 되어있지 않으면 비인가자가 비밀번호 추측 공격을 통해 획득한 계정의비밀번호를이용하여DB에접근할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="기관정책에맞게비밀번호사용기간및복잡도설정이적용된경우"
+GUIDELINE_CRITERIA_BAD="기관정책에맞게비밀번호사용기간및복잡도설정이적용되지않은경우"
+GUIDELINE_REMEDIATION="기관정책에맞게비밀번호사용기간및복잡도정책설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

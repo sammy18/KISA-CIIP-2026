@@ -1,0 +1,25 @@
+============================================================
+[WEB-18] 웹서비스WebDAV비활성화
+============================================================
+[WEB-18-START]
+
+WebDAV가 비활성화되어 있습니다. (보안 권고사항 준수)
+
+[현황]
+1) 진단 확인
+command: grep -E '^\s*dav_methods' /etc/nginx/nginx.conf /etc/nginx/conf.d/*.conf 2>/dev/null | grep -v '^\s*#' | head -3
+command_result:
+No WebDAV found
+
+[WEB-18-END]
+
+[WEB-18]Result : GOOD
+
+[참고]
+진단 목적: WebDAV 비활성화로 불필요한 HTTP 확장 메서드 차단
+보안 위협: WebDAV 활성화 시 파일 수정/업로드 등 악의적 조작 위험
+양호 기준: WebDAV가 비활성화된 경우
+취약 기준: WebDAV가 활성화된 경우
+조치 방법: dav_methods 지시어 제거 또는 주석 처리
+
+============================================================

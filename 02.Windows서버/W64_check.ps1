@@ -101,11 +101,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '시스템의방화벽기능이활성화되어있는지점검하여시스템에서외부망의비인가접근및외부망으로통신을시도하는프로그램에대해통제하고있는지확인하기위함'
-$threat = '방화벽기능이비활성화되어있으면,외부및내부의접근통제가되지않아유해정보가유입되거나시스템사용자의파일이나폴더가외부로유출될위험존재'
-$criteria_good = 'Windows방화벽''사용''으로설정된경우'
-$criteria_bad = 'Windows방화벽''사용안함''으로설정된경우'
-$remediation = 'Windows방화벽''사용''으로설정(제어판>WindowsDefender방화벽>Windows방화벽설정또는해제,또는firewall.cpl실행)'
+$purpose = "방화벽기능활성화여부를점검하여시스템에서외부망의비인가접근및외부망으로통신을시도하는 프로그램에대해통제하고있는지확인하기위함"
+$threat = "방화벽 기능이 비활성화되어 있으면, 외부 및 내부의 접근통제가 되지 않아 유해 정보가 유입되거나 시스템사용자의파일이나폴더가외부로유출될위험이존재함"
+$criteria_good = "Windows방화벽'사용'으로설정된경우"
+$criteria_bad = "Windows방화벽'사용안함'으로설정된경우"
+$remediation = "Windows방화벽'사용'으로설정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

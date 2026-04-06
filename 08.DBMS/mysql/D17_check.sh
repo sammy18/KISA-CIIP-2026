@@ -32,11 +32,11 @@ ITEM_ID="D-17"
 ITEM_NAME="DBMS UPDATE 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="UPDATE 권한을 제어하여 데이터 무단 수정 방지"
-GUIDELINE_THREAT="UPDATE 권한 과도 부여 시 데이터 무결성 훼손 위험"
-GUIDELINE_CRITERIA_GOOD="UPDATE 권한이 적절하게 제한된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 UPDATE 권한 부여"
-GUIDELINE_REMEDIATION="불필요한 UPDATE 권한 취소 및 필요 사용자에게만 부여 권장"
+GUIDELINE_PURPOSE="Audit Table 접근 권한을 관리자 계정으로 제한함으로써 비인가자가 감사 데이터의 수정, 삭제하는 것을방지하고,감사기록의무결성과신뢰성을보장하기위함"
+GUIDELINE_THREAT="Audit Table이 데이터베이스 관리자 계정에 속하지 않을 경우, 비인가자가 감사 데이터의 수정, 삭제 등을수행할수있으므로보안사고발생시원인분석이불가능하게되며,이로인해재발방지를위한 조치를할수없으므로동일유형의공격이반복되거나시스템취약점의악용이반복될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="AuditTable접근권한이관리자계정으로설정한경우"
+GUIDELINE_CRITERIA_BAD="AuditTable접근권한이일반계정으로설정한경우"
+GUIDELINE_REMEDIATION="AuditTable접근권한을관리자계정으로제한"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

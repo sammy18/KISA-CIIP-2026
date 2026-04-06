@@ -32,11 +32,11 @@ ITEM_ID="D-23"
 ITEM_NAME="DBMS 네트워크 리스너 암호화"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="DBMS 연결 시 SSL/TLS 암호화로 데이터 유출 방지"
-GUIDELINE_THREAT="암호화 미사용 시 네트워크 스니핑으로 데이터 유출 위험"
-GUIDELINE_CRITERIA_GOOD="SSL/TLS 활성화된 경우"
-GUIDELINE_CRITERIA_BAD="암호화 미사용"
-GUIDELINE_REMEDIATION="SSL 설정: my.cnf에 require-secure-transport=ON 및 SSL 인증서 설정"
+GUIDELINE_PURPOSE="불필요하게활성화되어있는xp_cmdshell를제한하여공격자의무단접근및악성코드의실행위험을 감소시키기위함"
+GUIDELINE_THREAT="해킹툴에서자주이용되고있으며,권한상승이나데이터유출등의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="xp_cmdshell이비활성화되어있거나,활성화되어있으면다음의조건을모두만족하는경우 1. public의실행(Execute)권한이부여되어있지않은경우 2.서비스계정(애플리케이션연동)에sysadmin권한이부여되어있지않은경우"
+GUIDELINE_CRITERIA_BAD="xp_cmdshell이활성화되어있고,양호의조건을만족하지않는경우"
+GUIDELINE_REMEDIATION="xp_cmdshell 설정값을0또는False로설정"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

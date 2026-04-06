@@ -32,11 +32,11 @@ ITEM_ID="D-22"
 ITEM_NAME="DBMS 데이터 디렉터리 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="데이터 디렉터리 접근 권한 제한으로 무단 접근 방지"
-GUIDELINE_THREAT="데이터 디렉터리 권한 미흡 시 데이터 파일 무단 접근 가능"
-GUIDELINE_CRITERIA_GOOD="데이터 디렉터리 권한이 적절히 설정된 경우"
-GUIDELINE_CRITERIA_BAD="권한이 열려 있는 경우"
-GUIDELINE_REMEDIATION="chmod 700 /var/lib/postgresql/[version]/main && chown postgres:postgres /var/lib/postgresql/[version]/main"
+GUIDELINE_PURPOSE="RESOURCE_LIMIT값을TRUE로설정하여자원의과도한사용을방지하여데이터베이스의안정성을 보장하고,효율적인자원관리를수행하기위함"
+GUIDELINE_THREAT="자원제한기능을TRUE로설정하지않을경우,특정사용자가과도하게많은자원을소비할수있으며 이로인해시스템에과부하가발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="RESOURCE_LIMIT설정이TRUE로되어있는경우"
+GUIDELINE_CRITERIA_BAD="RESOURCE_LIMIT설정이FALSE로되어있는경우"
+GUIDELINE_REMEDIATION="RESOURCE_LIMIT설정을TRUE로설정변경"
 
 # PostgreSQL 연결 정보 초기화
 DB_ADMIN_USER="${DB_ADMIN_USER:-postgres}"

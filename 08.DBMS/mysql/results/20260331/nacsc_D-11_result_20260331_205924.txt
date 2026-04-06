@@ -1,0 +1,25 @@
+============================================================
+[D-11] DBMS GRANT 권한 점검
+============================================================
+[D-11-START]
+
+MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.
+
+[현황]
+1) 진단 확인
+command: command -v [required_tool]
+command_result:
+Required tools not found
+
+[D-11-END]
+
+[D-11]Result : MANUAL
+
+[참고]
+진단 목적: GRANT 권한을 제어하여 무단 권한 부여 방지
+보안 위협: GRANT 권한 과도 부여 시 사용자가 스스로 권한 부여 가능하여 보안 위험
+양호 기준: GRANT 권한이 제한된 경우
+취약 기준: 불필요한 GRANT 권한 부여
+조치 방법: 불필요한 GRANT 권한 취소: REVOKE GRANT OPTION ON *.* FROM 'user'@'host';
+
+============================================================

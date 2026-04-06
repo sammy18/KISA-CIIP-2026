@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-11",
+  "item_name": "웹서비스경로설정",
+  "inspection": {
+    "summary": "별도의 웹서비스 경로를 사용합니다. 기본 경로와 분리되어 있습니다.",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "grep -E '^\\s*root\\s+' /etc/nginx/nginx.conf /etc/nginx/conf.d/*.conf 2>/dev/null | grep -v '^\\s*#' | head -10",
+  "command_result": "No root directives found",
+  "guideline": {
+    "purpose": "웹서버에 설정한 DocumentRoot 경로가 기본 경로와 분리되었는지 여부 점검",
+    "security_threat": "웹 서비스 경로를 기타 업무와 영역이 분리되지 않은 경로로 설정하거나, 불필요한 경로가 존재할 경우 외부에서 시스템 중요파일이나 기능에 비인가 접근이 발생할 위험이 존재함",
+    "judgment_criteria_good": "웹서버 경로를 기타 업무와 영역이 분리된 경로로 설정 및 불필요한 경로가 존재하지 않는 경우",
+    "judgment_criteria_bad": "기본 경로를 사용하는 경우",
+    "remediation": "별도의 웹서비스 전용 디렉터리 사용 (예: /data/www, /srv/webapp), 기본 경로(/usr/share/nginx/html) 변경 권장"
+  },
+  "timestamp": "2026-03-31T21:07:42+09:00",
+  "hostname": "nacsc"
+}

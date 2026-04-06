@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-15",
+  "item_name": "웹서비스의불필요한스크립트매핑제거",
+  "inspection": {
+    "summary": "Apache 설정 파일을 찾을 수 없습니다. httpd.conf 또는 apache2.conf 파일에서 스크립트 매핑 설정을 수동으로 확인하세요.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "ls -la /etc/apache2/apache2.conf /etc/httpd/conf/httpd.conf /usr/local/apache2/conf/httpd.conf",
+  "command_result": "Apache configuration file not found",
+  "guideline": {
+    "purpose": "불필요한 스크립트 매핑(CGI, PHP 등)을 제거하여 악의적인 파일 업로드 및 실행을 방지하기 위함",
+    "security_threat": "불필요한 스크립트 핸들러가 매핑된 경우, 공격자가 취약점을 악용하여 악의적인 스크립트를 업로드하고 실행시켜 시스템을 장악할 수 있는 위험이 존재함",
+    "judgment_criteria_good": "불필요한 스크립트 매핑이 제거된 경우",
+    "judgment_criteria_bad": "불필요한 스크립트 매핑이 존재하는 경우",
+    "remediation": "httpd.conf 또는 apache2.conf에서 AddHandler, AddType, ScriptAlias, Action 지시어를 확인하고 불필요한 매핑 제거"
+  },
+  "timestamp": "2026-03-31T21:00:50+09:00",
+  "hostname": "nacsc"
+}

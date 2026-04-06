@@ -33,11 +33,11 @@ ITEM_ID="WEB-08"
 ITEM_NAME="웹서비스접속통제"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="maxConnections로 동시 연결 수 제한으로 DoS 공격 방지"
-GUIDELINE_THREAT="접속 통제 미설정 시 DoS/DDoS 공격에 취약"
-GUIDELINE_CRITERIA_GOOD="동시 연결 제한이 설정된 경우"
-GUIDELINE_CRITERIA_BAD="동시 연결 제한이 설정되지 않은 경우"
-GUIDELINE_REMEDIATION="server.xml Connector에 maxThreads 및 acceptCount 설정"
+GUIDELINE_PURPOSE="기반시설 시스템은 원칙적으로 파일 업로드 및 다운로드를 금지하지만 불가피하게 파일의 업로드 및 다운로드 기능이 필요한 경우, 파일의 용량 제한을 설정하여 불필요한 업로드 및 다운로드를 방지해 서버의과부하를예방하고,웹서버자원을효율적으로관리하기위함"
+GUIDELINE_THREAT="웹 서비스의 파일 업로드 및 다운로드의 용량을 제한하지 않은 경우, 악의적인 목적을 가진 사용자가 반복업로드및웹쉘공격등으로시스템권한을탈취하거나대용량파일의업로드및다운로드로서버 자원을고갈시켜서비스장애를발생시킬위험이존재함"
+GUIDELINE_CRITERIA_GOOD="파일업로드및다운로드용량을제한한경우"
+GUIDELINE_CRITERIA_BAD="파일업로드및다운로드용량을제한하지않은경우"
+GUIDELINE_REMEDIATION="파일업로드및다운로드용량을허용가능한최소범위로제한하여설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

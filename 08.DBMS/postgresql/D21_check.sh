@@ -32,11 +32,11 @@ ITEM_ID="D-21"
 ITEM_NAME="DBMS COPY 파일 접근 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="COPY 명령을 통한 파일 접근 제한으로 데이터 유출 방지"
-GUIDELINE_THREAT="COPY 권한 과도 부여 시 데이터베이스를 통해 서버 파일 시스템 접근 가능"
-GUIDELINE_CRITERIA_GOOD="COPY 권한이 superuser로 제한된 경우"
-GUIDELINE_CRITERIA_BAD="일반 사용자에게 COPY 권한 부여"
-GUIDELINE_REMEDIATION="REVOKE pg_read_server_files, pg_write_server_files FROM user;"
+GUIDELINE_PURPOSE="GRANTOPTION을ROLE에의해설정하여권한의남용을방지하고,안정성을확보하기위함"
+GUIDELINE_THREAT="일반 사용자에게 GRANT OPTION이 부여된 경우, 일반 사용자가 Object 소유자인 것과 같이 다른 일반사용자에게권한을부여할수있어권한의무분별한확산으로인한중요정보의유출등의위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="WITH_GRANT_OPTION이ROLE에의하여설정된경우"
+GUIDELINE_CRITERIA_BAD="WITH_GRANT_OPTION이ROLE에의하여설정되지않은경우"
+GUIDELINE_REMEDIATION="WITH_GRANT_OPTION이ROLE에의하여설정되도록변경"
 
 # PostgreSQL 연결 정보 초기화
 DB_ADMIN_USER="${DB_ADMIN_USER:-postgres}"

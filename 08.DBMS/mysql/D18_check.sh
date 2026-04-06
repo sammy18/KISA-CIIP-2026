@@ -32,11 +32,11 @@ ITEM_ID="D-18"
 ITEM_NAME="DBMS DELETE 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="DELETE 권한을 제어하여 데이터 무단 삭제 방지"
-GUIDELINE_THREAT="DELETE 권한 과도 부여 시 데이터 삭제로 서비스 중단 위험"
-GUIDELINE_CRITERIA_GOOD="DELETE 권한이 적절하게 제한된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 DELETE 권한 부여"
-GUIDELINE_REMEDIATION="불필요한 DELETE 권한 취소 및 필요 사용자에게만 부여 권장"
+GUIDELINE_PURPOSE="응용 프로그램 또는 DBA 계정의 Role을 점검하여 일반 계정으로 응용 프로그램 테이블이나 DBA 테이블의접근을차단하기위함"
+GUIDELINE_THREAT="응용 프로그램 또는 DBA 계정의 Role이 Public으로 설정된 경우 일반 계정에서도 응용 프로그램 테이블및DBA테이블로접근할수있으므로중요정보유출의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DBA계정의Role이Public으로설정되지않은경우"
+GUIDELINE_CRITERIA_BAD="DBA 계정의Role이Public으로설정된경우"
+GUIDELINE_REMEDIATION="DBA계정의Role설정에서Public그룹권한취소"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

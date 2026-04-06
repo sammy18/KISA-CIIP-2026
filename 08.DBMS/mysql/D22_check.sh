@@ -32,11 +32,11 @@ ITEM_ID="D-22"
 ITEM_NAME="DBMS symbolic-links 설정 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="symbolic-links 비활성화로 심볼릭 링크 조작 취약점 방지"
-GUIDELINE_THREAT="symbolic-links 활성화시 데이터베이스 테이블을 통해 시스템 파일 접근 가능"
-GUIDELINE_CRITERIA_GOOD="symbolic-links가 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD="symbolic-links가 활성화된 경우"
-GUIDELINE_REMEDIATION="my.cnf에 symbolic-links=0 설정 후 MySQL 서비스 재시작"
+GUIDELINE_PURPOSE="RESOURCE_LIMIT값을TRUE로설정하여자원의과도한사용을방지하여데이터베이스의안정성을 보장하고,효율적인자원관리를수행하기위함"
+GUIDELINE_THREAT="자원제한기능을TRUE로설정하지않을경우,특정사용자가과도하게많은자원을소비할수있으며 이로인해시스템에과부하가발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="RESOURCE_LIMIT설정이TRUE로되어있는경우"
+GUIDELINE_CRITERIA_BAD="RESOURCE_LIMIT설정이FALSE로되어있는경우"
+GUIDELINE_REMEDIATION="RESOURCE_LIMIT설정을TRUE로설정변경"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

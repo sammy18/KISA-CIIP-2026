@@ -33,11 +33,11 @@ ITEM_ID="WEB-06"
 ITEM_NAME="웹서비스상위디렉터리접근제한설정"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="'..'와 같은 문자 사용 등을 통한 상위 디렉터리 접근 제한 여부 점검"
-GUIDELINE_THREAT="상위 디렉터리로 이동하는 것이 가능할 경우 접근하고자 하는 디렉터리의 하위 경로에서 상위로 이동하며 정보탐색이 가능하여 중요정보가 노출될 위험이 존재함. 악의적인 목적을 가진 사용자가 중요 파일 및 디렉터리의 접근이 가능하여 데이터가 유출될 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="상위 디렉터리 접근 기능을 제거한 경우"
-GUIDELINE_CRITERIA_BAD="상위 디렉터리 접근이 가능한 경우"
-GUIDELINE_REMEDIATION="try_files 사용, alias 제한, proper root/path 설정으로 경로 조회 방지"
+GUIDELINE_PURPOSE="상위디렉터리접근제한설정을통해비인가자의특정디렉터리에대한접근및열람을제한하여중요 파일및데이터를보호하고,Unicode버그및서비스거부공격등을방지하기위함"
+GUIDELINE_THREAT="Ÿ 상위 디렉터리로 이동하는 것이 가능할 경우 접근하고자 하는 디렉터리의 하위 경로에서 상위로 이동하며정보탐색이가능하여중요정보가노출될위험이존재함 Ÿ 악의적인 목적을 가진 사용자가 중요 파일 및 디렉터리의 접근이 가능하여 데이터가 유출될 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="상위디렉터리접근기능을제거한경우"
+GUIDELINE_CRITERIA_BAD="상위디렉터리접근기능을제거하지않은경우"
+GUIDELINE_REMEDIATION="상위디렉터리접근기능제거설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

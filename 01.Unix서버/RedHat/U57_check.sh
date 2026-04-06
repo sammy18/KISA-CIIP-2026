@@ -30,11 +30,11 @@ ITEM_NAME="Apache 웹 서비스 웹 프로세스 권한 제한"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="웹 서비스의 자식 프로세스를 일반 사용자 권한으로 실행하여 웹 서버 취약점 공격 시 시스템 전체 권한을 획득하는 것을 방지하기 위함"
-GUIDELINE_THREAT="웹 프로세스가 root 권한으로 실행될 경우, 웹 서버 취약점을 통해 공격자가 시스템 최고 권한(root)을 획득할 위험이 있음"
-GUIDELINE_CRITERIA_GOOD="User 및 Group 설정이 root가 아닌 일반 계정(예: apache)으로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="User 또는 Group 설정이 root로 설정되어 있는 경우"
-GUIDELINE_REMEDIATION="httpd.conf 파일에서 User apache, Group apache 설정 적용"
+GUIDELINE_PURPOSE="root계정의FTP직접접속을제한하여root비밀번호정보노출을방지하기위함"
+GUIDELINE_THREAT="FTP 서비스에 root 계정으로 접근할 경우, 데이터가 평문으로 전송되어 비인가자가 스니핑을 통해 관리자계정및중요정보를외부로유출할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="root계정접속을차단한경우"
+GUIDELINE_CRITERIA_BAD="root계정접속을허용한경우"
+GUIDELINE_REMEDIATION="Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP서비스사용시root계정으로직접접속할수없도록설정"
 
 diagnose() {
     local status="양호"

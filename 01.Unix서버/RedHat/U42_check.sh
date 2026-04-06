@@ -30,11 +30,11 @@ ITEM_NAME="불필요한 RPC 서비스 비활성화"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 내용 반영)
-GUIDELINE_PURPOSE="보안에 취약한 불필요한 RPC 서비스를 비활성화하여 원격 공격 시도를 차단하기 위함"
-GUIDELINE_THREAT="rusersd, rwalld 등 불필요한 RPC 서비스가 활성화된 경우 버퍼 오버플로우 등을 통해 시스템 권한 탈취 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한 RPC 서비스(rusersd, rwalld, rstatd 등)가 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 RPC 서비스가 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="사용하지 않는 RPC 서비스 비활성화"
+GUIDELINE_PURPOSE="많은 취약점(버퍼 오버플로우, DoS, 원격 실행 등)이 존재하는 RPC 서비스를 비활성화하여 시스템의 보안성을높이기위함"
+GUIDELINE_THREAT="RPC서비스의취약점을통해비인가자가root권한획득및각종공격을시도할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한RPC서비스가비활성화된경우"
+GUIDELINE_CRITERIA_BAD="불필요한RPC서비스가활성화된경우"
+GUIDELINE_REMEDIATION="불필요한RPC서비스중지및비활성화설정"
 
 diagnose() {
     local status="양호"

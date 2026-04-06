@@ -1,0 +1,20 @@
+{
+  "item_id": "U-65",
+  "item_name": "NTP 및 시각 동기화 설정",
+  "inspection": {
+    "summary": "NTP 서비스가 설치되지 않음 (시간 동기화 불가)",
+    "status": "취약"
+  },
+  "final_result": "VULNERABLE",
+  "command": "which ntpd chronyd; ls /etc/{ntp.conf,chrony.conf} 2>/dev/null",
+  "command_result": "NTP: [not installed]",
+  "guideline": {
+    "purpose": "인증및감사목적을위한시간동기화는필수적이며,안전하고승인된NTP서비스와동기화하기위함",
+    "security_threat": "시스템 간 시간 동기화 미흡으로 보안 사고 및 장애 발생 시 로그에 대한 신뢰도 확보 미흡 위험이 존재함",
+    "judgment_criteria_good": "NTP및시각동기화설정이기준에따라적용된경우",
+    "judgment_criteria_bad": "NTP및시각동기화설정이기준에따라적용되어있지않은경우",
+    "remediation": "NTP설정및동기화주기설정"
+  },
+  "timestamp": "2026-03-31T21:27:23+09:00",
+  "hostname": "nacsc"
+}

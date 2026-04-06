@@ -32,11 +32,11 @@ ITEM_ID="D-05"
 ITEM_NAME="비밀번호재사용에대한제약설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="비밀번호 재사용을 제한하여 이전 비밀번호의 재사용 방지"
-GUIDELINE_THREAT="비밀번호 재사용 가능 시 보안 강화 실패"
-GUIDELINE_CRITERIA_GOOD="비밀번호 재사용이 제한된 경우"
-GUIDELINE_CRITERIA_BAD="비밀번호 재사용이 가능한 경우"
-GUIDELINE_REMEDIATION="N/A - PostgreSQL에는 비밀번호 재사용 제한 기능이 없음"
+GUIDELINE_PURPOSE="비밀번호 재사용 제약 설정 적용 여부를 점검하여 비밀번호 변경 시 이전 비밀번호 재사용을 제약하여 형식적인비밀번호변경을원천적으로차단하기위함"
+GUIDELINE_THREAT="비밀번호 재사용 제약 설정이 적용되어 있지 않을 경우 비밀번호 변경 전 사용했던 비밀번호를 재사용함으로써 비인가자의 계정 비밀번호 추측 공격에 대한 시간을 더 많이 허용하여 비밀번호 유출 위험이증가함"
+GUIDELINE_CRITERIA_GOOD="비밀번호재사용제한설정을적용한경우"
+GUIDELINE_CRITERIA_BAD="비밀번호재사용제한설정을적용하지않은경우"
+GUIDELINE_REMEDIATION="PASSWORD_REUSE_TIME, PASSWORD_REUSE_MAX파라미터설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

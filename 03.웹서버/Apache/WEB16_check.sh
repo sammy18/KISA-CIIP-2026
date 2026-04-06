@@ -33,11 +33,11 @@ ITEM_ID="WEB-16"
 ITEM_NAME="웹서버헤더정보노출제한"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="HTTP 응답 헤더에서 웹서버 버전 및 종류, OS 정보 등 불필요한 정보 노출을 최소화하여 서버 fingerprinting 및 특정 버전 취약점 공격 방지"
-GUIDELINE_THREAT="웹서버 및 OS 정보가 HTTP 응답 헤더에 노출될 경우, 공격자가 해당 버전의 알려진 취약점을 이용하여 공격할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="ServerTokens가 Prod 또는 OS 아니고 ServerSignature가 Off로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="ServerTokens가 Full 또는 ServerSignature가 On으로 설정된 경우"
-GUIDELINE_REMEDIATION="httpd.conf 또는 apache2.conf에서 ServerTokens Prod, ServerSignature Off 설정"
+GUIDELINE_PURPOSE="HTTP응답헤더에서웹서버버전및종류,OS정보등웹서버와관련된정보가불필요하게노출되는 것을최소화하기위함"
+GUIDELINE_THREAT="웹서버및OS정보가노출될경우공격자에의해해당버전의알려진취약점을이용하여시스템구조와 특성노출및해당취약점을통한공격의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="HTTP응답헤더에서웹서버정보가노출되지않는경우"
+GUIDELINE_CRITERIA_BAD="HTTP응답헤더에서웹서버정보가노출되는경우"
+GUIDELINE_REMEDIATION="응답헤더에표시되는정보를최소한으로제한하여설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

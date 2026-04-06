@@ -67,11 +67,11 @@ try {
 $commandExecuted = "Get-Service -Name 'MSADC*'; Get-WindowsFeature -Name 'RDS-*'"
 
 # 2. lib를 통한 결과 저장
-$purpose = 'RDS(Remote Data Services)는 레거시 데이터 접속 기술로 알려진 보안 취약점이 다수 존재하여 공격 경로로 악용 가능'
-$threat = 'RDS 제거를 통해 레거시 데이터 접속 취약점 방지'
-$criteria_good = 'RDS 서비스/기능이 설치되지 않은 경우'
-$criteria_bad = 'RDS 서비스/기능이 설치된 경우'
-$remediation = 'RDS(Remote Data Services) 서비스/기능 제거`n`n방법:`n1. 서비스 제거: Get-Service -Name ''MSADC*'' | Remove-Service -Force`n2. 기능 제거: Remove-WindowsFeature -Name ''RDS-*''`n3. 또는 서버 관리자 > 역할 및 기능 제거'
+$purpose = "취약한RDS서비스를제거하여불법적인원격공격을차단하기위함"
+$threat = "취약한플랫폼의RDS가사용되는경우서비스거부공격이나원격에서관리자권한으로임의의명령을 실행할수있는위험이존재함"
+$criteria_good = "다음중한가지라도해당하는경우 1. IIS를사용하지않는경우 2. Windows2008이상버전을사용하는경우 3. Windows 2000 서비스팩4, Windows2003서비스팩2이상설치된경우 4.기본웹사이트에MSADC가상디렉터리가존재하지않는경우 5.해당레지스트리값이존재하지않는경우"
+$criteria_bad = "양호기준에한가지도해당하지않는경우"
+$remediation = "사용하지 않는 경우 IIS 서비스 중지/사용 안 함, 사용할 경우 레지스트리 키 값 제거 또는 관련 패치 적용"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

@@ -33,11 +33,11 @@ ITEM_ID="WEB-25"
 ITEM_NAME="주기적보안패치및벤더권고사항적용"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="최신 보안 패치 적용으로 알려진 취약점 방지"
-GUIDELINE_THREAT="오래된 버전 사용 시 알려진 취약점 공격 위험"
-GUIDELINE_CRITERIA_GOOD="최신 안정 버전 사용"
+GUIDELINE_PURPOSE="주기적인최신보안패치를통해보안성및시스템안정성을확보하기위함"
+GUIDELINE_THREAT="주기적으로 최신 보안 패치를 적용하지 않을 경우, 알려진 취약점을 이용한 공격 또는 새로운 공격에 대한침해사고발생위험이존재함"
+GUIDELINE_CRITERIA_GOOD="최신보안패치가적용되어있으며,패치적용정책을수립하여주기적인패치관리를하는경우 취약 : 최신 보안 패치가 적용되어 있지 않거나 패치 적용 정책을 수립 및 주기적인 패치 관리를 하지"
 GUIDELINE_CRITERIA_BAD="오래된 버전 사용"
-GUIDELINE_REMEDIATION="Nginx를 최신 버전으로 업그레이드하고 주기적 패치 적용"
+GUIDELINE_REMEDIATION="패치적용에따른서비스영향정도를정확히파악하여주기적인패치적용정책수립및적용하도록설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

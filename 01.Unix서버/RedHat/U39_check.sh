@@ -29,11 +29,11 @@ ITEM_ID="U-39"
 ITEM_NAME="불필요한 NFS 서비스 비활성화"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="보안에 취약한 NFS 서비스를 비활성화하여 원격 파일 시스템 무단 접근 및 정보 유출을 차단하기 위함"
-GUIDELINE_THREAT="NFS 서비스가 활성화된 경우 비인가자가 중요 데이터에 접근하거나 시스템 리소스를 임의로 마운트할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="NFS 서비스 관련 프로세스(nfsd, mountd 등)가 실행 중이지 않은 경우"
-GUIDELINE_CRITERIA_BAD="NFS 서비스가 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="NFS 서비스 중단 (systemctl stop nfs-server)"
+GUIDELINE_PURPOSE="NFS(Network File System) 서비스는 한 서버의 파일을 많은 서비스 서버들이 공유하여 사용할 때 이용하는서비스지만이를이용한침해사고위험성이높으므로사용하지않는경우중지하기위함"
+GUIDELINE_THREAT="NFS 서비스는 서버의 디스크를 클라이언트와 공유하는 서비스로 적정한 보안 설정이 적용되어 있지 않다면불필요한파일공유로인한유출위험이존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한NFS서비스관련데몬이비활성화된경우"
+GUIDELINE_CRITERIA_BAD="불필요한NFS서비스관련데몬이활성화된경우"
+GUIDELINE_REMEDIATION="NFS서비스를사용하지않는경우서비스중지및비활성화설정 ※ 로컬서버에마운트되어있는디렉터리제거및공유디렉터리제거후서비스중지가능"
 
 diagnose() {
     local status="양호"

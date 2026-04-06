@@ -29,11 +29,11 @@ ITEM_ID="U-67"
 ITEM_NAME="홈 디렉토리 소유자 및 권한 설정"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="홈 디렉토리 내 개인 파일 및 설정 정보를 보호하여 타 사용자에 의한 변조 및 정보 유출을 차단하기 위함"
-GUIDELINE_THREAT="홈 디렉토리 권한이 과도하게 부여될 경우 타인에 의해 중요 파일이 변조되거나 쉘 설정 파일 수정을 통해 권한이 탈취될 수 있음"
-GUIDELINE_CRITERIA_GOOD="홈 디렉토리 소유자가 해당 계정이고, 타 사용자 쓰기 권한이 없는 경우"
-GUIDELINE_CRITERIA_BAD="홈 디렉토리 소유자가 불일치하거나 타 사용자 쓰기 권한이 허용된 경우"
-GUIDELINE_REMEDIATION="홈 디렉토리 소유자 변경(chown) 및 권한 변경(chmod 700)"
+GUIDELINE_PURPOSE="로그파일을관리자만제어할수있게하여비인가자의임의적인파일훼손및변조를방지하기위함"
+GUIDELINE_THREAT="로그에 대한 접근 통제가 미흡할 경우, 비인가자가로그에서정보를획득하거나로그자체를변조할수 있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="디렉터리내로그파일의소유자가root이고,권한이644이하인경우"
+GUIDELINE_CRITERIA_BAD="디렉터리내로그파일의소유자가root가아니거나,권한이644를초과하는경우"
+GUIDELINE_REMEDIATION="디렉터리내로그파일소유자및권한변경설정"
 
 diagnose() {
     local status="양호"

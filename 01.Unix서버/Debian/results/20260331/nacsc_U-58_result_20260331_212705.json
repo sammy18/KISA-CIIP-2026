@@ -1,0 +1,20 @@
+{
+  "item_id": "U-58",
+  "item_name": "불필요한 SNMP 서비스 구동 점검",
+  "inspection": {
+    "summary": "SNMP 서비스가 비활성화되어 있습니다.",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "which systemctl; which service; ls /etc/init.d/snmpd",
+  "command_result": "[SNMP Service Status]\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U58_check.sh: line 125: systemctl: command not found\\ninactive\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U58_check.sh: line 125: systemctl: command not found\\ninactive",
+  "guideline": {
+    "purpose": "불필요한 SNMP 서비스를 비활성화하여 시스템 정보 노출 방지",
+    "security_threat": "SNMP 서비스 활성화 시 비인가자가 시스템 정보 수집 및 설정 변경을 통해 공격 대상 선정 및 시스템 장악 위험",
+    "judgment_criteria_good": "SNMP 서비스가 비활성화된 경우",
+    "judgment_criteria_bad": " SNMP 서비스가 활성화된 경우 / N/A: SNMP 모니터링 필요",
+    "remediation": "SNMP 서비스 중지 및 비활성화: systemctl stop snmpd && systemctl disable snmpd 실행"
+  },
+  "timestamp": "2026-03-31T21:27:07+09:00",
+  "hostname": "nacsc"
+}

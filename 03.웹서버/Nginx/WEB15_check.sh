@@ -33,11 +33,11 @@ ITEM_ID="WEB-15"
 ITEM_NAME="불필요한스크립트매핑제거"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="불필요한 스크립트 핸들러 제거로 공격 표면 최소화"
-GUIDELINE_THREAT="불필요한 스크립트 매핑 시 악의적 스크립트 실행 위험"
-GUIDELINE_CRITERIA_GOOD="필요한 스크립트 매핑만 존재하는 경우"
-GUIDELINE_CRITERIA_BAD="다수의 불필요한 스크립트 매핑이 있는 경우"
-GUIDELINE_REMEDIATION="불필요한 location ~ \.(php|pl|cgi|py)$ 블록 제거"
+GUIDELINE_PURPOSE="웹서비스에서사용하지않는불필요스크립트매핑이존재하는지점검하여잠재적보안위협을방지하기위함"
+GUIDELINE_THREAT="웹서비스에서불필요한스크립트매핑을제거하지않은경우,버퍼오버플로우(Buffer Overflow),서비스 거부공격(Denial of Service), 크로스사이트스크립팅(CrossSiteScripting)등의공격위험이존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한스크립트매핑이존재하지않는경우"
+GUIDELINE_CRITERIA_BAD="불필요한스크립트매핑이존재하는경우"
+GUIDELINE_REMEDIATION="불필요한스크립트매핑존재여부점검및제거설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -33,11 +33,11 @@ ITEM_ID="WEB-23"
 ITEM_NAME="LDAP알고리즘적절하게구성"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="안전한 LDAP 알고리즘 사용으로 인증 정보 보호"
-GUIDELINE_THREAT="취약한 LDAP 알고리즘 사용 시 인증 정보 도청 및 변조 위험"
-GUIDELINE_CRITERIA_GOOD="안전한 알고리즘(SHA-256 이상)을 사용하는 경우"
-GUIDELINE_CRITERIA_BAD="취약한 알고리즘(MD5, SHA-1)을 사용하는 경우"
-GUIDELINE_REMEDIATION="server.xml JNDIRealm에서 강화한 해시 알고리즘 사용"
+GUIDELINE_PURPOSE="LDAP연결시안전한비밀번호다이제스트알고리즘을사용하여비밀번호평문전송시발생할수있는 스니핑등의공격에대비하기위함"
+GUIDELINE_THREAT="취약한 다이제스트 알고리즘을 사용하는 경우 공격자의 스니핑, 무차별 공격 등을 통해 인증 정보가 노출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="LDAP연결인증시안전한비밀번호다이제스트알고리즘을사용하는경우"
+GUIDELINE_CRITERIA_BAD="LDAP연결인증시안전한비밀번호다이제스트알고리즘을사용하지않는경우"
+GUIDELINE_REMEDIATION="LDAP연결인증시SHA-256이상의알고리즘을사용하도록설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

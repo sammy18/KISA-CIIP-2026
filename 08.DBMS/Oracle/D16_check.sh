@@ -33,11 +33,11 @@ ITEM_ID="D-16"
 ITEM_NAME="비밀번호 복잡성 설정 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="비밀번호 복잡성 요구사항 강제로 약한 비밀번호 사용 방지"
-GUIDELINE_THREAT="비밀번호 복잡성 미설정 시 간단한 비밀번호 사용 가능"
-GUIDELINE_CRITERIA_GOOD="비밀번호 복잡성 함수 설정된 경우"
-GUIDELINE_CRITERIA_BAD="설정되지 않은 경우"
-GUIDELINE_REMEDIATION="VERIFY_FUNCTION 적용: ALTER PROFILE DEFAULT LIMIT PASSWORD_VERIFY_FUNCTION VERIFY_FUNCTION_11G;"
+GUIDELINE_PURPOSE="적절한Windows인증모드를적용하여적합한복잡성수준을유지하기위함"
+GUIDELINE_THREAT="혼합 인증 모드를 사용하고 sa 계정이 활성화되어 있는 경우, 잘 알려진 sa 계정에 대한 계정 추측 공격의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="Windows인증모드를사용하고sa계정이비활성화되어있는경우 sa계정활성화시강력한암호정책을설정한경우"
+GUIDELINE_CRITERIA_BAD="혼합인증모드를사용하고,활성화된sa계정에대한강력한암호정책설정을하지않은경우"
+GUIDELINE_REMEDIATION="Windows인증모드사용"
 
 # Oracle 연결 정보 초기화 (fallback if library not loaded)
 ORACLE_USER="${ORACLE_USER:-system}"

@@ -32,11 +32,11 @@ ITEM_ID="D-08"
 ITEM_NAME="DBMS FILE 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="FILE 권한을 가진 계정을 제어하여 파일 시스템 접근 제한"
-GUIDELINE_THREAT="FILE 권한 과도 부여 시 서버 파일 시스템 접근 가능하여 데이터 유출 위험"
-GUIDELINE_CRITERIA_GOOD="FILE 권한이 최소화된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 FILE 권한 부여"
-GUIDELINE_REMEDIATION="불필요한 FILE 권한 취소: REVOKE FILE ON *.* FROM 'user'@'host';"
+GUIDELINE_PURPOSE="안전한해시알고리즘사용으로데이터의기밀성및무결성을보장하고,사용자인증을강화하기위함"
+GUIDELINE_THREAT="SHA-1이나MD5와같은오래된알고리즘사용시공격자의무차별대입공격등으로비밀번호유추가 가능하며,데이터변조및유출의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="해시알고리즘SHA-256이상의암호화알고리즘을사용하고있는경우"
+GUIDELINE_CRITERIA_BAD="해시알고리즘SHA-256미만의암호화알고리즘을사용하고있는경우"
+GUIDELINE_REMEDIATION="SHA-256이상의암호화알고리즘적용"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

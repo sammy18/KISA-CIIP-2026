@@ -32,11 +32,11 @@ ITEM_NAME="공유 서비스에 대한 익명 접근 제한 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (제시된 리스트 기준 반영)
-GUIDELINE_PURPOSE="공유 서비스에 대한 익명 사용자의 접근을 차단하여 비인가자의 파일 시스템 접근 및 정보 유출을 방지하기 위함"
-GUIDELINE_THREAT="익명 접근이 허용된 경우 누구든지 시스템 내부 자료에 접근할 수 있어 중요 데이터 탈취 및 시스템 파괴가 가능함"
-GUIDELINE_CRITERIA_GOOD="공유 서비스에서 익명 사용자 접근이 제한되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="익명 사용자 접근이 허용되어 있는 경우"
-GUIDELINE_REMEDIATION="Samba, FTP 등의 설정 파일에서 익명 접속(Guest, Anonymous) 관련 옵션을 no로 설정"
+GUIDELINE_PURPOSE="공유서비스의익명접근을제한하여중요정보의노출을방지하기위함"
+GUIDELINE_THREAT="공유 서비스의 익명 접근을 허용할 경우, 비인가자의 무단 접근으로 인한 중요 정보 탈취 또는 변조, 악성코드유포등의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="공유서비스에대해익명접근을제한한경우"
+GUIDELINE_CRITERIA_BAD="공유서비스에대해익명접근을허용한경우"
+GUIDELINE_REMEDIATION="공유서비스의익명접근제한설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지

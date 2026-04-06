@@ -104,11 +104,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '계정 비밀번호 관리 정책 설정 여부 점검으로 비밀번호 보안 강화'
-$threat = '비밀번호 관리 정책 미준수 시 무차별 대입 공격이나 비밀번호 추측 공격에 쉽게 크랙될 위험 존재'
-$criteria_good = '계정 비밀번호 관리 정책이 모두 적용된 경우'
-$criteria_bad = '계정 비밀번호 관리 정책이 모두 적용되어 있지 않은 경우'
-$remediation = '로컬 보안 정책 > 계정 정책 > 암호 정책 > '
+$purpose = "비밀번호설정시복잡성,최소비밀번호길이,최대/최소사용기간을만족하도록함"
+$threat = "사용자 비밀번호 관리 정책 설정을 만족하지 못하면 무차별 대입 공격(Brute Force Attack)이나 비밀번호추측공격(Password GuessingAttack)에쉽게크랙될위험이존재함"
+$criteria_good = "계정비밀번호관리정책이모두적용된경우"
+$criteria_bad = "계정비밀번호관리정책이모두적용되어있지않은경우"
+$remediation = "비밀번호복잡성,최소비밀번호길이,최대/최소사용기간을기준에맞게설정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

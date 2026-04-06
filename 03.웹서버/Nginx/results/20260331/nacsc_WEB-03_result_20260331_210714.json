@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-03",
+  "item_name": "비밀번호파일권한관리",
+  "inspection": {
+    "summary": "WEB-03(비밀번호파일권한관리) 항목의 KISA 가이드라인 점검 대상은 'Apache, IIS, JEUS, WebtoB'입니다. Nginx는 점검 대상이 아닙니다.",
+    "status": "N/A"
+  },
+  "final_result": "N/A",
+  "command": "N/A",
+  "command_result": "N/A",
+  "guideline": {
+    "purpose": "비밀번호 파일에 대해 적절한 접근 권한 설정 여부 점검",
+    "security_threat": "비밀번호 파일의 권한을 적절하게 설정하지 않은 경우, 비인가자에게 비밀번호 정보가 노출될 수 있고 웹 서버에 접속하는 등의 침해사고가 발생할 위험이 존재함",
+    "judgment_criteria_good": "비밀번호 파일에 권한이 600 이하로 설정된 경우",
+    "judgment_criteria_bad": "비밀번호 파일에 권한이 600 초과로 설정된 경우",
+    "remediation": "비밀번호 파일 권한 600 이하로 설정"
+  },
+  "timestamp": "2026-03-31T21:07:16+09:00",
+  "hostname": "nacsc"
+}

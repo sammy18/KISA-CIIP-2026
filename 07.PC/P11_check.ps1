@@ -70,11 +70,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = '최신 Windows OS Build 사용으로 지원 종료 및 패치 미누락 방지, 최신 보안 기능 활용'
-$threat = '지원 종료된 Windows OS 사용 시 보안 패치가 중단되어 알려진 취약점 공격 가능성 높으며, 제로데이 공격 등 악용 위험 심각'
-$criteria_good = 'Windows 10 Build 19044 이상(21H2, 22H2) 또는 Windows 11 모든 Build 사용'
-$criteria_bad = 'Windows 10 Build 19044 미만(지원 종료 버전) 사용'
-$remediation = 'Windows 10 21H2 이상 또는 Windows 11로 업그레이드. Windows Update 설정에서 최신 기능 업데이트 설치'
+$purpose = '최신 서비스팩이 적용되어 있는지 점검하여 시스템 취약점을 이용한 공격(익스플로잇)에 대비가 되어있는지확인하기위함'
+$threat = '최신 서비스팩이 적용되지 않았을 경우 비인가자의 시스템 취약점을 이용한 공격(익스플로잇)에 노출될 수있는위험이존재함'
+$criteria_good = '최신빌드가적용되어있고내부적으로관리절차를수립하여이행한경우'
+$criteria_bad = '최신빌드가적용되어있지않거나내부적으로관리절차가수립되지않은경우'
+$remediation = 'WindowsUpdate사이트에접속하여최신서비스팩여부확인및적용'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

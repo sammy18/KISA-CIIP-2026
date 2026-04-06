@@ -32,11 +32,11 @@ ITEM_ID="D-14"
 ITEM_NAME="DBMS ALTER 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="ALTER 권한을 제어하여 테이블 구조 무단 변경 방지"
-GUIDELINE_THREAT="ALTER 권한 과도 부여 시 테이블 구조 변경으로 데이터 무결성 훼손 위험"
-GUIDELINE_CRITERIA_GOOD="ALTER 권한이 제한된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 ALTER 권한 부여"
-GUIDELINE_REMEDIATION="불필요한 ALTER 권한 취소 및 필요시에만 부여 권장"
+GUIDELINE_PURPOSE="데이터베이스의 주요 파일에 관리자를 제외한 일반 사용자의 파일 수정 권한을 제거함으로써 비인가자에의한DBMS주요파일변경이나삭제를방지하고주요정보유출을방지할수있음"
+GUIDELINE_THREAT="데이터베이스주요파일에비인가자가접근하여수정및삭제시데이터베이스운영에장애가발생할수 있으며계정비밀번호정보등중요정보의유출위험이존재함"
+GUIDELINE_CRITERIA_GOOD="주요설정파일및디렉터리의권한설정시일반사용자의수정권한을제거한경우"
+GUIDELINE_CRITERIA_BAD="주요설정파일및디렉터리의권한설정시일반사용자의수정권한을제거하지않은경우"
+GUIDELINE_REMEDIATION="주요설정파일및디렉터리의권한설정변경"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

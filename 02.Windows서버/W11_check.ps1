@@ -74,11 +74,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '불필요한 계정의 로컬 로그온 허용 여부 점검으로 비인가자의 불법적 시스템 로컬 접근 차단'
-$threat = '불필요한 사용자에게 로컬 로그온 허용 시 비인가자를 통한 권한 상승 및 악성 코드 실행 위험 존재'
-$criteria_good = '로컬 로그온 허용 정책에 Administrators, Users 만 존재하는 경우'
-$criteria_bad = 'Administrators, Users 외 다른 계정 및 그룹이 존재하는 경우'
-$remediation = '로컬 보안 정책 > 로컬 정책 > 사용자 권한 할당 > '
+$purpose = "불필요한 계정에 로컬 로그온이 허용될 경우를 찾아 비인가자의 불법적인 시스템 로컬 접근을 차단하고자함"
+$threat = "불필요한 사용자에게 로컬 로그온이 허용될 경우 비인가자를 통한 권한 상승을 위한 악성 코드 실행 위험이존재함"
+$criteria_good = "로컬로그온허용정책에Administrators,IUSR_만존재하는경우"
+$criteria_bad = "로컬로그온허용정책에Administrators,IUSR_외다른계정및그룹이존재하는경우"
+$remediation = "Administrators,IUSR_외다른계정및그룹의로컬로그온제한"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

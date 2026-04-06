@@ -33,11 +33,11 @@ ITEM_ID="WEB-14"
 ITEM_NAME="불필요한스크립트매핑제거"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="불필요한 CGI 및 스크립트 핸들러 제거로 공격 표면 최소화"
-GUIDELINE_THREAT="불필요한 스크립트 매핑 시 악의적 스크립트 실행 위험"
-GUIDELINE_CRITERIA_GOOD="필요한 스크립트 매핑만 존재하는 경우"
-GUIDELINE_CRITERIA_BAD="다수의 불필요한 CGI/스크립트 매핑이 있는 경우"
-GUIDELINE_REMEDIATION="web.xml에서 불필요한 CGI Servlet 및 JSP 매핑 제거 또는 주석 처리"
+GUIDELINE_PURPOSE="웹 서비스 경로의 파일들에 관리자를 제외한 일반 사용자의 파일 접근 권한을 제거함으로써 인가되지 않은사용자가허용되지않는파일에접근하는것을차단하기위함"
+GUIDELINE_THREAT="웹서비스경로파일에비인가자가접근가능한경우,해당파일의수정및삭제로인해웹서비스운영 장애및계정비밀번호정보등의중요한정보가노출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="주요설정파일및디렉터리에불필요한접근권한이부여되지않은경우"
+GUIDELINE_CRITERIA_BAD="주요설정파일및디렉터리에불필요한접근권한이부여된경우"
+GUIDELINE_REMEDIATION="주요설정파일및디렉터리에불필요한접근권한제거설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

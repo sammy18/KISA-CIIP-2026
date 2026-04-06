@@ -1,0 +1,33 @@
+============================================================
+[U-44] tftp, talk 서비스 비활성화
+============================================================
+[U-44-START]
+
+tftp, talk 서비스 비활성화됨
+
+[현황]
+1) 진단 확인
+command: systemctl is-active tftp talk ntalk; ss -tuln | grep -E ':69|:517|:518'
+command_result:
+/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U44_check.sh: line 127: systemctl: command not found
+inactive
+/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U44_check.sh: line 127: systemctl: command not found
+inactive
+/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U44_check.sh: line 127: systemctl: command not found
+inactive
+
+[Port Check]
+No tftp/talk services listening
+
+[U-44-END]
+
+[U-44]Result : GOOD
+
+[참고]
+진단 목적: 안전하지않거나불필요한서비스를제거함으로써시스템보안성및리소스의효율적운용하기위함
+보안 위협: 사용하지않는서비스나취약점이발표된서비스운용시공격시도가능한위험이존재함
+양호 기준: tftp, talk, ntalk서비스가비활성화된경우
+취약 기준: tftp, talk, ntalk서비스가활성화된경우
+조치 방법: 불필요한tftp, talk, ntalk서비스비활성화설정
+
+============================================================

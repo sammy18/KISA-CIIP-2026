@@ -29,11 +29,11 @@ ITEM_ID="U-63"
 ITEM_NAME="사용자 sudo 명령어 사용 제한"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="특정 사용자에게만 필요한 권한을 sudo를 통해 부여함으로써 불필요한 root 권한 남용을 방지하기 위함"
-GUIDELINE_THREAT="sudo 권한이 과도하게 부여되거나 적절히 제한되지 않을 경우, 일반 사용자가 시스템 전체를 장악하거나 중요 데이터를 변조할 위험이 있음"
-GUIDELINE_CRITERIA_GOOD="sudoers 파일에 허가된 사용자만 등록되어 있고, 불필요한 ALL 권한이 제한된 경우"
-GUIDELINE_CRITERIA_BAD="sudoers 파일에 인가되지 않은 사용자가 등록되어 있거나 과도한 권한(ALL)이 부여된 경우"
-GUIDELINE_REMEDIATION="/etc/sudoers 파일에서 불필요한 사용자/그룹 설정 삭제 및 특정 명령어로 권한 제한"
+GUIDELINE_PURPOSE="비인가자가관리자권한을남용하여시스템손상,악성코드실행,민감한데이터유출등의보안위협을 방지하기위함"
+GUIDELINE_THREAT="sudo 명령어 접근을 제한하지 않을 경우, 비인가자가 관리자 권한으로 허가되지 않은 명령어를 사용하여루트권한오용,악성코드실행,데이터유출등의시도를할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/sudoers파일소유자가root이고,파일권한이640인경우"
+GUIDELINE_CRITERIA_BAD="/etc/sudoers파일소유자가root가아니거나,파일권한이640을초과하는경우"
+GUIDELINE_REMEDIATION="/etc/sudoers파일소유자및권한변경설정"
 
 diagnose() {
     local status="양호"

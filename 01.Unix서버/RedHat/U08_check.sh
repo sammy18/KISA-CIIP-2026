@@ -30,11 +30,11 @@ ITEM_NAME="관리자 그룹에 최소한의 계정 포함"
 SEVERITY="(중)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="관리자 권한이 있는 그룹에 불필요한 계정 등록을 방지하여 권한 남용을 차단하기 위함"
-GUIDELINE_THREAT="권한이 없는 계정이 관리자 그룹에 포함될 경우 시스템 설정 변경 및 중요 정보 탈취 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="관리자 그룹에 최소한의 계정만 포함된 경우"
-GUIDELINE_CRITERIA_BAD="관리자 그룹에 불필요한 계정이 포함된 경우"
-GUIDELINE_REMEDIATION="관리자 그룹(root, wheel 등)에서 불필요한 계정 삭제"
+GUIDELINE_PURPOSE="관리자그룹에최소한의필요계정만존재하는지확인하여불필요한권한남용을점검하기위함"
+GUIDELINE_THREAT="시스템을 관리하는 root 계정이 속한 그룹은 시스템 운영 파일에 대한 접근 권한이 부여되어 있으므로 해당 관리자 그룹에 속한 계정이 비인가자에게 유출될 경우, 관리자 권한으로 시스템에 접근하여 계정정보유출,환경설정파일및디렉터리변조등의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="관리자그룹에불필요한계정이등록되어있지않은경우"
+GUIDELINE_CRITERIA_BAD="관리자그룹에불필요한계정이등록된경우"
+GUIDELINE_REMEDIATION="관리자그룹에등록된계정확인후불필요한계정제거하도록설정"
 
 diagnose() {
     local status="양호"

@@ -29,11 +29,11 @@ ITEM_ID="U-48"
 ITEM_NAME="expn, vrfy 명령어 제한"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="사용자 계정 정보 확인 명령어(EXPN, VRFY)를 제한하여 공격자의 사용자 정보 수집을 차단하기 위함"
-GUIDELINE_THREAT="EXPN, VRFY 명령어가 활성화된 경우, 외부에서 사용자 계정 존재 여부 및 메일링 리스트 정보를 수집하여 공격에 활용될 수 있음"
-GUIDELINE_CRITERIA_GOOD="SMTP 설정에서 EXPN 및 VRFY 명령어가 제한(noexpn, novrfy)되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="SMTP 설정에서 EXPN 또는 VRFY 명령어가 허용되어 있는 경우"
-GUIDELINE_REMEDIATION="Sendmail 설정 파일(sendmail.cf)의 PrivacyOptions에 noexpn, novrfy 옵션 추가"
+GUIDELINE_PURPOSE="SMTP서비스의expn,vrfy명령을통한정보유출을방지하기위함"
+GUIDELINE_THREAT="expn, vrfy 명령어를 통하여 특정 사용자 계정의 존재 여부를 알 수 있고, 사용자의 정보를 외부로 유출할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="noexpn, novrfy옵션이설정된경우"
+GUIDELINE_CRITERIA_BAD="noexpn, novrfy옵션이설정되어있지않은경우"
+GUIDELINE_REMEDIATION="Ÿ 메일서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 메일서비스사용시메일서비스설정파일에noexpn,novrfy또는goaway옵션추가설정"
 
 diagnose() {
     local status="양호"

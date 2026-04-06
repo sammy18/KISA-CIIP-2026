@@ -92,11 +92,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = '원격 지원 금지로 무단 원격 접속 차단 및 시스템 보안 강화'
-$threat = '원격 지원 허용 시 권한 없는 제3자 시스템 접근 가능하며, 피싱 공격을 악용한 무단 접속 및 정보 유출 위험 존재'
-$criteria_good = 'fAllowToGetHelp = 0 (원격 지원 금지)'
-$criteria_bad = 'fAllowToGetHelp = 1 (원격 지원 허용)'
-$remediation = '그룹 정책: 컴퓨터 구성 > 관리 템플릿 > 시스템 > 원격 지원 > 원격 지원 요청 금지(사용), 또는 레지스트리: fAllowToGetHelp = 0 설정'
+$purpose = '원격지원기능을비활성화하여비인가자가원격에서접근을방지하기위함'
+$threat = '원격지원기능이활성화되어비인가자에게원격에서의접근이허용될경우,시스템제어권한이악용될 수있는위험이존재함'
+$criteria_good = '원격지원이''사용안함''으로설정된경우'
+$criteria_bad = '원격지원이''사용''으로설정된경우'
+$remediation = '원격지원서비스비활성화'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

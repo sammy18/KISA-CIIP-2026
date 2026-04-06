@@ -1,0 +1,25 @@
+============================================================
+[D-21] DBMS local_infile 설정 점검
+============================================================
+[D-21-START]
+
+MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.
+
+[현황]
+1) 진단 확인
+command: command -v [required_tool]
+command_result:
+Required tools not found
+
+[D-21-END]
+
+[D-21]Result : MANUAL
+
+[참고]
+진단 목적: local_infile 비활성화로 LOAD DATA INFILE을 통한 파일 읽기 방지
+보안 위협: local_infile 활성화 시 데이터베이스를 통해 서버 파일 시스템 접근 가능
+양호 기준: local_infile이 비활성화된 경우
+취약 기준: local_infile이 활성화된 경우
+조치 방법: my.cnf에 local-infile=0 설정 후 MySQL 서비스 재시작
+
+============================================================

@@ -64,11 +64,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '관리자 그룹에 불필요한 사용자 포함 여부 점검으로 관리 권한 사용자 최소화'
-$threat = '관리자 그룹 속한 구성원은 시스템에 대한 완전하고 제한 없는 액세스 권한을 가지므로, 불필요한 사용자 포함 시 비인가 사용자에 의한 과도한 관리 권한 부여 및 내부정보 유출 위험 존재'
-$criteria_good = 'Administrators 그룹의 구성원을 1명 이하로 유지하거나 불필요한 관리자 계정이 존재하지 않는 경우'
-$criteria_bad = 'Administrators 그룹에 불필요한 관리자 계정이 존재하는 경우'
-$remediation = 'Administrators 그룹에 포함된 불필요한 계정 제거 (컴퓨터 관리 > 로컬 사용자 및 그룹 > 그룹 > Administrators > 속성 > 불필요한 계정 제거)'
+$purpose = "관리자그룹구성원에불필요한사용자의포함여부를점검하여,관리권한사용자를최소화하고자함"
+$threat = "Administrators와 같은 관리자 그룹에 속한 구성원은 컴퓨터 시스템에 대한 완전하고 제한 없는 액세스 권한을 가지므로, 사용자를 관리자 그룹에 포함하면 비인가 사용자에 대한 과도한 관리 권한이 부여되어내부정보유출위험이존재함"
+$criteria_good = "Administrators그룹의구성원을1명이하로유지하거나,불필요한관리자계정이존재하지않 는경우"
+$criteria_bad = "Administrators그룹에불필요한관리자계정이존재하는경우"
+$remediation = "Administrators그룹에포함된불필요한계정제거"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

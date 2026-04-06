@@ -30,11 +30,11 @@ ITEM_NAME="안전한 비밀번호 암호화 알고리즘 사용"
 SEVERITY="(중)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="안전한 비밀번호 암호화 알고리즘을 사용하여 사용자 계정정보를 보호하기 위함"
-GUIDELINE_THREAT="취약한 비밀번호 암호화 알고리즘을 사용할 경우, 노출된 계정에 대해 비인가자가 암호 복호화 공격을 통해 비밀번호를 획득할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="SHA-2 이상의 안전한 비밀번호 암호화 알고리즘을 사용하는 경우"
-GUIDELINE_CRITERIA_BAD="취약한 비밀번호 암호화 알고리즘을 사용하는 경우"
-GUIDELINE_REMEDIATION="SHA-2 이상의 안전한 비밀번호 암호화 알고리즘 적용 설정"
+GUIDELINE_PURPOSE="안전한비밀번호암호화알고리즘을사용하여사용자계정정보를보호하기위함"
+GUIDELINE_THREAT="취약한 비밀번호 암호화 알고리즘을 사용할 경우, 노출된 계정에 대해 비인가자가 암호 복호화 공격을 통해비밀번호를획득할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="SHA-2이상의안전한비밀번호암호화알고리즘을사용하는경우"
+GUIDELINE_CRITERIA_BAD="취약한비밀번호암호화알고리즘을사용하는경우"
+GUIDELINE_REMEDIATION="SHA-2이상의안전한비밀번호암호화알고리즘적용설정"
 
 diagnose() {
     local status="양호"

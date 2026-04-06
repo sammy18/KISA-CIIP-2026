@@ -66,11 +66,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = '안전하고 승인된 Windows 시간 서비스 또는 자체 구축한 NTP 서버와 동기화하여 인증 및 감사'
-$threat = '시스템간 시각 동기화 미흡으로 보안사고 및 장애 발생시 초기대응이 불가한 위험 존재'
-$criteria_good = 'NTP 및 시각 동기화를 설정한 경우'
-$criteria_bad = 'NTP 및 시각 동기화를 설정하지 않은 경우'
-$remediation = 'NTP 및 시각 동기화 설정 (제어판 > 시계 및 국가 > 날짜 및 시간 > 인터넷 시간 > 인터넷 시간 서버와 동기화)'
+$purpose = "안전하고 승인된 Windows 시간 서비스 또는 자체 구축한 NTP 서버와 동기화하여 인증 및 감사하기 위함"
+$threat = "시스템간시각동기화미흡으로보안사고및장애발생시초기대응이불가한위험이존재함"
+$criteria_good = "NTP및시각동기화를설정한경우"
+$criteria_bad = "NTP및시각동기화를설정하지않은경우"
+$remediation = "NTP및시각동기화설정"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

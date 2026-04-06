@@ -1,0 +1,20 @@
+{
+  "item_id": "U-33",
+  "item_name": "숨겨진 파일 및 디렉토리 검색 및 제거",
+  "inspection": {
+    "summary": "의심스러운 숨겨진 파일이 발견되지 않았습니다. (확인된 홈 디렉토리: 0개, 전체 숨겨진 파일: 0개)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "while IFS=: read -r user pw uid gid gecos home shell; do find \"$home\" -maxdepth 1 -name \".*\" 2>/dev/null; done < /etc/passwd | grep -v -E '\\.(bashrc|bash_profile|profile|ssh|gitconfig|gitignore|vimrc|viminfo)$'",
+  "command_result": "[Hidden files search results]\\n\\n[No suspicious files found (checked 0 home directories, 0 total hidden files)]",
+  "guideline": {
+    "purpose": "숨겨진파일및디렉토리중의심스러운내용은정상사용자가아닌공격자에의해생성되었을가능성이 높으므로이를제거하여보안위협을방지하기위함",
+    "security_threat": "숨겨진파일및디렉토리를방치할경우,비인가자가생성한악성파일또는백도어등을탐지하지못할 위험이존재함",
+    "judgment_criteria_good": "불필요하거나의심스러운숨겨진파일및디렉토리를제거한경우",
+    "judgment_criteria_bad": "불필요하거나의심스러운숨겨진파일및디렉토리를제거하지않은경우",
+    "remediation": "ls-al명령어로숨겨진파일존재파악후불법적이거나의심스러운파일을제거하도록설정.*^ -ls로 확인 후 rm -rf로 제거"
+  },
+  "timestamp": "2026-03-31T21:05:12+09:00",
+  "hostname": "nacsc"
+}

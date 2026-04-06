@@ -73,11 +73,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'FTP 서비스의 IP 기반 접근 제어로 무단 접속 방지'
-$threat = 'FTP IP 제한 미설정 시 인증되지 않은 모든 IP에서 접근 가능'
-$criteria_good = 'FTP 서비스에 IP 제한이 설정된 경우'
-$criteria_bad = 'FTP 서비스에 IP 제한이 없는 경우'
-$remediation = 'IIS 관리자 > FTP 사이트 > IP 주소 및 도메인 제한 설정'
+$purpose = "FTP접근시특정IP주소에대해콘텐츠접근을허용하여서비스보안성을강화하기위함"
+$threat = "FTP 프로토콜은 로그온 시 지정된 자격 증명이나 데이터 자체가 암호화되지 않고 모든 자격 증명을 일반텍스트로네트워크를통해전송되는특성상서버클라이언트간트래픽스니핑을통해인증정보가 쉽게노출될위험이존재함"
+$criteria_good = "특정IP주소에서만FTP서버에접속하도록접근제어설정을적용한경우"
+$criteria_bad = "특정IP주소에서만FTP서버에접속하도록접근제어설정을적용하지않는경우 ※조치시마스터속성과모든사이트에적용함"
+$remediation = "특정IP주소에서만FTP서버에접속하도록접근제어설정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

@@ -31,11 +31,11 @@ ITEM_ID="D-07"
 ITEM_NAME="root권한으로서비스구동제한"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="DBMS 서비스가 root 권한이 아닌 별도 계정으로 실행되도록 하여 root 권한 탈취 시 피해 최소화하기 위함"
-GUIDELINE_THREAT="root 권한으로 DBMS 실행 시 DBMS 취약점 악용으로 root 권한 탈취 가능"
-GUIDELINE_CRITERIA_GOOD="DBMS가 root가 아닌 전용 계정으로 실행되는 경우"
-GUIDELINE_CRITERIA_BAD="DBMS가 root 권한으로 실행되는 경우"
-GUIDELINE_REMEDIATION="mysql 전용 계정 생성 후 서비스 실행 계정 변경"
+GUIDELINE_PURPOSE="root 권한을 제한적으로 사용함으로써 시스템의 손상, 데이터의 유출 및 변조 등을 차단하여 보안 위협을방지하기위함"
+GUIDELINE_THREAT="root 권한으로서비스를구동할경우시스템손상, 데이터유출및변조,감사및추적의어려움등으로 인해서비스공격의표적이될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DBMS가root계정또는root권한이아닌별도의계정및권한으로구동되고있는경우"
+GUIDELINE_CRITERIA_BAD="DBMS가root계정또는root권한으로구동되고있는경우"
+GUIDELINE_REMEDIATION="DBMS구동계정변경"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

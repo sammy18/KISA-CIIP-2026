@@ -32,11 +32,11 @@ ITEM_NAME="스팸 메일 릴레이 제한"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="메일 서버를 통한 무분별한 스팸 메일 발송(Relay)을 차단하여 시스템 자원 고갈 및 IP 평판 하락을 방지하기 위함"
-GUIDELINE_THREAT="메일 릴레이가 모든 호스트에 허용된 경우, 공격자가 해당 서버를 스팸 메일 발송의 경유지로 악용하여 시스템 부하를 유발하고 블랙리스트에 등록될 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="메일 릴레이 기능이 제한되어 있거나 허가된 특정 호스트/IP에 대해서만 허용된 경우"
-GUIDELINE_CRITERIA_BAD="모든 호스트에 대해 메일 릴레이가 허용되어(Open Relay) 있는 경우"
-GUIDELINE_REMEDIATION="SMTP 설정 파일(access 등)에서 특정 대역만 RELAY 허용하고 나머지는 REJECT/DISCARD 설정"
+GUIDELINE_PURPOSE="스팸메일서버로의악용방지및서버과부하를방지하기위함"
+GUIDELINE_THREAT="SMTP 서버의 릴레이 기능을 제한하지 않을 경우, 악의적인 사용 목적을 가진 사용자들이 스팸 메일 서버로사용하거나DoS공격의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="릴레이제한이설정된경우"
+GUIDELINE_CRITERIA_BAD="릴레이제한이설정되어있지않은경우"
+GUIDELINE_REMEDIATION="Ÿ 메일서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 메일서비스사용시릴레이방지설정또는릴레이대상접근제어설정"
 
 diagnose() {
     # 파싱 안정성을 위한 초기값 설정

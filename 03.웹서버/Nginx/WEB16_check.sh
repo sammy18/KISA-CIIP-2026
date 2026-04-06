@@ -33,11 +33,11 @@ ITEM_ID="WEB-16"
 ITEM_NAME="웹서비스헤더정보노출제한"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="불필요한 헤더 정보 제거로 서버 정보 노출 최소화"
-GUIDELINE_THREAT="헤더 정보 노출 시 서버 fingerpriting 및 특정 공격 가능"
-GUIDELINE_CRITERIA_GOOD="server_tokens off 및 불필요한 헤더 제거된 경우"
-GUIDELINE_CRITERIA_BAD="server_tokens on인 경우"
-GUIDELINE_REMEDIATION="server_tokens off; 및 more_clear_headers 지시어로 불필요한 헤더 제거"
+GUIDELINE_PURPOSE="HTTP응답헤더에서웹서버버전및종류,OS정보등웹서버와관련된정보가불필요하게노출되는 것을최소화하기위함"
+GUIDELINE_THREAT="웹서버및OS정보가노출될경우공격자에의해해당버전의알려진취약점을이용하여시스템구조와 특성노출및해당취약점을통한공격의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="HTTP응답헤더에서웹서버정보가노출되지않는경우"
+GUIDELINE_CRITERIA_BAD="HTTP응답헤더에서웹서버정보가노출되는경우"
+GUIDELINE_REMEDIATION="응답헤더에표시되는정보를최소한으로제한하여설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

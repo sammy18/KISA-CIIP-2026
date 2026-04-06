@@ -60,11 +60,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'LANManager인증수준설정을통해네트워크로그온에사용할Challenge/Response인증프로토콜을결정하며,안전한인증절차를적용하기위함'
-$threat = '안전하지않은LANManager인증수준을사용하는경우인증트래픽을가로채기를통해악의적인계정정보노출위험존재'
-$criteria_good = 'LANManager인증수준정책에NTLMv2응답만보냄(LmCompatibilityLevel>=3)이설정되어있는경우'
-$criteria_bad = 'LANManager인증수준정책에LM및NTLM인증이설정되어있는경우'
-$remediation = '네트워크보안:LANManager인증수준을NTLMv2응답만보내기로설정(LmCompatibilityLevel=3)'
+$purpose = "LAN Manager 인증 수준 설정을 통해 네트워크 로그온에 사용할 Challenge/ Response 인증 프로토콜을결정하며,안전한인증절차를적용하기위함"
+$threat = "안전하지 않은 LAN Manager 인증 수준을 사용하는 경우 인증 트래픽을 가로채기를 통해 악의적인 계정정보노출위험이존재함"
+$criteria_good = ""LAN Manager인증수준" 정책에"NTLMv2응답만보냄"이설정되어있는경우"LAN Manager인증수준`" 정책에`"NTLMv2응답만보냄`"이설정되어있는경우"
+$criteria_bad = ""LAN Manager인증수준" 정책에"LM"및"NTLM"인증이설정되어있는경우"LAN Manager인증수준`" 정책에`"LM`"및`"NTLM`"인증이설정되어있는경우"
+$remediation = "- Windows 2000 : LANManager인증7수준->NTLMv2응답만보내기 - Windows 2003, 2008, 2012, 2016, 2019 : 네트워크보안:LANManager인증수준->NTLMv2응답만보내기"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

@@ -1,0 +1,20 @@
+{
+  "item_id": "D-25",
+  "item_name": "주기적보안패치및벤더권고사항적용",
+  "inspection": {
+    "summary": "MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "주기적 보안패치 적용으로 알려진 취약점 조치 및 보안 강화",
+    "security_threat": "보안패치 미적용 시 알려진 취약점에 노출되어 공격 위험",
+    "judgment_criteria_good": "최신 보안패치가 적용된 최신 버전 사용",
+    "judgment_criteria_bad": "오래된 버전 사용 또는 보안패치 미적용",
+    "remediation": "MySQL Community Downloads 또는 Oracle Support에서 최신 GA 버전 다운로드 및 적용, 주기적 업데이트"
+  },
+  "timestamp": "2026-03-31T21:20:45+09:00",
+  "hostname": "nacsc"
+}

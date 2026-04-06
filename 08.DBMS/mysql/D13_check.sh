@@ -32,11 +32,11 @@ ITEM_ID="D-13"
 ITEM_NAME="DBMS INDEX 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="INDEX 권한을 제어하여 인덱스 조작으로 인한 성능 저하 방지"
-GUIDELINE_THREAT="INDEX 권한 과도 부여시 인덱스 삭제로 성능 저하 유발 가능"
-GUIDELINE_CRITERIA_GOOD="INDEX 권한이 적절하게 제한된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 INDEX 권한 부여"
-GUIDELINE_REMEDIATION="불필요한 INDEX 권한 취소 및 DBA만 보유 권장"
+GUIDELINE_PURPOSE="불필요한데이터소스및드라이버를제거함으로써비인가자에의한데이터베이스접속및자료유출을 차단하기위함"
+GUIDELINE_THREAT="불필요한 ODBC/OLE-DB 데이터 소스를 통한 비인가자의 데이터베이스 접속 및 주요 정보유출에 대한위험이발생할수있음"
+GUIDELINE_CRITERIA_GOOD="불필요한ODBC/OLE-DB가설치되지않은경우"
+GUIDELINE_CRITERIA_BAD="불필요한ODBC/OLE-DB가설치된경우"
+GUIDELINE_REMEDIATION="불필요한ODBC/OLE-DB제거"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

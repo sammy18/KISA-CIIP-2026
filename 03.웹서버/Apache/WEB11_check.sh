@@ -33,11 +33,11 @@ ITEM_ID="WEB-11"
 ITEM_NAME="웹서비스경로설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="웹서버 경로를 기타 업무와 영역이 분리된 별도 경로로 설정하여 침해 확산 방지"
-GUIDELINE_THREAT="웹서비스 경로가 시스템 영역과 분리되지 않을 경우 웹 취약점 악용 시 시스템 전체 위험"
-GUIDELINE_CRITERIA_GOOD="웹서버 경로를 기타 업무와 영역이 분리된 경로로 설정"
-GUIDELINE_CRITERIA_BAD="웹서버 경로가 기본 경로이거나 분리되지 않음"
-GUIDELINE_REMEDIATION="DocumentRoot를 /var/www/html 등 기본 경로가 아닌 별도의 분리된 경로로 설정"
+GUIDELINE_PURPOSE="웹서비스영역내불필요한경로를분리해웹서비스의침해가시스템영역으로확장될가능성을최소화하기위함"
+GUIDELINE_THREAT="웹 서비스 경로를 기타 업무와 영역이 분리되지 않은 경로로 설정하거나, 불필요한 경로가 존재할 경우 외부에서시스템중요파일이나기능에비인가접근이발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹서버경로를기타업무와영역이분리된경로로설정및불필요한경로가존재하지않는경우"
+GUIDELINE_CRITERIA_BAD="웹서버경로를기타업무와영역이분리되지않은경로로설정하거나불필요한경로가있는경우"
+GUIDELINE_REMEDIATION="웹서버의경로를별도의경로로변경및불필요한경로제거설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

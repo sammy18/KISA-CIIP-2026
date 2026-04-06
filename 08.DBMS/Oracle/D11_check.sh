@@ -27,11 +27,11 @@ ITEM_ID="D-11"
 ITEM_NAME="DBA 이외의 인가되지 않은 사용자가 시스템 테이블에 접근할 수 없도록 설정"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="시스템 테이블 접근을 DBA 권한자로만 제한하여 데이터 무결성 및 보안 유지"
-GUIDELINE_THREAT="DBA 이외의 사용자가 시스템 테이블에 접근 가능할 경우 데이터 무결성 훼손 및 보안 침해 위험"
-GUIDELINE_CRITERIA_GOOD="DBA만 시스템 테이블 접근 가능"
-GUIDELINE_CRITERIA_BAD="일반 사용자에게 시스템 테이블 권한 부여"
-GUIDELINE_REMEDIATION="REVOKE SELECT ON SYS.DBA_USERS FROM non_dba_user; 실행하여 일반 사용자의 시스템 테이블 접근 권한 제거"
+GUIDELINE_PURPOSE="시스템 테이블의 일반 사용자 계정 접근 제한 설정 적용 여부를 점검하여 일반 사용자 계정 유출 시 발생할수있는비인가자의시스템테이블접근위험을차단하기위함"
+GUIDELINE_THREAT="시스템테이블의일반사용자계정접근제한설정이되어있지않을경우Object,사용자,테이블및뷰, 작업내역등의시스템테이블에저장된정보가누출될수있음"
+GUIDELINE_CRITERIA_GOOD="시스템테이블에DBA만접근가능하도록설정되어있는경우"
+GUIDELINE_CRITERIA_BAD="시스템테이블에DBA외일반사용자계정이접근가능하도록설정되어있는경우"
+GUIDELINE_REMEDIATION="시스템테이블에일반사용자계정이접근할수없도록설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

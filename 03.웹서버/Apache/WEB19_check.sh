@@ -33,11 +33,11 @@ ITEM_ID="WEB-19"
 ITEM_NAME="웹서비스WebDAV비활성화"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="WebDAV(Web-based Distributed Authoring and Versioning) 기능을 비활성화하여 파일 조작 및 업로드 취약점을 방지하기 위함"
-GUIDELINE_THREAT="WebDAV가 활성화된 경우, 인증되지 않은 파일 업로드, 수정, 삭제 등이 가능하여 악의적인 파일 업로드 및 웹쉘 설치 등 시스템 장악 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="WebDAV가 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD="WebDAV가 활성화된 경우"
-GUIDELINE_REMEDIATION="httpd.conf 또는 apache2.conf에서 mod_dav, mod_dav_fs 모듈 로드 해제 및 DAV 지시어 제거"
+GUIDELINE_PURPOSE="웹서비스내SSI사용을제한하여불법적인데이터접근을차단하여웹서버의보안을강화하기위함"
+GUIDELINE_THREAT="Ÿ 웹서비스내SSI사용을제한하지않을경우,공격자가SSI기능을이용하여시스템명령실행및중요 파일탈취등공격이가능하며,이를통해서버시스템침해,데이터유출등이발생할위험이존재함 Ÿ SSI 공격 시 HTML 페이지에 스크립트를 삽입하거나 원격으로 코드를 실행하여 웹 서비스를 악용할 위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹서비스SSI사용설정이비활성화되어있는경우"
+GUIDELINE_CRITERIA_BAD="웹서비스SSI사용설정이활성화되어있는경우"
+GUIDELINE_REMEDIATION="웹서비스내불필요한SSI사용제한설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

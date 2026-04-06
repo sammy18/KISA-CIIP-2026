@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-06",
+  "item_name": "웹서비스상위디렉터리접근제한설정",
+  "inspection": {
+    "summary": "Nginx는 기본적으로 상위 디렉터리 접근(../)을 차단하지만, alias나 root 설정이 적절한지 수동 검토가 필요합니다. 별도의 경로 조작 테스트 권장.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "grep -E '^\\s*try_files' /etc/nginx/nginx.conf /etc/nginx/conf.d/*.conf 2>/dev/null | grep -v '^\\s*#' | head -5",
+  "command_result": "No try_files configuration found",
+  "guideline": {
+    "purpose": "'..'와 같은 문자 사용 등을 통한 상위 디렉터리 접근 제한 여부 점검",
+    "security_threat": "상위 디렉터리로 이동하는 것이 가능할 경우 접근하고자 하는 디렉터리의 하위 경로에서 상위로 이동하며 정보탐색이 가능하여 중요정보가 노출될 위험이 존재함. 악의적인 목적을 가진 사용자가 중요 파일 및 디렉터리의 접근이 가능하여 데이터가 유출될 위험이 존재함",
+    "judgment_criteria_good": "상위 디렉터리 접근 기능을 제거한 경우",
+    "judgment_criteria_bad": "상위 디렉터리 접근이 가능한 경우",
+    "remediation": "try_files 사용, alias 제한, proper root/path 설정으로 경로 조회 방지"
+  },
+  "timestamp": "2026-03-31T21:27:41+09:00",
+  "hostname": "nacsc"
+}

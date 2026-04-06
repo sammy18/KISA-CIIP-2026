@@ -33,11 +33,11 @@ ITEM_ID="WEB-18"
 ITEM_NAME="웹서비스WebDAV비활성화"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="WebDAV 비활성화로 파일 조작 공격 방지"
-GUIDELINE_THREAT="WebDAV 활성화 시 원격 파일 조작 및 권한 상승 공격 위험"
-GUIDELINE_CRITERIA_GOOD="WebDAV가 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD="WebDAV가 활성화된 경우"
-GUIDELINE_REMEDIATION="web.xml에서 WebDAV Servlet 주석 처리 또는 제거"
+GUIDELINE_PURPOSE="WebDAV서비스를비활성화하여,WebDAV에서발견되는다수의인증우회취약점을제거하고자함"
+GUIDELINE_THREAT="WebDAV가 활성화되어 있는 경우 웹 서비스에 악의적으로 작성된 요청을 이용하여 인증을 우회함으로써 비밀번호로 보호된 WebDAV의 자원에 접근 (디렉터리 열람, 파일 다운로드 등)이 가능하며, WebDAV에 의해 호출된 일부 구성요소에 매개 변수를 정확하게 점검하지 않는 결함이 존재하여,이로인해버퍼오버런이발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="WebDAV서비스를비활성화하고있는경우"
+GUIDELINE_CRITERIA_BAD="WebDAV서비스를활성화하고있는경우"
+GUIDELINE_REMEDIATION="WebDAV서비스비활성화설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -40,11 +40,11 @@ ITEM_ID="D-14"
 ITEM_NAME="데이터베이스의주요설정파일,비밀번호파일등과같은주요파일들의접근권한이적절하게설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="주요 파일들의 접근권한을 제한하여 무단 접근 및 데이터 유출 방지"
-GUIDELINE_THREAT="주요 파일의 접근권한이 과도하게 열려있을 경우 민감정보 유출 위험"
-GUIDELINE_CRITERIA_GOOD="주요 파일이 oracle 소유이며 600/640 권한인 경우"
-GUIDELINE_CRITERIA_BAD="주요 파일에 Other/Group 쓰기 권한이 있는 경우"
-GUIDELINE_REMEDIATION="chmod 600 file 명령어로 권한 변경 및 chown oracle:oinstall file로 소유자 변경"
+GUIDELINE_PURPOSE="데이터베이스의 주요 파일에 관리자를 제외한 일반 사용자의 파일 수정 권한을 제거함으로써 비인가자에의한DBMS주요파일변경이나삭제를방지하고주요정보유출을방지할수있음"
+GUIDELINE_THREAT="데이터베이스주요파일에비인가자가접근하여수정및삭제시데이터베이스운영에장애가발생할수 있으며계정비밀번호정보등중요정보의유출위험이존재함"
+GUIDELINE_CRITERIA_GOOD="주요설정파일및디렉터리의권한설정시일반사용자의수정권한을제거한경우"
+GUIDELINE_CRITERIA_BAD="주요설정파일및디렉터리의권한설정시일반사용자의수정권한을제거하지않은경우"
+GUIDELINE_REMEDIATION="주요설정파일및디렉터리의권한설정변경"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)

@@ -33,11 +33,11 @@ ITEM_ID="WEB-11"
 ITEM_NAME="웹서비스경로설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="웹서버에 설정한 DocumentRoot 경로가 기본 경로와 분리되었는지 여부 점검"
-GUIDELINE_THREAT="웹 서비스 경로를 기타 업무와 영역이 분리되지 않은 경로로 설정하거나, 불필요한 경로가 존재할 경우 외부에서 시스템 중요파일이나 기능에 비인가 접근이 발생할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="웹서버 경로를 기타 업무와 영역이 분리된 경로로 설정 및 불필요한 경로가 존재하지 않는 경우"
-GUIDELINE_CRITERIA_BAD="기본 경로를 사용하는 경우"
-GUIDELINE_REMEDIATION="별도의 웹서비스 전용 디렉터리 사용 (예: /data/www, /srv/webapp), 기본 경로(/usr/share/nginx/html) 변경 권장"
+GUIDELINE_PURPOSE="웹서비스영역내불필요한경로를분리해웹서비스의침해가시스템영역으로확장될가능성을최소화하기위함"
+GUIDELINE_THREAT="웹 서비스 경로를 기타 업무와 영역이 분리되지 않은 경로로 설정하거나, 불필요한 경로가 존재할 경우 외부에서시스템중요파일이나기능에비인가접근이발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹서버경로를기타업무와영역이분리된경로로설정및불필요한경로가존재하지않는경우"
+GUIDELINE_CRITERIA_BAD="웹서버경로를기타업무와영역이분리되지않은경로로설정하거나불필요한경로가있는경우"
+GUIDELINE_REMEDIATION="웹서버의경로를별도의경로로변경및불필요한경로제거설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

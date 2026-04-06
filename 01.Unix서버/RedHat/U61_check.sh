@@ -29,11 +29,11 @@ ITEM_ID="U-61"
 ITEM_NAME="SNMP 서비스 접근 제어 설정"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="허가되지 않은 호스트의 SNMP 접근을 차단하여 내부 정보 유출을 방지하기 위함"
-GUIDELINE_THREAT="접근 제어가 설정되지 않은 경우 네트워크상의 모든 호스트가 시스템 자원 정보 및 모니터링 데이터에 접근할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="SNMP 서비스에 대해 특정 호스트/IP 대역으로 접근이 제한되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="모든 호스트에 대해 SNMP 접근이 허용되어 있는 경우"
-GUIDELINE_REMEDIATION="snmpd.conf에서 com2sec 또는 sec.name 설정을 통해 특정 IP 대역만 허용"
+GUIDELINE_PURPOSE="SNMP접근제어설정을통해비인가자의접근을차단하기위함"
+GUIDELINE_THREAT="SNMP 서비스에 접근 제어가 설정되어 있지 않을 경우, 비인가자의 접근, 네트워크 정보 유출, 시스템 및네트워크설정변경,DoS공격등의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP서비스에접근제어설정이되어있는경우"
+GUIDELINE_CRITERIA_BAD="SNMP서비스에접근제어설정이되어있지않은경우"
+GUIDELINE_REMEDIATION="Ÿ SNMP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ SNMP서비스사용시SNMP접근제어설정하도록설정"
 
 diagnose() {
     local status="양호"

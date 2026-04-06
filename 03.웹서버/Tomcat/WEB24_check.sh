@@ -33,11 +33,11 @@ ITEM_ID="WEB-24"
 ITEM_NAME="별도의업로드경로사용및권한설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="파일 업로드 경로 분리 및 권한 제한으로 웹쉘 업로드 방지"
-GUIDELINE_THREAT="웹 경로 내 업로드 가능 시 악성 스크립트(웹쉘) 업로드 및 실행 위험"
-GUIDELINE_CRITERIA_GOOD="업로드 경로가 분리되고 실행 권한이 제한된 경우"
-GUIDELINE_CRITERIA_BAD="웹 경로에 업로드 가능하거나 실행 권한이 있는 경우"
-GUIDELINE_REMEDIATION="별도 업로드 디렉토리 구성 및 실행 권한 제거, 파일 확장자 검증"
+GUIDELINE_PURPOSE="웹 서버 루트 디렉터리 내 업로드 경로가 아닌 별도의 디렉터리에서 파일을 업로드할 수 있도록 하여 루트디렉터리내악의적인파일업로드및실행을방지하기위함"
+GUIDELINE_THREAT="웹서버내별도의파일업로드경로사용및적절한권한설정을하지않을경우,악의적인목적을가진 파일을업로드하여시스템침투,중요정보유출및변조등의침해사고의가능성이있음"
+GUIDELINE_CRITERIA_GOOD="별도의업로드경로를사용하고일반사용자의접근권한이부여되지않은경우"
+GUIDELINE_CRITERIA_BAD="별도의업로드경로를사용하지않거나,일반사용자의접근권한이부여된경우"
+GUIDELINE_REMEDIATION="기본 경로가 아닌 별도의 업로드 경로를 지정하고, 해당 경로에 대한 일반 사용자의 접근 권한을 제한하도록설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

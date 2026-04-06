@@ -29,11 +29,11 @@ ITEM_ID="D-08"
 ITEM_NAME="안전한암호화알고리즘사용"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="안전한 암호화 알고리즘(SHA-256+, SHA-512, AES) 사용으로 비밀번호 보안 강화"
-GUIDELINE_THREAT="취약한 암호화 알고리즘(MD5, SHA-1) 사용 시 무단 접근 및 데이터 유출 위험"
-GUIDELINE_CRITERIA_GOOD="SHA-256, SHA-512, AES 등 안전한 알고리즘 사용"
-GUIDELINE_CRITERIA_BAD="MD5, SHA-1 등 취약한 알고리즘 사용"
-GUIDELINE_REMEDIATION="Oracle 12.2+로 업그레이드하여 SHA-512/AES 암호화 적용 또는 암호화 설정 변경"
+GUIDELINE_PURPOSE="안전한해시알고리즘사용으로데이터의기밀성및무결성을보장하고,사용자인증을강화하기위함"
+GUIDELINE_THREAT="SHA-1이나MD5와같은오래된알고리즘사용시공격자의무차별대입공격등으로비밀번호유추가 가능하며,데이터변조및유출의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="해시알고리즘SHA-256이상의암호화알고리즘을사용하고있는경우"
+GUIDELINE_CRITERIA_BAD="해시알고리즘SHA-256미만의암호화알고리즘을사용하고있는경우"
+GUIDELINE_REMEDIATION="SHA-256이상의암호화알고리즘적용"
 
 # Vulnerable versions based on FR-030
 VULNERABLE_VERSIONS=("10.2" "11.1" "11.2" "12.1")

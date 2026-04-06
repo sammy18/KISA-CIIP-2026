@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-10",
+  "item_name": "불필요한프록시설정제한",
+  "inspection": {
+    "summary": "불필요한 Proxy 설정이 발견되지 않았습니다. (보안 권고사항 준수)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "grep -E '^\\s*(ProxyPass|ProxyPassReverse|ProxyRequests)' /etc/apache2/apache2.conf /etc/httpd/conf/httpd.conf /etc/apache2/sites-enabled/*.conf 2>/dev/null | grep -v '^\\s*#'",
+  "command_result": "No proxy settings found",
+  "guideline": {
+    "purpose": "불필요한 Proxy 설정을 제한하여 자원 낭비 예방 및 중간자 공격 방지",
+    "security_threat": "불필요한 Proxy 설정으로 인한 자원 낭비 및 시스템 정보 노출 위험",
+    "judgment_criteria_good": "불필요한 Proxy 설정이 제한된 경우",
+    "judgment_criteria_bad": "불필요한 Proxy 설정이 존재하는 경우",
+    "remediation": "Apache 설정 파일에서 불필요한 ProxyPass, ProxyPassReverse, ProxyRequests 설정 제거"
+  },
+  "timestamp": "2026-03-31T21:21:26+09:00",
+  "hostname": "nacsc"
+}

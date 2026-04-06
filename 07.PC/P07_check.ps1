@@ -79,11 +79,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '파일 시스템을 NTFS 포맷으로 설정하여 접근 제어, 암호화, auditing 등 보안 기능 활성화'
-$threat = 'FAT32/exFAT 포맷은 접근 제어(ACL)와 암호화(BitLocker) 기능이 제한되어 보안 위험'
-$criteria_good = '모든 볼륨이 NTFS(또는 ReFS) 포맷'
-$criteria_bad = '일부 볼륨이 FAT32/exFAT 등 NTFS가 아닌 포맷'
-$remediation = '1. 데이터 백업 후`n2. diskmgmt.msc > 해당 볼륨 우클릭 > 포맷 > 파일 시스템 NTFS 선택`n3. 주의: 포맷 시 모든 데이터 삭제됨'
+$purpose = '보안성 기능이 없는 FAT32를 지양하고 사용 권한 및 암호화를 통해 특정 파일에 대한 특정 사용자의 액세스를제한할수있는NTFS를사용하여보안성을강화하기위함'
+$threat = 'FAT32 파일 시스템을 사용하는 경우, 사용자의 컴퓨터에 액세스하는 사람은 누구나 컴퓨터 안에 있는 파일을 읽을 수 있으므로, 중요 파일에 접근할 수 없는 비인가자가 주요 정보를 유출할 수 있는 위험이 존재함'
+$criteria_good = '모든디스크볼륨의파일시스템이NTFS인경우'
+$criteria_bad = '모든디스크볼륨의파일시스템이FAT32인경우'
+$remediation = '모든디스크볼륨에대해파일시스템NTFS로변경'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

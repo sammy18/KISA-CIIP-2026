@@ -32,11 +32,11 @@ ITEM_NAME="hosts.lpd 파일 소유자 및 권한 설정"
 SEVERITY="(하)"
 
 # 가이드라인 정보 (제시된 리스트 기준 반영)
-GUIDELINE_PURPOSE="프린터 서비스 접근 제어 파일을 보호하여 비인가자의 무단 프린트 이용을 방지하기 위함"
-GUIDELINE_THREAT="권한 설정이 부적절할 경우, 비인가자가 파일을 변조하여 허용되지 않은 호스트에서 프린터 서비스를 이용할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/hosts.lpd 파일의 소유자가 root이고 권한이 600 이하인 경우"
-GUIDELINE_CRITERIA_BAD="소유자가 root가 아니거나 권한이 600을 초과하는 경우"
-GUIDELINE_REMEDIATION="소유자를 root로 변경하고 권한을 600으로 설정 (chmod 600 /etc/hosts.lpd)"
+GUIDELINE_PURPOSE="비인가자의임의적인/etc/hosts.lpd 변조를막기위해/etc/hosts.lpd파일제거또는소유자및권한 관리하기위함"
+GUIDELINE_THREAT="/etc/hosts.lpd 파일의접근권한이적절하지않을경우,비인가자가/etc/hosts.lpd파일을수정하여 허용된사용자의서비스를방해할수있으며,호스트정보를획득할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/hosts.lpd 파일이 존재하지않거나, 불가피하게사용시/etc/hosts.lpd 파일의 소유자가 root이고,권한이600이하인경우"
+GUIDELINE_CRITERIA_BAD="/etc/hosts.lpd 파일이 존재하며, 파일의 소유자가 root가 아니거나, 권한이 600 이하가 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/hosts.lpd 파일제거또는/etc/hosts.lpd파일소유자및권한변경설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지

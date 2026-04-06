@@ -60,11 +60,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'Autologon기능을사용하지않도록설정하여시스템계정정보노출을차단하기위함'
-$threat = 'Autologon기능을사용하면침입자가해킹도구를이용하여레지스트리에저장된로그인계정및비밀번호정보유출위험존재'
-$criteria_good = 'AutoAdminLogon값이없거나0으로설정된경우'
-$criteria_bad = 'AutoAdminLogon값이1로설정된경우'
-$remediation = '해당레지스트리값이존재하는경우0으로설정(HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\AutoAdminLogon=0)'
+$purpose = "Autologon기능을사용하지않도록설정하여시스템계정정보노출을차단하기위함"
+$threat = "Autologon 기능을 사용하면 침입자가 해킹 도구를 이용하여 레지스트리에 저장된 로그인 계정 및 비밀번호정보유출위험이존재함"
+$criteria_good = "AutoAdminLogon값이없거나0으로설정된경우"
+$criteria_bad = "AutoAdminLogon값이1로설정된경우"
+$remediation = "해당레지스트리값이존재하는경우0으로설정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

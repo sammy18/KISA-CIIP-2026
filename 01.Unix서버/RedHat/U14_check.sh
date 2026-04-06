@@ -30,11 +30,11 @@ ITEM_NAME="root 홈, 패스 디렉터리 권한 및 패스 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="비인가자가 불법적으로 생성한 디렉터리 및 명령어를 우선으로 실행되지 않도록 설정하기 위함"
-GUIDELINE_THREAT="root 계정의 PATH 환경변수에 현재 디렉터리를 지칭하는 “.” 표시가 우선하면 악의적인 기능이 실행될 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="PATH 환경변수에 “.” 이 맨 앞이나 중간에 포함되지 않은 경우"
-GUIDELINE_CRITERIA_BAD="PATH 환경변수에 “.” 이 맨 앞이나 중간에 포함된 경우"
-GUIDELINE_REMEDIATION="PATH 환경변수에서 “.”을 마지막으로 이동하거나 삭제"
+GUIDELINE_PURPOSE="비인가자가불법적으로생성한디렉터리및명령어를우선으로실행되지않도록설정하기위함"
+GUIDELINE_THREAT="root 계정의 PATH 환경변수에 정상적인 관리자 명령어(ls, mv, cp 등)의 디렉터리 경로보다 현재 디렉터리를 지칭하는 '.' 표시가 우선하면 현재 디렉터리에 변조된 명령어를 삽입하여 관리자 명령어 입력시악의적인기능이실행될수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="PATH환경변수에'.'이맨앞이나중간에포함되지않은경우"
+GUIDELINE_CRITERIA_BAD="PATH환경변수에'.'이맨앞이나중간에포함된경우"
+GUIDELINE_REMEDIATION="root 계정의환경설정파일(/.profile, /.bashrc 등)과 시스템환경설정파일(/etc/profile등)에설정된 PATH환경변수에서현재디렉터리를나타내는'.'을PATH환경변수의마지막으로이동하도록설정 ※ /etc/profile파일,root계정,일반사용자계정의환경설정파일을순차적으로검색하여확인"
 
 diagnose() {
     local status="양호"

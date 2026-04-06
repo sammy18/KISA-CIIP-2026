@@ -68,11 +68,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'Guest 계정 비활성화로 무단 로그인 접근 방지 및 시스템 보안 강화'
-$threat = 'Guest 계정 활성화 시 비밀번호 없이 시스템 접근 가능하며, 무단 접근 및 데이터 유출 위험 존재'
-$criteria_good = 'Guest 계정이 비활성화됨(Disabled)'
-$criteria_bad = 'Guest 계정이 활성화됨(Enabled)'
-$remediation = '명령 프롬프트: net user Guest /active:no 실행, 또는 GUI: 로컬 사용자 및 그룹 > Guest 계정 속성 > 계정 사용 안 함 선택'
+$purpose = "Guest계정을비활성화하여불특정다수의임시적인시스템접근을차단하기위함"
+$threat = "Guest 계정은 시스템에 임시로 액세스해야 하는 사용자용 계정으로, 해당 계정을 사용하여 권한 없는 사용자가시스템에익명으로액세스할수있으므로비인가자접근,정보유출등보안위험이존재함"
+$criteria_good = "Guest계정이비활성화되어있는경우"
+$criteria_bad = "Guest계정이활성화되어있는경우"
+$remediation = "Guest계정비활성화"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

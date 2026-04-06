@@ -1,0 +1,20 @@
+{
+  "item_id": "D-23",
+  "item_name": "xp_cmdshell 확장 저장 프로시저 사용 제한",
+  "inspection": {
+    "summary": "PostgreSQL 클라이언트 도구가 설치되지 않았습니다. psql, pg_isready (optional) 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "xp_cmdshell 확장 저장 프로시저를 비활성화하여 OS 명령 실행 방지",
+    "security_threat": "xp_cmdshell 활성화 시 DB에서 OS 명령 실행 가능하여 시스템 장악 위험",
+    "judgment_criteria_good": "xp_cmdshell가 비활성화된 경우",
+    "judgment_criteria_bad": "xp_cmdshell가 활성화된 경우",
+    "remediation": "N/A - PostgreSQL에는 xp_cmdshell 기능이 없음"
+  },
+  "timestamp": "2026-03-31T21:02:48+09:00",
+  "hostname": "nacsc"
+}

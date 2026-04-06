@@ -1,0 +1,20 @@
+{
+  "item_id": "D-24",
+  "item_name": "DBMS 기본 포트 사용 점검",
+  "inspection": {
+    "summary": "MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "기본 포트 변경으로 스캔 공격 방지",
+    "security_threat": "기본 포트 사용 시 자동 스캔 도구에 노출 위험",
+    "judgment_criteria_good": "기본 포트가 아닌 경우",
+    "judgment_criteria_bad": "기본 포트(3306) 사용",
+    "remediation": "MySQL 설정 파일에서 포트 번호 변경 권장"
+  },
+  "timestamp": "2026-03-31T21:20:42+09:00",
+  "hostname": "nacsc"
+}

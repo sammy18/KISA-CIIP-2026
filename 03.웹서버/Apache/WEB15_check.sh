@@ -33,11 +33,11 @@ ITEM_ID="WEB-15"
 ITEM_NAME="웹서비스의불필요한스크립트매핑제거"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="불필요한 스크립트 매핑(CGI, PHP 등)을 제거하여 악의적인 파일 업로드 및 실행을 방지하기 위함"
-GUIDELINE_THREAT="불필요한 스크립트 핸들러가 매핑된 경우, 공격자가 취약점을 악용하여 악의적인 스크립트를 업로드하고 실행시켜 시스템을 장악할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한 스크립트 매핑이 제거된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 스크립트 매핑이 존재하는 경우"
-GUIDELINE_REMEDIATION="httpd.conf 또는 apache2.conf에서 AddHandler, AddType, ScriptAlias, Action 지시어를 확인하고 불필요한 매핑 제거"
+GUIDELINE_PURPOSE="웹서비스에서사용하지않는불필요스크립트매핑이존재하는지점검하여잠재적보안위협을방지하기위함"
+GUIDELINE_THREAT="웹서비스에서불필요한스크립트매핑을제거하지않은경우,버퍼오버플로우(Buffer Overflow),서비스 거부공격(Denial of Service), 크로스사이트스크립팅(CrossSiteScripting)등의공격위험이존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한스크립트매핑이존재하지않는경우"
+GUIDELINE_CRITERIA_BAD="불필요한스크립트매핑이존재하는경우"
+GUIDELINE_REMEDIATION="불필요한스크립트매핑존재여부점검및제거설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

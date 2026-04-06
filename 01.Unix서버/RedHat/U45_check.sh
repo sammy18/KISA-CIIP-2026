@@ -20,11 +20,11 @@ source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${
 
 ITEM_ID="U-45"; ITEM_NAME="메일 서비스 버전 점검"; SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="최신 버전의 메일 서비스를 사용하여 프로그램 취약점을 이용한 침해 사고를 방지하기 위함"
-GUIDELINE_THREAT="오래된 버전의 메일 서비스를 사용할 경우 알려진 보안 취약점을 통해 원격 코드 실행 및 시스템 장악 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="메일 서비스(Sendmail 등)를 사용하지 않거나, 사용 시 최신 버전의 패치가 적용된 경우"
-GUIDELINE_CRITERIA_BAD="메일 서비스(Sendmail 등)를 사용하며 최신 버전이 아니거나 보안 패치가 미흡한 경우"
-GUIDELINE_REMEDIATION="최신 버전 업데이트 적용"
+GUIDELINE_PURPOSE="메일 서비스 사용 목적 검토 및 취약점이 없는 버전의 사용 유무 점검으로 최적화된 메일 서비스의 운영하기위함"
+GUIDELINE_THREAT="취약점이 발견된 메일 버전의 경우 버퍼 오버플로우(Buffer Overflow) 공격에 의한 시스템 권한 획득 및주요정보노출의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="메일서비스버전이최신버전인경우"
+GUIDELINE_CRITERIA_BAD="메일서비스버전이최신버전이아닌경우"
+GUIDELINE_REMEDIATION="Ÿ 메일서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 메일서비스사용시패치관리정책을수립하여주기적으로패치적용설정"
 
 diagnose() {
     local status="양호"; local diagnosis_result="GOOD"

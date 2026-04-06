@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-26",
+  "item_name": "로그디렉터리및파일권한설정",
+  "inspection": {
+    "summary": "Apache 웹 서버가 실행 중이 아닙니다.",
+    "status": "N/A"
+  },
+  "final_result": "N/A",
+  "command": "pgrep -x 'httpd|apache2'",
+  "command_result": "Apache process not found",
+  "guideline": {
+    "purpose": "로그 디렉터리 및 파일의 접근 권한을 적절하게 설정하여 비인가자의 무단 접근 및 로그 정보 유출 방지",
+    "security_threat": "로그 디렉터리 및 파일의 권한이 부적절하면 비인가자에게 비밀번호 정보가 노출되거나 로그 파일이 변조될 수 있어 보안 사고 발생 위험 존재",
+    "judgment_criteria_good": "로그 파일 권한이 600 또는 640으로 설정되고, 로그 디렉터리 권한이 700 또는 750로 설정된 경우",
+    "judgment_criteria_bad": "로그 파일 또는 디렉터리 권한이 기준보다 취약한 경우",
+    "remediation": "chmod 명령어로 로그 파일 권한 600 또는 640으로 설정, 로그 디렉터리 권한 700 또는 750로 설정"
+  },
+  "timestamp": "2026-03-31T21:01:22+09:00",
+  "hostname": "nacsc"
+}

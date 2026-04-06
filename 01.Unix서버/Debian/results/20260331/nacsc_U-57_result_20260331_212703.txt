@@ -1,0 +1,25 @@
+============================================================
+[U-57] Ftpusers 파일 설정
+============================================================
+[U-57-START]
+
+FTP 서비스가 설치되어 있지 않습니다.
+
+[현황]
+1) 진단 확인
+command: ls -la /etc/ftpusers /etc/vsftpd/ftpusers /etc/pure-ftpd/ftpusers 2>/dev/null
+command_result:
+FTP Service: [not installed], ftpusers: [FILE NOT FOUND]
+
+[U-57-END]
+
+[U-57]Result : N/A
+
+[참고]
+진단 목적: ftpusers 파일에 root, bin, daemon 등 시스템 계정을 등록하여 FTP 접속 제한
+보안 위협: ftpusers 파일 설정 미흡 시 시스템 관리자 계정이 FTP를 통해 무단 접속하여 시스템 장악 및 정보 유출 위험
+양호 기준: ftpusers 파일에 시스템 계정이 등록된 경우
+취약 기준:  ftpusers 파일이 없거나 시스템 계정 미등록 / N/A: FTP 서비스 미설치
+조치 방법: ftpusers 파일에 root, bin, daemon, sys, uucp 등 시스템 계정 추가: echo 'root' >> /etc/ftpusers
+
+============================================================

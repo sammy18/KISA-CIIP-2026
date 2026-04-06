@@ -33,11 +33,11 @@ ITEM_ID="WEB-09"
 ITEM_NAME="웹서비스프로세스권한제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="웹서비스 프로세스가 관리자 권한이 아닌 최소 권한으로 구동되는지 확인"
-GUIDELINE_THREAT="웹 프로세스가 관리자 권한으로 구동 시 취약점 악용 시 시스템 권한 탈취 위험"
-GUIDELINE_CRITERIA_GOOD="웹 프로세스가 관리자 권한이 아닌 별도 계정으로 구동"
+GUIDELINE_PURPOSE="웹프로세스가웹서비스운영에필요한최소한의권한만을갖도록제한함으로써웹사이트방문자가웹 서비스의 취약점을 이용해 시스템에 대한 어떤 권한도 획득할 수 없도록 하여 침해사고 발생 시 피해 범위확산을방지하기위함"
+GUIDELINE_THREAT="웹 프로세스 권한을 제한하지 않은 경우, 웹 사이트 방문자가 웹 서비스의 취약점을 이용하여 시스템 권한을 획득할 수 있으며, 웹 취약점을 통해 접속 권한을 획득한 경우에는 관리자 권한을 획득하여 서버에접속후정보의변경,훼손및유출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹프로세스(웹서비스)가관리자권한이부여된계정이아닌운영에필요한최소한의권한을가진 별도의계정으로구동되고있는경우"
 GUIDELINE_CRITERIA_BAD="웹 프로세스가 root 또는 Administrator 권한으로 구동"
-GUIDELINE_REMEDIATION="Apache 서비스를 root가 아닌 www-data, daemon 등 전용 계정으로 구동하도록 envvars 설정"
+GUIDELINE_REMEDIATION="웹서비스프로세스구동시관리자권한이아닌운영에필요한최소한의권한을가진계정으로구동설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"
@@ -80,29 +80,46 @@ diagnose() {
     fi
 
     # Apache 프로세스 실행 사용자 확인 (httpd 또는 apache2)
+    # 부모 프로세스(master)는 root로 실행되는 것이 정상임
+    # 자식 프로세스(worker)가 root로 실행되면 취약
+    local root_child=false
+    local child_count=0
+
     if pgrep -x "httpd" > /dev/null; then
-        apache_user=$(ps aux | grep '[h]ttpd' | awk '{print $1}' | head -1 || true)
+        # head -1은 부모 프로세스(root)이므로 건너뛰고 나머지 확인
+        while IFS= read -r user; do
+            child_count=$((child_count + 1))
+            if [ "$child_count" -gt 1 ] && [ "$user" = "root" ]; then
+                root_child=true
+                break
+            fi
+        done < <(ps aux | grep '[h]ttpd' | awk '{print $1}')
     elif pgrep -x "apache2" > /dev/null; then
-        apache_user=$(ps aux | grep '[a]pache2' | awk '{print $1}' | head -1 || true)
+        while IFS= read -r user; do
+            child_count=$((child_count + 1))
+            if [ "$child_count" -gt 1 ] && [ "$user" = "root" ]; then
+                root_child=true
+                break
+            fi
+        done < <(ps aux | grep '[a]pache2' | awk '{print $1}')
     fi
 
-    command_executed="ps aux | grep -E 'httpd|apache2' | awk '{print \$1}' | head -1"
-    command_result="${apache_user}"
+    command_executed="ps aux | grep -E 'httpd|apache2' | awk '{print \$1}'"
+    command_result="$(ps aux | grep -E '[h]ttpd|[a]pache2' | awk '{print $1}' | tr '\n' ' ')"
 
-    if [ -z "${apache_user}" ]; then
+    if [ $child_count -le 1 ]; then
         diagnosis_result="MANUAL"
         status="수동진단"
         inspection_summary="Apache 프로세스 실행 사용자를 확인할 수 없습니다. 수동 확인이 필요합니다."
-    elif [ "${apache_user}" = "root" ]; then
+    elif [ "$root_child" = true ]; then
         diagnosis_result="VULNERABLE"
         status="취약"
         is_root=true
-        inspection_summary="Apache 프로세스가 root 권한으로 구동 중입니다. 보안 권고사항 미준수."
+        inspection_summary="Apache 자식 프로세스(worker)가 root 권한으로 구동 중입니다. 보안 권고사항 미준수."
     else
-        # www-data, daemon, apache 등 전용 계정인 경우
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="Apache 프로세스가 ${apache_user} 계정으로 구동 중입니다. (보안 권고사항 준수)"
+        inspection_summary="Apache 자식 프로세스가 root 이외의 계정으로 구동 중입니다. (보안 권고사항 준수)"
     fi
 
     save_dual_result "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" "${inspection_summary}" "${command_result}" "${command_executed}" "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"

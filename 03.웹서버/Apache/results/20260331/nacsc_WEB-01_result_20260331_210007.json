@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-01",
+  "item_name": "Default관리자계정명변경",
+  "inspection": {
+    "summary": "이 항목은 Tomcat/IIS/JEUS 대상이며 Apache는 해당하지 않습니다. Apache는 기본 관리자 계정 개념이 없으며 인증은 별도 설정 파일(.htaccess, htpasswd) 또는 모듈(mod_auth)로 관리합니다.",
+    "status": "N/A"
+  },
+  "final_result": "N/A",
+  "command": "N/A",
+  "command_result": "N/A",
+  "guideline": {
+    "purpose": "기본 관리자 계정명과 같은 알려진 계정명을 유추하기 어려운 계정명으로 변경 후 사용하여 공격자에 의한 추측 공격 및 무단 접근 등을 방지하고 보안을 강화하기 위함",
+    "security_threat": "기본 관리자 계정명을 변경하지 않고 사용하는 경우, 비인가자의 계정명 유추 공격으로 관리자 권한 탈취 및 시스템 침입 등의 위험이 존재함",
+    "judgment_criteria_good": "대상: Tomcat, IIS, JEUS (Apache는 해당하지 않음)",
+    "judgment_criteria_bad": "대상: Tomcat, IIS, JEUS (Apache는 해당하지 않음)",
+    "remediation": "Apache는 이 항목이 적용되지 않음 (Tomcat/IIS/JEUS만 해당)"
+  },
+  "timestamp": "2026-03-31T21:00:09+09:00",
+  "hostname": "nacsc"
+}

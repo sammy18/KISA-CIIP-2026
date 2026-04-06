@@ -33,11 +33,11 @@ ITEM_ID="WEB-26"
 ITEM_NAME="로그디렉터리및파일권한설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="로그 디렉터리 및 파일의 접근 권한을 적절하게 설정하여 비인가자의 무단 접근 및 로그 정보 유출 방지"
-GUIDELINE_THREAT="로그 디렉터리 및 파일의 권한이 부적절하면 비인가자에게 비밀번호 정보가 노출되거나 로그 파일이 변조될 수 있어 보안 사고 발생 위험 존재"
-GUIDELINE_CRITERIA_GOOD="로그 파일 권한이 600 또는 640으로 설정되고, 로그 디렉터리 권한이 700 또는 750로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="로그 파일 또는 디렉터리 권한이 기준보다 취약한 경우"
-GUIDELINE_REMEDIATION="chmod 명령어로 로그 파일 권한 600 또는 640으로 설정, 로그 디렉터리 권한 700 또는 750로 설정"
+GUIDELINE_PURPOSE="로그 파일에 공격자에게 유용한 정보가 들어있을 수 있으므로 권한 관리를 통해 비인가자에 의한 정보유출,로그파일의훼손및변조를방지하기위함"
+GUIDELINE_THREAT="로그 디렉터리 및 파일에 적절한 권한이 설정되어 있지 않은 경우, 비인가자가 로그 파일에 접근할 수 있으므로사용자및시스템정보유출,로그파일조작등의공격위험이존재함"
+GUIDELINE_CRITERIA_GOOD="로그디렉터리및파일에일반사용자의접근권한이없는경우"
+GUIDELINE_CRITERIA_BAD="로그디렉터리및파일에일반사용자의접근권한이있는경우"
+GUIDELINE_REMEDIATION="로그디렉터리및파일에일반사용자접근권한제거설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

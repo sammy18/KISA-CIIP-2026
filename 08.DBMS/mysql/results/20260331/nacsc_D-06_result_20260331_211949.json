@@ -1,0 +1,20 @@
+{
+  "item_id": "D-06",
+  "item_name": "DB사용자계정을개별적으로부여하여사용",
+  "inspection": {
+    "summary": "MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "DB 사용자 계정을 개별 부여하여 공유 계정 사용을 방지하고 사용자별 책임성을 확보하기 위함",
+    "security_threat": "공유 계정 사용 시 보안 incident 발생 시 책임 소재 파악 어려움",
+    "judgment_criteria_good": "사용자별 개별 계정을 부여하여 사용하는 경우",
+    "judgment_criteria_bad": "다중 사용자가 공유 계정을 사용하는 경우",
+    "remediation": "사용자별 개별 계정 생성 및 공유 계정 삭제"
+  },
+  "timestamp": "2026-03-31T21:19:51+09:00",
+  "hostname": "nacsc"
+}

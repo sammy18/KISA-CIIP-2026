@@ -33,11 +33,11 @@ ITEM_ID="WEB-01"
 ITEM_NAME="Default관리자계정명변경"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="기본 관리자 계정명(tomcat, admin 등)을 변경하여 공격자에 의한 추측 공격 및 무단 접근 방지"
-GUIDELINE_THREAT="기본 관리자 계정명 사용 시 계정 및 비밀번호 추측 공격이 가능하고 불법 접근, 데이터 유출, 시스템 장애 등의 보안 사고 발생 위험"
-GUIDELINE_CRITERIA_GOOD="관리자 페이지를 사용하지 않거나 계정명이 기본 계정명(tomcat, admin)으로 설정되어 있지 않은 경우"
-GUIDELINE_CRITERIA_BAD="계정명이 기본 계정명으로 설정되어 있거나 추측하기 쉬운 계정명을 사용하는 경우"
-GUIDELINE_REMEDIATION="tomcat-users.xml에서 기본 계정명(tomcat, admin)을 추측하기 어려운 계정명으로 변경"
+GUIDELINE_PURPOSE="기본 관리자 계정명과 같은 알려진 계정명을 유추하기 어려운 계정명으로 변경 후 사용하여 공격자에 의한추측공격및무단접근등을방지하고보안을강화하기위함"
+GUIDELINE_THREAT="기본관리자계정명을변경하지않고사용할경우,공격자에의한계정및비밀번호추측공격이가능하고, 이를통해불법적인접근,데이터유출,시스템장애등의보안사고가발생할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="관리자페이지를사용하지않거나,계정명이기본계정명으로설정되어있지않은경우"
+GUIDELINE_CRITERIA_BAD="계정명이 기본 계정명으로 설정되어 있거나, 추측하기 쉬운 문자 조합으로 이루어진 계정명을 사용하는경우"
+GUIDELINE_REMEDIATION="기본관리자계정명을추측하기어려운계정명으로설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

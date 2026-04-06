@@ -28,11 +28,11 @@ ITEM_ID="D-09"
 ITEM_NAME="일정횟수의로그인실패시이에대한잠금정책설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="로그인 실패 횟수 제한으로 무차별 대입 공격 방지"
-GUIDELINE_THREAT="로그인 실패 횟수 제한 미설정 시 무차별 대입 공격(Brute Force) 가능"
-GUIDELINE_CRITERIA_GOOD="FAILED_LOGIN_ATTEMPTS가 적절하게 설정된 경우 (3-10회 권장)"
-GUIDELINE_CRITERIA_BAD="FAILED_LOGIN_ATTEMPTS가 UNLIMITED 또는 미설정인 경우"
-GUIDELINE_REMEDIATION="PROFILE 설정: ALTER PROFILE DEFAULT LIMIT FAILED_LOGIN_ATTEMPTS 5;"
+GUIDELINE_PURPOSE="일정 횟수의 로그인 실패 시 계정 잠금 정책을 설정하여 비인가자의 자동화된 무차별 대입 공격, 사전 대입공격등을통한사용자계정비밀번호유출을방지하기위함"
+GUIDELINE_THREAT="일정한 횟수의 로그인 실패 횟수를 설정하여 제한하지 않으면 자동화된 방법으로 계정 및 비밀번호를 획득하여데이터베이스에접근하여정보가유출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="로그인시도횟수를제한하는값을설정한경우"
+GUIDELINE_CRITERIA_BAD="로그인시도횟수를제한하는값을설정하지않은경우"
+GUIDELINE_REMEDIATION="로그인시도횟수제한값설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

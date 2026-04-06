@@ -88,11 +88,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = '원격에서 로그 파일의 접근을 차단하여 로그 파일의 훼손 및 변조를 차단'
-$threat = '원격 익명 사용자의 시스템 로그 파일에 접근이 가능한 경우 ''중요 시스템 로그'' 파일 및 ''응용프로그램 로그'' 등 중요 보안 감사 정보의 변조·삭제·유출의 위험 존재'
-$criteria_good = '로그 디렉터리의 접근 권한에 Everyone 권한이 없는 경우'
-$criteria_bad = '로그 디렉터리의 접근 권한에 Everyone 권한이 있는 경우'
-$remediation = '로그 디렉터리의 접근 권한에서 Everyone 제거 (%systemroot%\System32\config)'
+$purpose = "원격에서로그파일에접근하는것을차단하여로그파일의훼손및변조를차단하기위함"
+$threat = "원격익명사용자의시스템로그파일에접근이가능한경우'중요시스템로그' 파일및'응용프로그램 로그'등중요보안감사정보의변조·삭제·유출의위험이존재함"
+$criteria_good = "로그디렉터리의접근권한에Everyone권한이없는경우"
+$criteria_bad = "로그디렉터리의접근권한에Everyone권한이있는경우"
+$remediation = "로그디렉터리의접근권한에Everyone제거"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

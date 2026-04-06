@@ -1,0 +1,20 @@
+{
+  "item_id": "U-41",
+  "item_name": "불필요한 automountd 제거",
+  "inspection": {
+    "summary": "automount 서비스 비활성화됨",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "systemctl list-unit-files | grep -E 'autofs|amd|automount'; systemctl is-active autofs amd",
+  "command_result": "[Automount Service Check]\\nNo automount services found\\n\\n[Service Status]\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U41_check.sh: line 123: systemctl: command not found\\ninactive\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U41_check.sh: line 123: systemctl: command not found\\ninactive",
+  "guideline": {
+    "purpose": "로컬 공격자가 automountd 데몬에 RPC(Remote Procedure Call)를 보낼 수 있는 취약점이 존재하기때문에해당서비스를중지시키기위함",
+    "security_threat": "파일 시스템의 마운트 옵션을 변경하여 root 권한을 획득할 수 있으며, 로컬 공격자가 automountd 프로세스권한으로임의의명령을실행할수있는위험이존재함",
+    "judgment_criteria_good": "automountd서비스가비활성화된경우",
+    "judgment_criteria_bad": "automountd서비스가활성화된경우",
+    "remediation": "automountd서비스비활성화설정"
+  },
+  "timestamp": "2026-03-31T21:05:40+09:00",
+  "hostname": "nacsc"
+}

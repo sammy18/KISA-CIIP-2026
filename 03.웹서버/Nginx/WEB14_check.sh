@@ -32,11 +32,11 @@ ITEM_ID="WEB-14"
 ITEM_NAME="Nginx default server block 설정"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="기본 server block 설정으로 잘못된 요청 처리"
-GUIDELINE_THREAT="default_server가 없으면 첫 번째 설정이 기본값으로 사용됨"
-GUIDELINE_CRITERIA_GOOD="default_server 명시적 설정"
-GUIDELINE_CRITERIA_BAD="설정되지 않음"
-GUIDELINE_REMEDIATION="nginx.conf에 listen 80 default_server; 설정 권장"
+GUIDELINE_PURPOSE="웹 서비스 경로의 파일들에 관리자를 제외한 일반 사용자의 파일 접근 권한을 제거함으로써 인가되지 않은사용자가허용되지않는파일에접근하는것을차단하기위함"
+GUIDELINE_THREAT="웹서비스경로파일에비인가자가접근가능한경우,해당파일의수정및삭제로인해웹서비스운영 장애및계정비밀번호정보등의중요한정보가노출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="주요설정파일및디렉터리에불필요한접근권한이부여되지않은경우"
+GUIDELINE_CRITERIA_BAD="주요설정파일및디렉터리에불필요한접근권한이부여된경우"
+GUIDELINE_REMEDIATION="주요설정파일및디렉터리에불필요한접근권한제거설정"
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"
 

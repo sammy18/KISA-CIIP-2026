@@ -1,0 +1,20 @@
+{
+  "item_id": "U-35",
+  "item_name": "공유 서비스에 대한 익명 접근 제한 설정",
+  "inspection": {
+    "summary": "FTP 서비스 미설치됨",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "command -v vsftpd proftpd pure-ftpd; systemctl is-active vsftpd proftpd pure-ftpd",
+  "command_result": "[FTP Service Check]\\nvsftpd not found\\nproftpd not found\\npure-ftpd not found\\n\\n[Service Status]\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U35_check.sh: line 123: systemctl: command not found\\ninactive\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U35_check.sh: line 123: systemctl: command not found\\ninactive\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U35_check.sh: line 123: systemctl: command not found\\ninactive",
+  "guideline": {
+    "purpose": "FTP 등 공유 서비스의 익명 접속을 제한하여 무단 액세스 및 데이터 유출 방지",
+    "security_threat": "익명 FTP 접속 허용 시 비인가자가 시스템 자원 무단 사용 및 정보 유출 위험",
+    "judgment_criteria_good": "익명 접속이 차단된 경우",
+    "judgment_criteria_bad": " 익명 접속(anonymous/ftp 계정)이 가능한 경우 / N/A: FTP 서비스 미사용",
+    "remediation": "FTP 설정 파일에서 anonymous 접속 차단 및 ftp 계정 사용 중지"
+  },
+  "timestamp": "2026-03-31T21:05:19+09:00",
+  "hostname": "nacsc"
+}

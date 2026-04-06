@@ -72,11 +72,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '공유 폴더의 익명 접근 제한으로 무단 데이터 접근 방지'
-$threat = 'Everyone 또는 Anonymous Logon에게 공유 권한 허용 시 인증 없이 데이터 접근 가능'
-$criteria_good = '공유 폴더에 익명 접근 권한이 제한된 경우'
-$criteria_bad = '익명 접근 허용된 공유 폴더가 있는 경우'
-$remediation = '공유 폴더 속성 > 공유 탭에서 Everyone, Anonymous Logon 권한 제거'
+$purpose = "공유익명접속을제한하여,중요정보의불법유출을차단하기함"
+$threat = "공유익명접속이허용되면핵심기밀자료나내부정보의불법유출위험이존재함"
+$criteria_good = "공유서비스를사용하지않거나,익명인증사용안함으로설정된경우"
+$criteria_bad = "공유서비스를사용하거나,익명인증사용함으로설정된경우"
+$remediation = "공유서비스를사용하지않는경우서비스중지,사용할경우익명인증사용안함설정적용"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

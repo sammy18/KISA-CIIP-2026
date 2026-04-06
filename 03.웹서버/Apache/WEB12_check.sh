@@ -33,11 +33,11 @@ ITEM_ID="WEB-12"
 ITEM_NAME="웹서비스링크사용금지"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="심볼릭 링크, aliases 등을 제한하여 경로 검증 우회 접근 방지"
-GUIDELINE_THREAT="심볼릭 링크 허용 시 허용하지 않은 경로에서 시스템 파일 접근 위험"
-GUIDELINE_CRITERIA_GOOD="FollowSymLinks가 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD="FollowSymLinks가 활성화된 경우"
-GUIDELINE_REMEDIATION="Apache 설정 파일에서 'Options -FollowSymLinks' 설정"
+GUIDELINE_PURPOSE="무분별한 심볼릭 링크, 별칭(aliases) 등을 제거하여 허용하지 않은 경로에서의 접근을 차단해 경로 검증을우회한시스템파일접근을방지하기위함"
+GUIDELINE_THREAT="Ÿ 보안상 민감한 내용이 포함되어 있는 파일이 악의적인 사용자에게 노출될 경우 침해사고로 이어질 위험이존재함 Ÿ 접근을 허용한 웹 디렉터리 내에 서버의 다른 디렉터리나 파일들에 접근할 수 있는 심볼릭 링크, aliases,바로가기등이존재하는경우해당링크를통해허용하지않은다른디렉터리에액세스할수 있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="심볼릭링크,aliases,바로가기등의링크사용을허용하지않는경우"
+GUIDELINE_CRITERIA_BAD="심볼릭링크,aliases,바로가기등의링크사용을허용하는경우"
+GUIDELINE_REMEDIATION="웹서비스링크사용제한설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-22",
+  "item_name": "웹서비스에러페이지사용",
+  "inspection": {
+    "summary": "Apache 설정 파일을 찾을 수 없습니다. httpd.conf 또는 apache2.conf 파일에서 ErrorDocument 설정을 수동으로 확인하세요.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "ls -la /etc/apache2/apache2.conf /etc/httpd/conf/httpd.conf /usr/local/apache2/conf/httpd.conf",
+  "command_result": "Apache configuration file not found",
+  "guideline": {
+    "purpose": "기본 에러 페이지 대신 커스텀 에러 페이지를 사용하여 서버 정보 노출을 방지하기 위함",
+    "security_threat": "기본 에러 페이지 사용 시 서버 버전, OS 정보, 스택 트레이스 등 시스템 정보가 노출되어 공격자에게 중요한 정보를 제공할 위험이 존재함",
+    "judgment_criteria_good": "커스텀 에러 페이지가 설정된 경우",
+    "judgment_criteria_bad": "기본 에러 페이지를 사용하는 경우",
+    "remediation": "httpd.conf 또는 apache2.conf에 ErrorDocument 지시어로 주요 에러 코드(400, 403, 404, 500 등)에 대한 커스텀 에러 페이지 설정"
+  },
+  "timestamp": "2026-03-31T21:01:10+09:00",
+  "hostname": "nacsc"
+}

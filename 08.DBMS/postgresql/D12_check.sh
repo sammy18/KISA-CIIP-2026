@@ -32,11 +32,11 @@ ITEM_ID="D-12"
 ITEM_NAME="리스너보안설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="Oracle 리스너에 비밀번호를 설정하여 무단 접속 방지"
-GUIDELINE_THREAT="리스너 비밀번호 미설정 시 무단 리스너 제어 위험"
-GUIDELINE_CRITERIA_GOOD="리스너 비밀번호가 설정된 경우"
-GUIDELINE_CRITERIA_BAD="리스너 비밀번호가 설정되지 않은 경우"
-GUIDELINE_REMEDIATION="N/A - PostgreSQL에는 Oracle Listener 기능이 없음"
+GUIDELINE_PURPOSE="Listener의 Owner는 DBA가 아니더라도Listener를shutdown시키거나DB서버에임의의파일을 생성할 수 있으며, 원격에서 LSNRCTL 유틸리티를 사용하여 listener.ora 파일에 대한 변경이 가능하므로Listener에비밀번호를설정하여비인가자가이를수정하지못하도록하기위함"
+GUIDELINE_THREAT="Listener에비밀번호가설정되지않았을경우DoS, 정보획득, Listener프로세스를중지시킬수있는 위험이존재함"
+GUIDELINE_CRITERIA_GOOD="Listener의비밀번호가설정된경우"
+GUIDELINE_CRITERIA_BAD="Listener의비밀번호가설정되어있지않은경우"
+GUIDELINE_REMEDIATION="Listener비밀번호설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

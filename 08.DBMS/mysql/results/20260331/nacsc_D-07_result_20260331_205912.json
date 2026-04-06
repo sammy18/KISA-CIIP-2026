@@ -1,0 +1,20 @@
+{
+  "item_id": "D-07",
+  "item_name": "root권한으로서비스구동제한",
+  "inspection": {
+    "summary": "MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "command -v [required_tool]",
+  "command_result": "Required tools not found",
+  "guideline": {
+    "purpose": "DBMS 서비스가 root 권한이 아닌 별도 계정으로 실행되도록 하여 root 권한 탈취 시 피해 최소화하기 위함",
+    "security_threat": "root 권한으로 DBMS 실행 시 DBMS 취약점 악용으로 root 권한 탈취 가능",
+    "judgment_criteria_good": "DBMS가 root가 아닌 전용 계정으로 실행되는 경우",
+    "judgment_criteria_bad": "DBMS가 root 권한으로 실행되는 경우",
+    "remediation": "mysql 전용 계정 생성 후 서비스 실행 계정 변경"
+  },
+  "timestamp": "2026-03-31T20:59:13+09:00",
+  "hostname": "nacsc"
+}

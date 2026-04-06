@@ -32,11 +32,11 @@ ITEM_ID="D-04"
 ITEM_NAME="원격에서DB서버로의접속제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="관리자 권한이 필요한 계정과 그룹에만 관리자 권한을 부여하였는지 점검하여 관리자 권한의 남용을 방지하여 계정 유출로 인한 비인가자의 DB 접근 가능성을 최소화하고자 함"
-GUIDELINE_THREAT="관리자 계정의 원격 접속 허용 시 공격자가 관리자 권한으로 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="관리자 계정의 원격 접속이 제한된 경우"
-GUIDELINE_CRITERIA_BAD="관리자 계정의 원격 접속이 허용된 경우"
-GUIDELINE_REMEDIATION="root 계정의 원격 호스트 접속 제한: DROP USER 'root'@'%';"
+GUIDELINE_PURPOSE="관리자 권한이 필요한 계정과 그룹에만 관리자 권한을 부여하였는지 점검하여 관리자 권한의 남용을 방지하여계정유출로인한비인가자의DB접근가능성을최소화하고자함"
+GUIDELINE_THREAT="관리자 권한이 필요한 계정 및 그룹에만 관리자 권한을 부여하지 않으면 관리자 권한이 부여된 계정이 비인가자에게유출될경우DB에접근할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="관리자권한이필요한계정및그룹에만관리자권한이부여된경우"
+GUIDELINE_CRITERIA_BAD="관리자권한이필요없는계정및그룹에관리자권한이부여된경우"
+GUIDELINE_REMEDIATION="관리자권한이필요한계정및그룹에만관리자권한부여"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

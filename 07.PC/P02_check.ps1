@@ -101,11 +101,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '비밀번호의 최소 길이를 8자 이상으로 설정하고 암호 복잡성 정책을 적용하여 비밀번호 추측 공격 방지'
-$threat = '최소 암호 길이가 짧거나 복잡성 정책이 적용되지 않을 경우 무차별 대입 공격(Brute Force)이나 사전 공격(Dictionary Attack)으로 쉽게 노출될 위험'
-$criteria_good = '8자 이상 및 암호 복잡성 정책 활성화'
-$criteria_bad = '8자 미만 또는 암호 복잡성 정책 비활성화'
-$remediation = '1. net accounts /minpwlen:8 명령 실행`n2. gpedit.msc > 컴퓨터 구성 > Windows 설정 > 보안 설정 > 계정 정책 > 암호 정책 > "암호에는 복잡성 요구" 활성화'
+$purpose = '안전한 비밀번호 (*비밀번호 설정 기준 참고)를 사용함으로써 무차별 대입 공격, 사전공격 등 비밀번호 탈취목적의공격에대해대비하기위함'
+$threat = '주기적으로보안패치를적용하지않을경우,버전취약점을이용한공격또는새로운공격에대한침해 사고가발생할수있는위험이존재함'
+$criteria_good = '복잡성을만족하는비밀번호정책이설정된경우'
+$criteria_bad = '비밀번호를 사용하지 않거나, 추측하기 쉬운 문자조합으로 이루어진 짧은 자릿수의 비밀번호를 설정된경우'
+$remediation = '비밀번호정책을해당기관의보안정책에적합하게설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

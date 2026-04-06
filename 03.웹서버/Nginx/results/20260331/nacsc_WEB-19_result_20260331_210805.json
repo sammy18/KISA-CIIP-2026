@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-19",
+  "item_name": "웹서비스SSI(Server Side Includes)사용제한",
+  "inspection": {
+    "summary": "SSI가 비활성화되어 있거나 설정되지 않았습니다 (기본값: off). (보안 권고사항 준수)",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "grep -E '^\\s*ssi\\s+(on|off)' /etc/nginx/nginx.conf /etc/nginx/conf.d/*.conf 2>/dev/null | grep -v '^\\s*#' | head -3",
+  "command_result": "No SSI found",
+  "guideline": {
+    "purpose": "웹서비스내SSI사용을제한하여불법적인데이터접근을차단하여웹서버의보안을강화하기위함",
+    "security_threat": "웹서비스내SSI사용을제한하지않을경우,공격자가SSI기능을이용하여시스템명령실행및중요파일탈취등공격이가능하며,이를통해서버시스템침해,데이터유출등이발생할위험이존재함",
+    "judgment_criteria_good": "웹서비스SSI사용설정이비활성화되어있는경우",
+    "judgment_criteria_bad": "웹서비스SSI사용설정이활성화되어있는경우",
+    "remediation": "웹서비스내불필요한SSI사용제한설정"
+  },
+  "timestamp": "2026-03-31T21:08:07+09:00",
+  "hostname": "nacsc"
+}

@@ -60,11 +60,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'FTP 서비스 비활성화로 평문 암호 전송 방지 및 데이터 유출 방지'
-$threat = 'FTP는 암호화되지 않은 프로토콜로 로그인 정보와 데이터가 평문으로 전송되어 패킷 감청 시 계정 정보 및 데이터 유출 위험 존재'
-$criteria_good = 'FTP 서비스가 비활성화된 경우'
-$criteria_bad = 'FTP 서비스가 활성화된 경우'
-$remediation = 'FTP 서비스 중지 및 사용 안 함 설정. FTPS(FTP over SSL/TLS) 사용 권장'
+$purpose = "인증정보가기본적으로평문전송되는취약한프로토콜인FTP의사용을제한하기위함"
+$threat = "OS에서 제공하는 기본적인 FTP 서비스를 사용할 경우 계정과 패스워드가 암호화되지 않은 채로 전송되어Sniffer에의한계정정보의노출위험이존재함"
+$criteria_good = "FTP서비스를사용하지않는경우또는SecureFTP서비스를사용하는경우"
+$criteria_bad = "암호화되지않는FTP서비스를사용하는경우"
+$remediation = "FTP서비스가필요하지않다면서비스중지또는SecureFTP응용프로그램사용"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

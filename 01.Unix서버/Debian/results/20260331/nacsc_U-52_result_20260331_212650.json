@@ -1,0 +1,20 @@
+{
+  "item_id": "U-52",
+  "item_name": "Telnet 서비스 비활성화",
+  "inspection": {
+    "summary": "Telnet 서비스가 설치되어 있지 않거나 비활성화됨",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "systemctl is-active telnetd 2>/dev/null; ss -tuln | grep ':23 '",
+  "command_result": "Telnet Service: [inactive or not installed]",
+  "guideline": {
+    "purpose": "취약한Telnet프로토콜을비활성화함으로써계정및중요정보유출방지하기위함",
+    "security_threat": "원격접속시Telnet 프로토콜을 사용할 경우, 데이터가 평문으로 전송되어 비인가자가 스니핑을 통해 계정및중요정보를외부로유출할위험이존재함",
+    "judgment_criteria_good": "원격접속시Telnet프로토콜을비활성화하고있는경우",
+    "judgment_criteria_bad": "원격접속시Telnet프로토콜을사용하는경우",
+    "remediation": "Telnet,FTP등안전하지않은서비스사용을중지하고SSH설치및사용하도록설정"
+  },
+  "timestamp": "2026-03-31T21:26:52+09:00",
+  "hostname": "nacsc"
+}

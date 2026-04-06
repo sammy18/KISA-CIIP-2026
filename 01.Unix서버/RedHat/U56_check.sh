@@ -30,11 +30,11 @@ ITEM_NAME="Apache 파일 업로드 및 다운로드 제한"
 SEVERITY="(중)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="웹 서버의 파일 업로드 용량을 제한하여 대용량 파일 업로드에 의한 자원 고갈(DoS) 공격을 방지하기 위함"
-GUIDELINE_THREAT="업로드 용량 제한이 없는 경우, 공격자가 악의적으로 대용량 파일을 업로드하여 서버 디스크 공간을 고갈시킬 위험이 있음"
-GUIDELINE_CRITERIA_GOOD="LimitRequestBody 설정이 적용되어 업로드 용량이 적절히 제한된 경우"
+GUIDELINE_PURPOSE="접근권한이없는비인가자의접근을통제하기위함"
+GUIDELINE_THREAT="FTP 서비스의 접근제한 설정이 적절하지 않을 경우, 인증 절차 없이 비인가자가 디렉터리나 파일에 접근할수있어중요파일변조및유출을시도할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="특정IP주소또는호스트에서만FTP서버에접속할수있도록접근제어설정을적용한경우 취약:FTP서버에접근제어설정을적용하지않은경우"
 GUIDELINE_CRITERIA_BAD="업로드 용량 제한 설정이 되어 있지 않거나 너무 크게 설정된 경우"
-GUIDELINE_REMEDIATION="httpd.conf 파일에서 LimitRequestBody 5000000 (5MB) 등의 설정 추가"
+GUIDELINE_REMEDIATION="Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP서비스사용시접근제어설정"
 
 diagnose() {
     local status="양호"

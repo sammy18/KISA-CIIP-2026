@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-22",
+  "item_name": "에러페이지관리",
+  "inspection": {
+    "summary": "error_page 설정이 발견되지 않았습니다 (기본 에러 페이지 사용). 커스텀 에러 페이지 설정 권장.",
+    "status": "취약"
+  },
+  "final_result": "VULNERABLE",
+  "command": "grep -E '^\\s*error_page' /etc/nginx/nginx.conf /etc/nginx/conf.d/*.conf 2>/dev/null | grep -v '^\\s*#' | head -5",
+  "command_result": "No error_page found",
+  "guideline": {
+    "purpose": "에러 페이지 설정으로 시스템 정보 노출 방지",
+    "security_threat": "기본 에러 페이지에 서버 정보 노출 시 보안 위험",
+    "judgment_criteria_good": "커스텀 에러 페이지가 설정된 경우",
+    "judgment_criteria_bad": "기본 에러 페이지 사용 중",
+    "remediation": "error_page 지시어로 커스텀 에러 페이지 설정"
+  },
+  "timestamp": "2026-03-31T21:08:17+09:00",
+  "hostname": "nacsc"
+}

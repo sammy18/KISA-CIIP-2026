@@ -1,0 +1,20 @@
+{
+  "item_id": "U-56",
+  "item_name": "FTP 서비스 접근 제어 설정",
+  "inspection": {
+    "summary": "FTP 서비스가 설치되지 않음",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "ls /etc/{vsftpd*,proftpd*,ftpusers} 2>/dev/null",
+  "command_result": "FTP: [not installed]",
+  "guideline": {
+    "purpose": "FTP 서비스 접근 제어 설정을 통한 비인가자 FTP 접속 차단",
+    "security_threat": "FTP 접근 제어 미흡 시 비인가자가 무단 접속을 시도하여 정보 유출 및 시스템 침해 위험",
+    "judgment_criteria_good": "FTP 접근 제어가 적절하게 설정된 경우",
+    "judgment_criteria_bad": " FTP 접근 제어가 설정되지 않은 경우 / N/A: FTP 서비스 미사용",
+    "remediation": "/etc/hosts.allow, /etc/hosts.deny에 FTP 접근 허용 IP 설정 및 ftpusers 파일에 시스템 계정 등록"
+  },
+  "timestamp": "2026-03-31T21:27:02+09:00",
+  "hostname": "nacsc"
+}

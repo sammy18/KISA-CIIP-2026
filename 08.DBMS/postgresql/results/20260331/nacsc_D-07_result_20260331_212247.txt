@@ -1,0 +1,25 @@
+============================================================
+[D-07] root권한으로서비스구동제한
+============================================================
+[D-07-START]
+
+PostgreSQL 클라이언트 도구가 설치되지 않았습니다. psql, pg_isready (optional) 설치가 필요합니다.
+
+[현황]
+1) 진단 확인
+command: command -v [required_tool]
+command_result:
+Required tools not found
+
+[D-07-END]
+
+[D-07]Result : MANUAL
+
+[참고]
+진단 목적: DBMS 서비스가 root 권한으로 구동되지 않도록 하여 root 권한 탈취 시 피해 최소화
+보안 위협: root 권한으로 DBMS 구동 시 DBMS 취약점 악용 시 root 권한 탈취 가능
+양호 기준: DBMS가 root가 아닌 전용 계정으로 구동되는 경우
+취약 기준: DBMS가 root 권한으로 구동되는 경우
+조치 방법: PostgreSQL 전용 계정(postgres)으로 서비스 구동: systemctl restart postgresql
+
+============================================================

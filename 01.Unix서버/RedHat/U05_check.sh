@@ -30,11 +30,11 @@ ITEM_NAME="root 이외의 UID가 ‘0’ 금지"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="root 계정과 동일한 UID가 존재하는지 점검하여 root 권한이 비인가자의 접근 위협에 안전하게 보호되고 있는지 확인하기 위함"
-GUIDELINE_THREAT="root계정과 동일한 UID가 설정된 일반 계정도 관리자가 실행할 수 있는 모든 작업이 가능하여 시스템 장악 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="root계정과 동일한 UID를 갖는 계정이 존재하지 않는 경우"
-GUIDELINE_CRITERIA_BAD="root계정과 동일한 UID를 갖는 계정이 존재하는 경우"
-GUIDELINE_REMEDIATION="UID가 0인 계정을 확인하여 0 이외의 중복되지 않은 UID로 변경하거나 제거"
+GUIDELINE_PURPOSE="root 계정과 동일한 UID가 존재하는지 점검하여 root 권한이 일반 사용자 계정이나 비인가자의 접근 위협에안전하게보호되고있는지확인하기위함"
+GUIDELINE_THREAT="Ÿ root계정과동일한UID가설정되어있는일반사용자계정도root권한을부여받아관리자가실행할 수있는모든작업이가능한위험이존재함(서비스시작,중지,재부팅,root권한파일편집등) Ÿ root계정과동일한UID를사용하므로사용자감사추적시어려움발생위험이존재함"
+GUIDELINE_CRITERIA_GOOD="root계정과동일한UID를갖는계정이존재하지않는경우"
+GUIDELINE_CRITERIA_BAD="root계정과동일한UID를갖는계정이존재하는경우"
+GUIDELINE_REMEDIATION="Ÿ UID가 0으로 설정된 계정을 0 이외의 중복되지 않은 UID로 변경 또는 불필요한 계정인 경우 제거하도록설정 Ÿ (사용중인계정인경우명령어를통한조치가적용되지않을수있으므로/etc/passwd파일을통해 변경)"
 
 diagnose() {
     local status="양호"

@@ -85,11 +85,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = '최신 보안패치를 설치하여 시스템 및 응용프로그램의 취약성을 제거'
-$threat = '최신 보안패치가 즉시 적용되지 않으면 알려진 취약성으로 인한 시스템 공격 위험 존재'
-$criteria_good = '패치 절차를 수립하여 주기적으로 패치를 확인 및 설치하는 경우'
-$criteria_bad = '패치 절차가 수립되어 있지 않거나 주기적으로 패치를 설치하지 않는 경우'
-$remediation = '주기적인 보안패치 확인 및 설치 적용 (Windows Update 또는 수동 HOTFIX 적용)'
+$purpose = "최신보안패치를설치하여시스템및응용프로그램의취약성을제거하기위함"
+$threat = "최신보안패치가즉시적용되지않으면알려진취약성으로인한시스템공격위험이존재함"
+$criteria_good = "패치절차를수립하여주기적으로패치를확인및설치하는경우"
+$criteria_bad = "패치절차가수립되어있지않거나주기적으로패치를설치하지않는경우"
+$remediation = "주기적인보안패치확인및설치적용"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

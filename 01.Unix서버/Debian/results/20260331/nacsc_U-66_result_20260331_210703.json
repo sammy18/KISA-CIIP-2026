@@ -1,0 +1,20 @@
+{
+  "item_id": "U-66",
+  "item_name": "정책에 따른 시스템 로깅 설정",
+  "inspection": {
+    "summary": "syslog 서비스(rsyslog, syslog-ng)를 찾을 수 없습니다",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "systemctl status rsyslog; systemctl status syslog-ng",
+  "command_result": "rsyslog not found\\nsyslog-ng not found",
+  "guideline": {
+    "purpose": "보안사고발생시원인파악및각종침해사실확인을하기위함",
+    "security_threat": "로깅 설정이 되어 있지 않을 경우, 원인 규명이 어려우며 법적 대응을 위한 충분한 증거로 사용할 수 없는위험이존재함",
+    "judgment_criteria_good": "로그기록정책이보안정책에따라설정되어수립되어있으며,로그를남기고있는경우",
+    "judgment_criteria_bad": "로그기록정책미수립또는정책에따라설정되어있지않거나,로그를남기고있지않은경우",
+    "remediation": "로그기록정책을수립하고,정책에따라(r)syslog.conf파일을설정"
+  },
+  "timestamp": "2026-03-31T21:07:05+09:00",
+  "hostname": "nacsc"
+}

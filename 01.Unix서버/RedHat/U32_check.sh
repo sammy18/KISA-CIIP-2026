@@ -29,11 +29,11 @@ ITEM_ID="U-32"
 ITEM_NAME="홈 디렉토리로 지정한 디렉토리의 존재 관리"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="실제 존재하지 않는 홈 디렉터리 설정을 정리하여 관리되지 않는 계정에 의한 보안 위협을 방지하기 위함"
-GUIDELINE_THREAT="홈 디렉터리가 존재하지 않는 계정은 임시 파일 생성 불가 등으로 서비스 장애를 유발하거나 관리 누락의 통로가 됨"
-GUIDELINE_CRITERIA_GOOD="계정별로 설정된 홈 디렉터리가 실제로 시스템에 존재하는 경우"
-GUIDELINE_CRITERIA_BAD="설정된 홈 디렉터리가 존재하지 않는 계정이 있는 경우"
-GUIDELINE_REMEDIATION="존재하지 않는 홈 디렉터리를 생성하거나 해당 계정의 설정을 올바른 경로로 수정"
+GUIDELINE_PURPOSE="/home디렉토리이외의사용자의홈디렉토리존재여부를점검하여비인가자가시스템명령어의무단 사용을방지하기위함"
+GUIDELINE_THREAT="/etc/passwd 파일에 설정된 홈 디렉토리가 존재하지 않는 경우, 해당 계정으로 로그인 시 홈 디렉토리가루트디렉토리(/)로할당되어접근이가능한위험이존재함"
+GUIDELINE_CRITERIA_GOOD="홈디렉토리가존재하지않는계정이발견되지않는경우"
+GUIDELINE_CRITERIA_BAD="홈디렉토리가존재하지않는계정이발견된경우"
+GUIDELINE_REMEDIATION="홈디렉토리가존재하지않는계정에홈디렉토리설정또는계정제거하도록설정"
 
 diagnose() {
     # 변수 범위 수정 (main에서 읽을 수 있도록 전역 설정)

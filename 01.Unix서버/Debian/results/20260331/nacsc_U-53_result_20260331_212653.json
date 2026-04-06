@@ -1,0 +1,20 @@
+{
+  "item_id": "U-53",
+  "item_name": "FTP 서비스 정보 노출 제한",
+  "inspection": {
+    "summary": "FTP 서비스가 설치되지 않음",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "ls /etc/{vsftpd.conf,proftpd/proftpd.conf} 2>/dev/null",
+  "command_result": "FTP: [not installed]",
+  "guideline": {
+    "purpose": "FTP서비스접속배너를통한불필요한정보노출을방지하기위함",
+    "security_threat": "서비스 접속 배너가 차단되지 않을 경우, 비인가자가 FTP 접속 시도 시 노출되는 접속 배너 정보를 수집하여악의적인공격에이용할위험이존재함",
+    "judgment_criteria_good": "FTP접속배너에노출되는정보가없는경우",
+    "judgment_criteria_bad": "FTP접속배너에노출되는정보가있는경우",
+    "remediation": "Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP서비스사용시FTP설정파일을통해접속배너설정 ※ 접속배너에서비스이름이나버전정보를노출하지않는것을권고"
+  },
+  "timestamp": "2026-03-31T21:26:54+09:00",
+  "hostname": "nacsc"
+}

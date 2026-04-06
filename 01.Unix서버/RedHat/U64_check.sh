@@ -29,11 +29,11 @@ ITEM_ID="U-64"
 ITEM_NAME="r-command 서비스 비활성화"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="인증 과정 없이 원격 접속이 가능한 취약한 r-command 서비스를 비활성화하여 비인가 접근을 차단하기 위함"
-GUIDELINE_THREAT="r-command는 패스워드 없이 접속이 가능하며 데이터가 암호화되지 않아 스니핑 및 비인가 접속에 매우 취약함"
-GUIDELINE_CRITERIA_GOOD="rlogin, rsh, rexec 서비스가 비활성화되어 있거나 설치되지 않은 경우"
+GUIDELINE_PURPOSE="주기적인패치적용을통해시스템안정성및보안성을확보하기위함"
+GUIDELINE_THREAT="최신 보안패치가 적용되지 않을 경우, 이미 알려진 취약점을 통하여 공격자에 의해 시스템 침해사고 발생할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="패치 적용 정책을 수립하여 주기적으로 패치 관리를 하고 있으며, 패치 관련 내용을 확인하고 적용하였을경우"
 GUIDELINE_CRITERIA_BAD="rlogin, rsh, rexec 서비스 중 하나라도 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="관련 서비스 중단 및 xinetd 설정에서 disable = yes 적용"
+GUIDELINE_REMEDIATION="OS 관리자, 서비스 개발자가 패치 적용에 따른 서비스 영향 정도를 파악하여 OS 관리자 및 벤더에서 적용하도록설정 ※ OS패치의경우지속해서취약점이발표되고있으므로O/S관리자,서비스개발자가패치적용에 따른서비스영향정도를정확히파악하여주기적인패치적용정책을수립하여적용해야함"
 
 diagnose() {
     local status="양호"

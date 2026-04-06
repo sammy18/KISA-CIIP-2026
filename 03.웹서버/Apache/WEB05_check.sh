@@ -34,11 +34,11 @@ ITEM_ID="WEB-05"
 ITEM_NAME="지정하지않은CGI/ISAPI실행제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="CGI 스크립트를 정해진 디렉터리에서만 실행되도록 하여 악의적인 파일의 업로드 및 실행을 방지하기 위함"
-GUIDELINE_THREAT="게시판이나 자료실과 같이 업로드되는 파일이 저장되는 디렉터리에 CGI 스크립트가 실행 가능한 경우 악의적인 파일을 업로드하고 이를 실행하여 시스템의 중요 정보가 노출될 수 있으며 침해사고의 경로로 이용될 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="CGI 스크립트를 사용하지 않거나 CGI 스크립트가 실행 가능한 디렉터리를 제한한 경우"
-GUIDELINE_CRITERIA_BAD="CGI 스크립트를 사용하고 CGI 스크립트가 실행 가능한 디렉터리를 제한하지 않은 경우"
-GUIDELINE_REMEDIATION="Apache 설정 파일 내 CGI 모듈 비활성화 또는 모든 디렉터리의 Options 지시자에서 ExecCGI 옵션 제거. CGI 사용 시 /cgi-bin/ 디렉터리로만 제한"
+GUIDELINE_PURPOSE="CGI스크립트를정해진디렉터리에서만실행되도록하여악의적인파일의업로드및실행을방지하기위함"
+GUIDELINE_THREAT="게시판이나 자료실과 같이 업로드되는 파일이 저장되는 디렉터리에 CGI 스크립트가 실행 가능한 경우 악의적인파일을업로드하고이를실행하여시스템의중요정보가노출될수있으며침해사고의경로로 이용될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="CGI스크립트를사용하지않거나CGI스크립트가실행가능한디렉터리를제한한경우"
+GUIDELINE_CRITERIA_BAD="CGI스크립트를사용하고CGI스크립트가실행가능한디렉터리를제한하지않은경우"
+GUIDELINE_REMEDIATION="CGI스크립트를정해진디렉터리내에서만실행할수있도록설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

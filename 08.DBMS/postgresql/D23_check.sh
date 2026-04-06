@@ -32,11 +32,11 @@ ITEM_ID="D-23"
 ITEM_NAME="xp_cmdshell 확장 저장 프로시저 사용 제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="xp_cmdshell 확장 저장 프로시저를 비활성화하여 OS 명령 실행 방지"
-GUIDELINE_THREAT="xp_cmdshell 활성화 시 DB에서 OS 명령 실행 가능하여 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="xp_cmdshell가 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD="xp_cmdshell가 활성화된 경우"
-GUIDELINE_REMEDIATION="N/A - PostgreSQL에는 xp_cmdshell 기능이 없음"
+GUIDELINE_PURPOSE="불필요하게활성화되어있는xp_cmdshell를제한하여공격자의무단접근및악성코드의실행위험을 감소시키기위함"
+GUIDELINE_THREAT="해킹툴에서자주이용되고있으며,권한상승이나데이터유출등의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="xp_cmdshell이비활성화되어있거나,활성화되어있으면다음의조건을모두만족하는경우 1. public의실행(Execute)권한이부여되어있지않은경우 2.서비스계정(애플리케이션연동)에sysadmin권한이부여되어있지않은경우"
+GUIDELINE_CRITERIA_BAD="xp_cmdshell이활성화되어있고,양호의조건을만족하지않는경우"
+GUIDELINE_REMEDIATION="xp_cmdshell 설정값을0또는False로설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

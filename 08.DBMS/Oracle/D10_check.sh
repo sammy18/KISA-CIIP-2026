@@ -40,11 +40,11 @@ ITEM_ID="D-10"
 ITEM_NAME="원격에서DB서버로의접속제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="원격 접속을 제한하여 무단 접근 및 공격 표면 최소화"
-GUIDELINE_THREAT="원격 접속이 제한되지 않을 경우 외부 공격에 노출 위험"
-GUIDELINE_CRITERIA_GOOD="리스너에서 원격 관리가 제한된 경우"
-GUIDELINE_CRITERIA_BAD="원격에서 모든 IP로의 접속이 허용된 경우"
-GUIDELINE_REMEDIATION="listener.ora에 ADMIN_RESTRICTIONS_listener=on 설정 및 방화벽 규칙 적용"
+GUIDELINE_PURPOSE="지정된 IP주소만 DB 서버에 접근 가능하도록 설정되어 있는지 점검하여 비인가자의 DB 서버 접근을 원천적으로차단하고자함"
+GUIDELINE_THREAT="DB서버접속시IP주소제한이적용되지않은경우비인가자가내·외부망위치에상관없이DB서버에 접근할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DB서버에지정된IP주소에서만접근가능하도록제한한경우"
+GUIDELINE_CRITERIA_BAD="DB서버에지정된IP주소에서만접근가능하도록제한하지않은경우"
+GUIDELINE_REMEDIATION="DB서버에대해지정된IP주소에서만접근가능하도록설정"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)

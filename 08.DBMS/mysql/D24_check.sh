@@ -32,11 +32,11 @@ ITEM_ID="D-24"
 ITEM_NAME="DBMS 기본 포트 사용 점검"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="기본 포트 변경으로 스캔 공격 방지"
-GUIDELINE_THREAT="기본 포트 사용 시 자동 스캔 도구에 노출 위험"
-GUIDELINE_CRITERIA_GOOD="기본 포트가 아닌 경우"
-GUIDELINE_CRITERIA_BAD="기본 포트(3306) 사용"
-GUIDELINE_REMEDIATION="MySQL 설정 파일에서 포트 번호 변경 권장"
+GUIDELINE_PURPOSE="불필요한RegistryProcedure의권한설정을확인하고제한하여시스템의보안및안정성을강화하기 위함"
+GUIDELINE_THREAT="불필요한 레지스트리 접근 권한이 제한되지 않는 경우, 공격자가 시스템을 변경하거나 악성 소프트웨어를설치하여권한상승,데이터유출,시스템장애를발생시킬위험이존재함"
+GUIDELINE_CRITERIA_GOOD="제한이필요한시스템확장저장프로시저들이DBA외guest/public에게부여되지않은경우"
+GUIDELINE_CRITERIA_BAD="제한이필요한시스템확장저장프로시저들이DBA외guest/public에게부여된경우"
+GUIDELINE_REMEDIATION="guest/public에게부여된시스템확장저장프로시저권한제거"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

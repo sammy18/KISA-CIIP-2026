@@ -60,11 +60,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = '자동 로그인 금지로 물리적 접근 시 무단 로그인 방지 및 보안 강화'
-$threat = '자동 로그인이 설정되면 비밀번호 입력 없이 시스템 접근 가능하여 물리적 접근 시 보안 위협 심각'
-$criteria_good = 'AutoAdminLogon = 0 또는 값 없음'
-$criteria_bad = 'AutoAdminLogon = 1 (자동 로그인 설정됨)'
-$remediation = '레지스트리 편집기에서 HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\AutoAdminLogon 값을 0으로 설정 또는 삭제'
+$purpose = 'Windows자동로그인이비활성화되어있는지점검하여비인가자의로그인을방지하고자하기위함'
+$threat = 'Windows 자동 로그인이 활성화되어 있을 때 비인가자가 별도의 로그인 과정을 거치지 않고 계정에 자동으로로그인할수있는위험이존재함'
+$criteria_good = 'Windows자동로그인이비활성화된경우'
+$criteria_bad = 'Windows자동로그인이활성화된경우'
+$remediation = 'Windows자동로그인비활성화설정'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

@@ -32,11 +32,11 @@ ITEM_NAME="SUID, SGID, Sticky bit 설정 파일 점검"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 50페이지 내용 반영)
-GUIDELINE_PURPOSE="불필요한 SUID, SGID, Sticky bit 설정 제거로 악의적인 사용자의 권한 상승을 방지하기 위함"
-GUIDELINE_THREAT="SUID, SGID, Sticky bit 설정이 적절하지 않을 경우, 해당 설정이 부여된 파일로 특정 명령어를 실행하여 root 권한 획득이 가능한 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="주요 실행 파일의 권한에 SUID와 SGID에 대한 설정이 부여되어 있지 않은 경우"
-GUIDELINE_CRITERIA_BAD="주요 실행 파일의 권한에 SUID와 SGID에 대한 설정이 부여된 경우"
-GUIDELINE_REMEDIATION="불필요한 SUID, SGID 권한 또는 해당 파일 제거 (chmod -s <파일 이름>)"
+GUIDELINE_PURPOSE="불필요한SUID, SGID, Stickybit설정제거로악의적인사용자의권한상승을방지하기위함"
+GUIDELINE_THREAT="SUID, SGID, Sticky bit 설정이 적절하지 않을 경우, SUID, SGID, Sticky bit가 설정된 파일로 특정 명령어를실행하여root권한획득이가능한위험이존재함"
+GUIDELINE_CRITERIA_GOOD="주요실행파일의권한에SUID와SGID에대한설정이부여되어있지않은경우"
+GUIDELINE_CRITERIA_BAD="주요실행파일의권한에SUID와SGID에대한설정이부여된경우"
+GUIDELINE_REMEDIATION="Ÿ 불필요한SUID,SGID권한또는해당파일제거하도록설정 Ÿ 애플리케이션에서 생성한 파일이나 사용자가 임의로 생성한 파일 등 의심스럽거나 특이한 파일에 SUID권한이부여된경우제거하도록설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지

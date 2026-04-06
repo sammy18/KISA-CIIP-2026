@@ -32,11 +32,11 @@ ITEM_ID="WEB-08"
 ITEM_NAME="Apache .htaccess 오버라이드 제한"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE=".htaccess 파일을 통한 설정 변경 제한"
-GUIDELINE_THREAT="AllowOverride All인 경우 사용자가 설정 파일로 보안 우회 가능"
-GUIDELINE_CRITERIA_GOOD="AllowOverride None 또는 제한적"
-GUIDELINE_CRITERIA_BAD="AllowOverride All"
-GUIDELINE_REMEDIATION="httpd.conf에서 AllowOverride None 설정 권장"
+GUIDELINE_PURPOSE="기반시설 시스템은 원칙적으로 파일 업로드 및 다운로드를 금지하지만 불가피하게 파일의 업로드 및 다운로드 기능이 필요한 경우, 파일의 용량 제한을 설정하여 불필요한 업로드 및 다운로드를 방지해 서버의과부하를예방하고,웹서버자원을효율적으로관리하기위함"
+GUIDELINE_THREAT="웹 서비스의 파일 업로드 및 다운로드의 용량을 제한하지 않은 경우, 악의적인 목적을 가진 사용자가 반복업로드및웹쉘공격등으로시스템권한을탈취하거나대용량파일의업로드및다운로드로서버 자원을고갈시켜서비스장애를발생시킬위험이존재함"
+GUIDELINE_CRITERIA_GOOD="파일업로드및다운로드용량을제한한경우"
+GUIDELINE_CRITERIA_BAD="파일업로드및다운로드용량을제한하지않은경우"
+GUIDELINE_REMEDIATION="파일업로드및다운로드용량을허용가능한최소범위로제한하여설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

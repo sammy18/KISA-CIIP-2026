@@ -40,11 +40,11 @@ ITEM_ID="D-25"
 ITEM_NAME="주기적보안패치및벤더권고사항적용"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="주기적 보안패치 적용으로 알려진 취약점 조치 및 보안 강화"
-GUIDELINE_THREAT="보안패치 미적용 시 알려진 취약점에 노출되어 공격 위험"
-GUIDELINE_CRITERIA_GOOD="최신 보안패치가 적용된 최신 버전 사용"
-GUIDELINE_CRITERIA_BAD="오래된 버전 사용 또는 보안패치 미적용"
-GUIDELINE_REMEDIATION="Oracle Support에서 최신 PSU/CPU 패치 다운로드 및 적용, 주기적 업데이트"
+GUIDELINE_PURPOSE="안전한버전의데이터베이스를사용하여알려진보안취약점으로인한공격을차단하기위함"
+GUIDELINE_THREAT="안전하지 않은 버전을 사용할 경우, 알려진 보안 취약점을 통해 시스템에 침투하거나 데이터의 탈취, 악성코드감염및서비스중단등의보안사고를초래할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="보안패치가적용된버전을사용하는경우"
+GUIDELINE_CRITERIA_BAD="보안패치가적용되지않는버전을사용하는경우"
+GUIDELINE_REMEDIATION="보안패치가적용된버전으로업데이트"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)

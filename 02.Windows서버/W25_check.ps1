@@ -82,11 +82,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'DNS Zone Transfer 제한으로 DNS 정보 유출 방지'
-$threat = 'Zone Transfer 무제한 허용 시 네트워크 정보 유출 및 공격자 정보 수집 가능'
-$criteria_good = 'Zone Transfer가 특정 서버로만 제한된 경우'
-$criteria_bad = '모든 호스트로 Zone Transfer 허용된 경우'
-$remediation = 'DNS 관리자 > Zone 속성 > Zone Transfer 탭에서 다음 서버에만 선택 후 보조 DNS 서버 IP 입력'
+$purpose = "DNSZoneTransfer차단설정을적용하여도메인정보의불법외부유출을방지하기위함"
+$threat = "DNSZoneTransfer차단설정이적용되지않는경우DNS서버에저장된도메인정보를승인된DNS 서버가아닌외부로유출위험이존재함"
+$criteria_good = "아래기준에해당하는경우 1.DNS서비스가비활성화인경우 2.영역전송허용을하지않는경우 3.특정서버로만설정이되어있는경우"
+$criteria_bad = "위3개기준중하나라도해당하지않는경우"
+$remediation = "불필요시서비스중지/사용안함설정,사용하는경우영역전송을특정서버로제한하거나'영역전송 허용'에체크해제"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

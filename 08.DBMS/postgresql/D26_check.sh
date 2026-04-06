@@ -32,11 +32,11 @@ ITEM_ID="D-26"
 
 ITEM_NAME="DBMS 감사 로깅 점검"
 SEVERITY="중"
-GUIDELINE_PURPOSE="감사 로깅 활성화로 보안 이벤트 추적"
-GUIDELINE_THREAT="감사 로깅 미활성화 시 보안 incident 추적 불가"
-GUIDELINE_CRITERIA_GOOD="감사 로깅 활성화된 경우"
-GUIDELINE_CRITERIA_BAD="감사 로깅 미활성화"
-GUIDELINE_REMEDIATION="PostgreSQL 감사 로깅 기능 활성화 및 로그 정기적 검토"
+GUIDELINE_PURPOSE="데이터,로그,응용프로그램에대한감사기록정책을수립하고적용하여데이터베이스에문제발생시 원활하게대응하기위함"
+GUIDELINE_THREAT="감사기록정책이설정되어있지않을경우,데이터베이스에문제발생시원인을규명할수있는자료가 존재하지않아이에대한대처및개선방안수립이어려워장기적으로심각한보안위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DBMS의감사로그저장정책이수립되어있으며,정책설정이적용된경우"
+GUIDELINE_CRITERIA_BAD="DBMS에대한감사로그저장을하지않거나,정책설정이적용되지않은경우"
+GUIDELINE_REMEDIATION="DBMS에대한감사로그저장정책수립,적용"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

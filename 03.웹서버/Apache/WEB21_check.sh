@@ -33,11 +33,11 @@ ITEM_ID="WEB-21"
 ITEM_NAME="동적페이지요청및응답값검증"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="동적 페이지의 요청 및 응답 값에 대한 입력값 검증 및 메타문자 필터링을 구현하여 SQL Injection, XSS 등 취약점을 방지하기 위함"
-GUIDELINE_THREAT="입력값 검증이 미흡할 경우 SQL Injection, Cross-site Scripting(XSS), Command Injection 등 공격으로 시스템 장악 및 정보 유출 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="입력값 검증이 구현된 경우"
-GUIDELINE_CRITERIA_BAD="입력값 검증이 미구현된 경우"
-GUIDELINE_REMEDIATION="웹 애플리케이션 소스 코드에서 모든 사용자 입력에 대한 검증 로직 구현 (길이 제한, 메타문자 필터링, 타입 검사 등)"
+GUIDELINE_PURPOSE="HTTP 차단 및 HTTPS로 Redirection 활성화를 통해 평문으로 전송되는 데이터를 암호화하여 공격자의데이터스니핑에대비하기위함"
+GUIDELINE_THREAT="HTTP 통신은 암호화 전송이 아닌 평문 전송을 하므로 공격자가 스니핑을 시도할 경우 관리자의 ID, 비밀번호가노출되어악의적사용자가관리자계정을탈취할수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="HTTP 접근시HTTPSRedirection이활성화된경우"
+GUIDELINE_CRITERIA_BAD="HTTP 접근시HTTPSRedirection이비활성화된경우"
+GUIDELINE_REMEDIATION="HTTP Redirection활성화설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

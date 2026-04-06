@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-25",
+  "item_name": "주기적보안패치및벤더권고사항적용",
+  "inspection": {
+    "summary": "Nginx 버전 확인 및 주기적 보안 패치는 수동 진단이 필요합니다.[수동진단 가이드]1. 현재 버전: 2. Nginx 공식 웹사이트(https://nginx.org)에서 최신 안정 버전 확인3. Nginx 보안 권고사항 확인: https://nginx.org/en/security_advisories.html4. 주요 보안 업데이트 확인   - 1.18.0 이상: 안정 버전 권장   - 1.20.0+ 이상: 최신 보안 패치 포함5. OS 패키지 매니저로 업데이트: apt-get upgrade nginx 또는 yum update nginx",
+    "status": "수동진단"
+  },
+  "final_result": "MANUAL",
+  "command": "nginx -v",
+  "command_result": "nginx command not found",
+  "guideline": {
+    "purpose": "최신 보안 패치 적용으로 알려진 취약점 방지",
+    "security_threat": "오래된 버전 사용 시 알려진 취약점 공격 위험",
+    "judgment_criteria_good": "최신 안정 버전 사용",
+    "judgment_criteria_bad": "오래된 버전 사용",
+    "remediation": "Nginx를 최신 버전으로 업그레이드하고 주기적 패치 적용"
+  },
+  "timestamp": "2026-03-31T21:28:28+09:00",
+  "hostname": "nacsc"
+}

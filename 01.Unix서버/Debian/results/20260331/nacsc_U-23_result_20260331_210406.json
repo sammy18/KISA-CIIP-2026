@@ -1,0 +1,20 @@
+{
+  "item_id": "U-23",
+  "item_name": "SUID, SGID, Stickybit 설정 파일 점검",
+  "inspection": {
+    "summary": "world-writable 설정 파일 없음, 중요 설정 파일 보안 양호",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "find /etc /usr/bin /usr/sbin -perm -2 -type f 2>/dev/null; stat -c '%a:%U:%G' /etc/passwd /etc/shadow /etc/group",
+  "command_result": "[Command: find world-writable files]\\n\\n\\n[Command: Check important files]\\n/etc/hosts: 644 uhyan:UNKNOWN\\n/etc/services: 644 uhyan:UNKNOWN\\n",
+  "guideline": {
+    "purpose": "불필요한 SUID, SGID, Sticky bit 설정 제거로 악의적인 사용자의 권한 상승을 방지하기 위함",
+    "security_threat": "SUID, SGID, Sticky bit 설정이 적절하지 않을 경우, SUID, SGID, Sticky bit가 설정된 파일로 특정 명령어를 실행하여 root 권한 획득이 가능한 위험이 존재함",
+    "judgment_criteria_good": "주요 실행 파일의 권한에 SUID와 SGID에 대한 설정이 부여되어 있지 않은 경우",
+    "judgment_criteria_bad": "주요 실행 파일의 권한에 SUID와 SGID에 대한 설정이 부여된 경우",
+    "remediation": "Ÿ 불필요한 SUID, SGID 권한 또는 해당 파일 제거하도록 설정 Ÿ 애플리케이션에서 생성한 파일이나 사용자가 임의로 생성한 파일 등 의심스럽거나 특이한 파일에 SUID 권한이 부여된 경우 제거하도록 설정"
+  },
+  "timestamp": "2026-03-31T21:04:09+09:00",
+  "hostname": "nacsc"
+}

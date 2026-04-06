@@ -29,11 +29,11 @@ ITEM_ID="U-65"
 ITEM_NAME="NTP 서비스 설정 및 동기화"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="로그 분석 및 침해 사고 조사 시 정확한 시간 정보를 확보하기 위해 시스템 시간을 표준 시간과 동기화하기 위함"
-GUIDELINE_THREAT="시스템 시간이 동기화되지 않을 경우 로그 기록의 신뢰성이 저하되어 정확한 침해 사고 분석이 불가능해짐"
-GUIDELINE_CRITERIA_GOOD="NTP 서비스가 활성화되어 있고 표준 시간 서버와 동기화 중인 경우"
-GUIDELINE_CRITERIA_BAD="NTP 서비스가 비활성화되어 있거나 시간 동기화가 이루어지지 않는 경우"
-GUIDELINE_REMEDIATION="ntpd 또는 chronyd 서비스 실행 및 ntp.conf에 타임 서버 등록"
+GUIDELINE_PURPOSE="인증및감사목적을위한시간동기화는필수적이며,안전하고승인된NTP서비스와동기화하기위함"
+GUIDELINE_THREAT="시스템 간 시간 동기화 미흡으로 보안 사고 및 장애 발생 시 로그에 대한 신뢰도 확보 미흡 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="NTP및시각동기화설정이기준에따라적용된경우"
+GUIDELINE_CRITERIA_BAD="NTP및시각동기화설정이기준에따라적용되어있지않은경우"
+GUIDELINE_REMEDIATION="NTP설정및동기화주기설정"
 
 diagnose() {
     local status="양호"

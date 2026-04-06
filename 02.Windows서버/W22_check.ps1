@@ -77,11 +77,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'FTP 디렉토리의 쓰기 권한 제거로 무단 파일 업로드 방지'
-$threat = 'FTP 루트 디렉토리에 쓰기 권한 존재 시 인증된 사용자라도 악성 파일 업로드 가능'
-$criteria_good = 'FTP 루트 디렉토리에 쓰기 권한이 없는 경우'
-$criteria_bad = 'FTP 루트 디렉토리에 쓰기 권한이 있는 경우'
-$remediation = 'FTP 루트 디렉토리의 속성 > 보안 탭에서 Everyone, Users 등의 쓰기 권한 제거'
+$purpose = "FTP서비스디렉터리의접근권한을적절하게설정하여의도치않은정보유출을방지하기위함"
+$threat = "FTP 홈 디렉터리에 과도한 권한(예. Everyone Full Control)이 부여된 경우 임의의 사용자가 쓰기, 수정이가능하여정보유출,파일위 ‧ 변조등의위험이존재함"
+$criteria_good = "FTP홈디렉터리에Everyone권한이없는경우"
+$criteria_bad = "FTP홈디렉터리에Everyone권한이있는경우"
+$remediation = "FTP홈디렉터리에서Everyone권한삭제,각사용자에게적절한권한부여"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

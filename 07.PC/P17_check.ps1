@@ -76,11 +76,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = '이동식 미디어 삽입 시 자동 실행 방지로 악성코드 감염 위험 감소'
-$threat = '이동식 미디어(USB, CD 등) 자동 실행 시 악성코드가 자동으로 실행되어 시스템 감염 위험 존재'
-$criteria_good = 'NoDriveTypeAutoRun 값이 0xFF 또는 0xDD로 설정된 경우'
-$criteria_bad = '해당 값이 설정되지 않거나 다른 값인 경우'
-$remediation = '레지스트리 편집기에서 HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\NoDriveTypeAutoRun 값을 0xFF(모든 드라이브 자동실행 금지) 또는 0xDD(CD 제외 자동실행 금지)으로 설정'
+$purpose = 'CD/DVD,USB메모리등과같은이동식미디어를USBport에연결시자동실행을차단하기위함'
+$threat = 'Ÿ CD/DVD, USB 메모리등과같은이동식미디어가자동실행되는경우미디어에탑재된''Autorun.i nf''파일을통해다른응용프로그램이자동실행될수있는위험이존재함 Ÿ 이동식미디어가사용될때읽기기능을통해바이러스감염이생길수있고,쓰기기능을통하여주요 정보유출이발생할수있음'
+$criteria_good = '미디어사용시자동실행되지않고내부적으로관리절차를수립하여이행된경우'
+$criteria_bad = '미디어사용시자동실행되거나내부적으로관리절차가수립되지않은경우'
+$remediation = '미디어자동실행방지설정'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

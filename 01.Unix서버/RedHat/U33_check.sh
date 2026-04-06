@@ -29,11 +29,11 @@ ITEM_ID="U-33"
 ITEM_NAME="숨겨진 파일 및 디렉토리 검색 및 제거"
 SEVERITY="(하)"
 
-GUIDELINE_PURPOSE="비인가자가 숨겨놓은 악성 스크립트나 백도어 파일을 탐색하여 제거하기 위함"
-GUIDELINE_THREAT="파일명이 '.'으로 시작하는 숨김 파일은 일반적인 검색에서 누락될 수 있어 공격자가 도구나 로그를 은닉하는 데 악용함"
-GUIDELINE_CRITERIA_GOOD="비정상적인 숨겨진 파일 및 디렉터리가 발견되지 않은 경우"
-GUIDELINE_CRITERIA_BAD="시스템 디렉터리에 의심스러운 숨겨진 파일이 존재하는 경우"
-GUIDELINE_REMEDIATION="발견된 숨겨진 파일의 용도를 확인하여 불필요한 경우 제거"
+GUIDELINE_PURPOSE="숨겨진파일및디렉토리중의심스러운내용은정상사용자가아닌공격자에의해생성되었을가능성이 높으므로이를제거하여보안위협을방지하기위함"
+GUIDELINE_THREAT="숨겨진파일및디렉토리를방치할경우,비인가자가생성한악성파일또는백도어등을탐지하지못할 위험이존재함"
+GUIDELINE_CRITERIA_GOOD="불필요하거나의심스러운숨겨진파일및디렉토리를제거한경우"
+GUIDELINE_CRITERIA_BAD="불필요하거나의심스러운숨겨진파일및디렉토리를제거하지않은경우"
+GUIDELINE_REMEDIATION="ls-al명령어로숨겨진파일존재파악후불법적이거나의심스러운파일을제거하도록설정"
 
 diagnose() {
     local status="양호"

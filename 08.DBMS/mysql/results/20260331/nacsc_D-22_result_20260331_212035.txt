@@ -1,0 +1,25 @@
+============================================================
+[D-22] DBMS symbolic-links 설정 점검
+============================================================
+[D-22-START]
+
+MySQL/MariaDB 클라이언트 도구가 설치되지 않았습니다. mysql, mysqladmin 설치가 필요합니다.
+
+[현황]
+1) 진단 확인
+command: command -v [required_tool]
+command_result:
+Required tools not found
+
+[D-22-END]
+
+[D-22]Result : MANUAL
+
+[참고]
+진단 목적: symbolic-links 비활성화로 심볼릭 링크 조작 취약점 방지
+보안 위협: symbolic-links 활성화시 데이터베이스 테이블을 통해 시스템 파일 접근 가능
+양호 기준: symbolic-links가 비활성화된 경우
+취약 기준: symbolic-links가 활성화된 경우
+조치 방법: my.cnf에 symbolic-links=0 설정 후 MySQL 서비스 재시작
+
+============================================================

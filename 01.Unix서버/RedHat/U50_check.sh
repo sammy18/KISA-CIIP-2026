@@ -29,11 +29,11 @@ ITEM_ID="U-50"
 ITEM_NAME="DNS Zone Transfer 설정"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="인가되지 않은 사용자의 존 전송 요청을 제한하여 내부 네트워크 및 서버 정보를 보호하기 위함"
-GUIDELINE_THREAT="인가되지 않은 사용자에게 존 전송이 허용될 경우 내부 호스트 정보, IP 주소 등 네트워크 정보가 노출되어 공격의 기초 정보로 활용될 위험이 있음"
-GUIDELINE_CRITERIA_GOOD="DNS 존 전송이 제한되어 있거나 특정 Secondary 서버에 대해서만 허용된 경우"
-GUIDELINE_CRITERIA_BAD="DNS 존 전송이 모든 호스트(any)에 대해 허용되어 있는 경우"
-GUIDELINE_REMEDIATION="named.conf 파일의 options 또는 zone 섹션에 allow-transfer { IP주소; }; 설정 추가"
+GUIDELINE_PURPOSE="DNSZoneTransfer설정을통해비인가자에대한무단접근을방지하기위함"
+GUIDELINE_THREAT="ZoneTransfer를모든사용자에게허용할경우,비인가자에게호스트정보,시스템정보등중요정보가 유출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="ZoneTransfer를허가된사용자에게만허용한경우"
+GUIDELINE_CRITERIA_BAD="Zone Transfer를모든사용자에게허용한경우"
+GUIDELINE_REMEDIATION="Ÿ DNS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ DNS서비스사용시DNSZoneTransfer를허가된사용자에게만전송허용하도록설정"
 
 diagnose() {
     local status="양호"

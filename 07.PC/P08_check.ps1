@@ -64,11 +64,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '사용자 PC에서 하나의 OS만 설치되도록 하여 다른 OS를 이용한 주요 파일 시스템 접근 차단'
-$threat = '멀티 부팅이 가능한 경우, 공격자는 해당 PC의 주요 OS 이외에 다른 OS로 부팅하여 중요한 정보가 들어있는 파일 시스템에 접근하여 주요 정보를 획득할 수 있는 위험 존재'
-$criteria_good = 'PC 내에 하나의 OS만 설치된 경우'
-$criteria_bad = 'PC 내에 2개 이상의 OS가 설치된 경우'
-$remediation = '하나의 OS만 설치하여 운영. 사용하지 않는 OS는 msconfig 또는 레지스트리 편집기로 부팅 항목에서 삭제'
+$purpose = '사용자 PC에서 멀티 부팅을 사용하는지를 점검하여 다른 OS를 이용한 주요 파일 시스템 접근을 차단하기위함'
+$threat = '멀티 부팅이 가능한 경우, 공격자는 해당 PC의 주요 OS 이외에 다른 OS로 부트하여 중요한 정보가 들어있는파일시스템에접근하여주요정보를획득할수있는위험이존재함'
+$criteria_good = 'PC내에하나의OS만설치된경우'
+$criteria_bad = 'PC내에2개이상의OS가설치된경우'
+$remediation = '하나의OS만설치하여운영함'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

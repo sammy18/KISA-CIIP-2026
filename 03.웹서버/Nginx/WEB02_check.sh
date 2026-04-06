@@ -33,11 +33,11 @@ ITEM_ID="WEB-02"
 ITEM_NAME="취약한비밀번호사용제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="관리자 계정의 취약한 비밀번호 설정 여부 점검"
-GUIDELINE_THREAT="관리자 계정의 비밀번호를 취약하게 설정하여 사용하는 경우, 비인가자의 비밀번호 유추 공격으로 관리자 권한 탈취 및 시스템 침입 등의 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="관리자 비밀번호가 암호화되어 있거나, 유추하기 어려운 비밀번호로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="관리자 비밀번호가 암호화되어 있지 않거나, 유추하기 쉬운 비밀번호로 설정된 경우"
-GUIDELINE_REMEDIATION="복잡도 기준에 맞는 추측하기 어려운 비밀번호 설정"
+GUIDELINE_PURPOSE="관리자 계정의 비밀번호가 복잡도 기준에 맞게 적용되어 있는지 점검하여, 비인가자에 의한 비밀번호 유추공격및관리자권한탈취등을방지하기위함"
+GUIDELINE_THREAT="관리자 계정의 비밀번호를 취약하게 설정하여 사용하는 경우, 비인가자의 비밀번호 유추 공격으로 관리자권한탈취및시스템침입등의위험이존재함"
+GUIDELINE_CRITERIA_GOOD="관리자비밀번호가암호화되어있거나,유추하기어려운비밀번호로설정된경우"
+GUIDELINE_CRITERIA_BAD="관리자비밀번호가암호화되어있지않거나,유추하기쉬운비밀번호로설정된경우"
+GUIDELINE_REMEDIATION="복잡도기준에맞는추측하기어려운비밀번호설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

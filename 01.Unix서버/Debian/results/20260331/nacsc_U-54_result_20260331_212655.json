@@ -1,0 +1,20 @@
+{
+  "item_id": "U-54",
+  "item_name": "암호화되지 않은 FTP 서비스 비활성화",
+  "inspection": {
+    "summary": "암호화되지 않은 FTP 서비스가 비활성화되어 있습니다.",
+    "status": "양호"
+  },
+  "final_result": "GOOD",
+  "command": "systemctl is-active vsftpd proftpd pure-ftpd; grep disable /etc/xinetd.d/ftp; ss -tuln | grep ':21 '",
+  "command_result": "[FTP Service Status]\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U54_check.sh: line 115: systemctl: command not found\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U54_check.sh: line 115: systemctl: command not found\\n/c/Users/uhyan/Desktop/yuh/KISA-CIIP-2026-dev/public/01.Unix서버/Debian/U54_check.sh: line 115: systemctl: command not found\\nFTP services not running",
+  "guideline": {
+    "purpose": "암호화되지않은FTP서비스를비활성화함으로써계정및중요정보유출방지하기위함",
+    "security_threat": "암호화되지 않은 FTP 서비스를 사용할 경우, 데이터가 평문으로 전송되어 비인가자가 스니핑을 통해 계정및중요정보를외부로유출할위험이존재함",
+    "judgment_criteria_good": "암호화되지않은FTP서비스가비활성화된경우",
+    "judgment_criteria_bad": "암호화되지않은FTP서비스가활성화된경우",
+    "remediation": "암호화되지않은FTP서비스중지및비활성화설정"
+  },
+  "timestamp": "2026-03-31T21:26:57+09:00",
+  "hostname": "nacsc"
+}

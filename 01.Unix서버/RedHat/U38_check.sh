@@ -29,11 +29,11 @@ ITEM_ID="U-38"
 ITEM_NAME="DoS 공격에 취약한 서비스 비활성화"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="시스템 리소스를 과도하게 소모시킬 수 있는 불필요한 DoS 관련 서비스를 차단하여 가용성을 확보하기 위함"
-GUIDELINE_THREAT="echo, chargen 등의 서비스가 활성화된 경우 UDP Flooding 공격의 도구가 되어 시스템 서비스 거부 상태를 유발할 수 있음"
-GUIDELINE_CRITERIA_GOOD="echo, discard, daytime, chargen 등의 서비스가 비활성화되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="DoS 관련 서비스 중 하나라도 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="해당 서비스 비활성화 (/etc/xinetd.d/ 내 파일에서 disable = yes 설정)"
+GUIDELINE_PURPOSE="많은 취약점을 가진 echo, discard, daytime, chargen, ntp, snmp 등의 서비스를 중지하여 시스템의보안성을높이기위함"
+GUIDELINE_THREAT="해당서비스가활성화된경우,시스템정보유출및DoS공격의대상이될수있는위험이존재함"
+GUIDELINE_CRITERIA_GOOD="DoS공격에취약한서비스가비활성화된경우"
+GUIDELINE_CRITERIA_BAD="DoS공격에취약한서비스가활성화된경우"
+GUIDELINE_REMEDIATION="echo, discard, daytime, chargen, ntp, dns,snmp등의서비스비활성화설정"
 
 diagnose() {
     local status="양호"

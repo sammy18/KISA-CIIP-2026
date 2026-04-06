@@ -33,11 +33,11 @@ ITEM_ID="WEB-09"
 ITEM_NAME="웹서비스프로세스권한제한"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="웹프로세스가 웹서비스 운영에 필요한 최소한의 권한만을 갖도록 제한함으로써 웹사이트 방문자가 웹 서비스의 취약점을 이용해 시스템에 대한 어떤 권한도 획득할 수 없도록 하여 침해사고 발생 시 피해 범위 확산을 방지하기 위함"
-GUIDELINE_THREAT="웹 프로세스 권한을 제한하지 않은 경우, 웹 사이트 방문자가 웹 서비스의 취약점을 이용하여 시스템 권한을 획득할 수 있으며, 웹 취약점을 통해 접속 권한을 획득한 경우에는 관리자 권한을 획득하여 서버에 접속 후 정보의 변경, 훼손 및 유출될 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="웹프로세스(웹서비스)가 관리자 권한이 부여된 계정이 아닌 운영에 필요한 최소한의 권한을 가진 별도의 계정으로 구동되고 있는 경우"
+GUIDELINE_PURPOSE="웹프로세스가웹서비스운영에필요한최소한의권한만을갖도록제한함으로써웹사이트방문자가웹 서비스의 취약점을 이용해 시스템에 대한 어떤 권한도 획득할 수 없도록 하여 침해사고 발생 시 피해 범위확산을방지하기위함"
+GUIDELINE_THREAT="웹 프로세스 권한을 제한하지 않은 경우, 웹 사이트 방문자가 웹 서비스의 취약점을 이용하여 시스템 권한을 획득할 수 있으며, 웹 취약점을 통해 접속 권한을 획득한 경우에는 관리자 권한을 획득하여 서버에접속후정보의변경,훼손및유출될위험이존재함"
+GUIDELINE_CRITERIA_GOOD="웹프로세스(웹서비스)가관리자권한이부여된계정이아닌운영에필요한최소한의권한을가진 별도의계정으로구동되고있는경우"
 GUIDELINE_CRITERIA_BAD="웹프로세스가 관리자 권한(root 또는 administrator)으로 구동되는 경우"
-GUIDELINE_REMEDIATION="웹서비스 프로세스 구동 시 관리자 권한이 아닌 운영에 필요한 최소한의 권한을 가진 계정으로 구동 설정"
+GUIDELINE_REMEDIATION="웹서비스프로세스구동시관리자권한이아닌운영에필요한최소한의권한을가진계정으로구동설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"
@@ -82,24 +82,26 @@ diagnose() {
         echo "[INFO] pgrep command missing, skipping process check."
     fi
 
-    # Check Nginx master process user
+    # Check Nginx worker process user
+    # Nginx: master process는 root로 실행되는 것이 정상 (port 80 binding)
+    # worker process가 root로 실행되면 취약
     local master_process_user=""
     local nginx_conf_user=""
-    local is_running_as_root=false
+    local worker_root=false
 
-    # Method 1: Check running process user (most reliable)
+    # Method 1: Check worker process user (most reliable)
     if command -v ps >/dev/null; then
-        command_executed="ps aux | grep 'nginx: master process' | grep -v grep | awk '{print \$1}'"
-        master_process_user=$(ps aux | grep 'nginx: master process' | grep -v grep | awk '{print \$1}' | head -1 || true)
-
-        if [ -n "${master_process_user}" ]; then
-            command_result="Master process running as: ${master_process_user}"
-
-            # Check if running as root (vulnerable)
-            if [ "${master_process_user}" = "root" ]; then
-                is_running_as_root=true
+        command_executed="ps aux | grep 'nginx' | grep -v grep | awk '{print \$1, \$NF}'"
+        # worker process가 root로 실행되는지 확인
+        while IFS= read -r proc_user proc_cmd; do
+            if echo "$proc_cmd" | grep -q "worker process"; then
+                if [ "$proc_user" = "root" ]; then
+                    worker_root=true
+                    break
+                fi
             fi
-        fi
+        done < <(ps aux | grep '[n]ginx' | grep -v grep)
+        master_process_user=$(ps aux | grep 'nginx: master process' | grep -v grep | awk '{print $1}' | head -1 || true)
     fi
 
     # Method 2: Check nginx.conf user directive (additional context)
@@ -119,21 +121,21 @@ diagnose() {
     done
 
     if [ -n "${nginx_conf_user}" ]; then
-        command_result="${command_result}${command_result:+$'\n'}nginx.conf: ${nginx_conf_user}"
+        command_result="nginx.conf: ${nginx_conf_user}"
     fi
 
     # Determine result
-    if [ "${is_running_as_root}" = true ]; then
+    if [ "${worker_root}" = true ]; then
         diagnosis_result="VULNERABLE"
         status="취약"
-        inspection_summary="Nginx 마스터 프로세스가 root 권한으로 실행 중입니다. 웹서비스 프로세스 권한 제한이 필요합니다."
+        inspection_summary="Nginx 워커 프로세스(worker)가 root 권한으로 실행 중입니다. 보안 권고사항 미준수."
         if [ -n "${nginx_conf_user}" ]; then
             inspection_summary="${inspection_summary} (nginx.conf 설정: ${nginx_conf_user})"
         fi
     elif [ -n "${master_process_user}" ]; then
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="Nginx 마스터 프로세스가 '${master_process_user}' 계정으로 실행 중입니다. (보안 권고사항 준수)"
+        inspection_summary="Nginx 워커 프로세스가 root 이외의 계정으로 구동 중입니다. (보안 권고사항 준수)"
         if [ -n "${nginx_conf_user}" ]; then
             inspection_summary="${inspection_summary} (nginx.conf 설정: ${nginx_conf_user})"
         fi

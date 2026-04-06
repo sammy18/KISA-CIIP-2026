@@ -32,11 +32,11 @@ ITEM_NAME="root 계정 원격 접속 제한"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="root 계정의 직접 원격 접속을 차단하여 공격자의 무차별 대입 공격을 통한 관리자 권한 탈취를 방지하기 위함"
-GUIDELINE_THREAT="root 계정은 시스템의 모든 권한을 가지므로, 원격 접속이 허용될 경우 계정 탈취 시 시스템 전체가 장악될 수 있음"
-GUIDELINE_CRITERIA_GOOD="원격 터미널 서비스를 사용하지 않거나, 사용 시 root 직접 접속을 제한한 경우"
-GUIDELINE_CRITERIA_BAD="원격 터미널 서비스 사용 시 root 직접 접속을 제한하지 않은 경우"
-GUIDELINE_REMEDIATION="원격 접속 설정 파일(sshd_config 등)에서 PermitRootLogin을 no로 설정"
+GUIDELINE_PURPOSE="관리자 계정 탈취로 인한 시스템 장악을 방지하기 위해 외부 비인가자의 root 계정 접근 시도를 원천적으로차단하기위함"
+GUIDELINE_THREAT="root 계정은 운영체제의 모든 기능을 설정 및 변경이 가능하여(프로세스, 커널 변경 등) root 계정을 탈취하여외부에서원격을이용한시스템장악및각종공격으로(무차별대입공격, 사전대입공격등) 인한root계정사용불가위험이존재함"
+GUIDELINE_CRITERIA_GOOD="원격터미널서비스를사용하지않거나,사용시root직접접속을차단한경우"
+GUIDELINE_CRITERIA_BAD="원격터미널서비스사용시root직접접속을허용한경우"
+GUIDELINE_REMEDIATION="원격접속시root계정으로접속할수없도록파일내용설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지

@@ -1,0 +1,20 @@
+{
+  "item_id": "U-03",
+  "item_name": "계정 잠금 임계값 설정",
+  "inspection": {
+    "summary": "계정 잠금 임계값 미설치 또는 부적절 (모듈 설정 없음)",
+    "status": "취약"
+  },
+  "final_result": "VULNERABLE",
+  "command": "grep -E 'pam_faillock.so|pam_tally2.so' /etc/pam.d/{common-auth,common-account,system-auth,password-auth,login}",
+  "command_result": "[No pam_faillock.so or pam_tally2.so found in PAM configuration files]\\n",
+  "guideline": {
+    "purpose": "계정 탈취 목적의 무차별 대입 공격 시 해당 계정을 잠금으로써 인증 요청에 응답하는 리소스 낭비를 차단하고대입공격으로인한비밀번호노출공격을무력화하기위함",
+    "security_threat": "계정 잠금 임계값이 설정되어 있지 않을 경우, 비밀번호 탈취 공격(무차별 대입 공격, 사전 대입 공격, 추측 공격 등)의 인증 요청에 대해 설정된 비밀번호가 일치할 때까지 지속적으로 응답하여 해당 계정의 비밀번호가유출될위험이존재함",
+    "judgment_criteria_good": "계정잠금임계값이10회이하의값으로설정된경우",
+    "judgment_criteria_bad": "계정잠금임계값이설정되어있지않거나,10회이하의값으로설정되지않은경우",
+    "remediation": "계정잠금임계값을10회이하로설정"
+  },
+  "timestamp": "2026-03-31T21:24:18+09:00",
+  "hostname": "nacsc"
+}

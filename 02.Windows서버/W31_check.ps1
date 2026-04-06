@@ -47,6 +47,7 @@ try {
         $commandOutput = "SNMP service not found"
     } else {
         $regPath = 'HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\TrapConfiguration'
+        $permittedPath = 'HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\PermittedManagers'
         $validHosts = @('127.0.0.1', 'localhost')
         $hasValidConfig = $false
 
@@ -54,6 +55,15 @@ try {
             $subKeys = Get-ChildItem $regPath -ErrorAction SilentlyContinue
             if ($subKeys.Count -gt 0) {
                 $hasValidConfig = $true
+            }
+        }
+
+        # PermittedManagers 확인 (SNMP 접근 제어의 핵심 설정)
+        $hasPermittedManagers = $false
+        if (Test-Path $permittedPath) {
+            $permitted = (Get-ItemProperty -Path $permittedPath -Name 'PermittedManagers' -ErrorAction SilentlyContinue).PermittedManagers
+            if ($permitted) {
+                $hasPermittedManagers = $true
             }
         }
 
@@ -67,7 +77,7 @@ try {
             }
         }
 
-        if ($hasValidConfig -or $hasCommunityRestriction) {
+        if ($hasValidConfig -or $hasCommunityRestriction -or $hasPermittedManagers) {
             $finalResult = "GOOD"
             $status = "양호"
             $summary = "SNMP 서비스가 비활성화되거나 특정 호스트로부터의 SNMP 패킷만 수락하도록 설정됨"
@@ -91,11 +101,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = 'SNMP 트래픽에 대한 Access Control 설정을 적용하여 내부 네트워크로부터의 악의적인 공격을 차단'
-$threat = 'SNMP Access Control 설정을 적용하지 않아 인증되지 않은 내부 서버로부터의 SNMP 트래픽을 차단하지 않을 경우 장치 구성 변경, 라우팅 테이블 조작, 악의적인 TFTP 서버 구동 등의 SNMP 공격에 노출될 위험 존재'
-$criteria_good = 'SNMP 서비스를 사용하지 않거나 특정 호스트로부터 SNMP 패킷 받아들이기가 설정된 경우'
-$criteria_bad = '모든 호스트로부터 SNMP 패킷 받아들이기가 설정된 경우'
-$remediation = '불필요 시 서비스 중지/사용 안 함, 사용 시 SNMP 패킷 수령 호스트 지정'
+$purpose = "SNMP 트래픽에 대한 Access Control 설정을 적용하여 내부 네트워크로부터의 악의적인 공격을 차단하기위함"
+$threat = "SNMPAccessControl설정을적용하지않아인증되지않은내부서버로부터의SNMP트래픽을 차단하지않을경우, 장치구성변경, 라우팅테이블조작, 악의적인TFTP서버구동등의SNMP공격 에노출될위험이존재함"
+$criteria_good = "SNMP서비스를사용하지않거나특정호스트로부터SNMP패킷받아들이기가설정된경우"
+$criteria_bad = "모든호스트로부터SNMP패킷받아들이기가설정된경우"
+$remediation = "불필요시서비스중지/사용안함,사용시SNMP패킷수령호스트지정"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

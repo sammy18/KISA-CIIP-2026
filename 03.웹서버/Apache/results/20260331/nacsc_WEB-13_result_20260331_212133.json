@@ -1,0 +1,20 @@
+{
+  "item_id": "WEB-13",
+  "item_name": "웹서비스디렉터리리스팅제거",
+  "inspection": {
+    "summary": "Apache 웹 서버는 WEB-13(웹서비스디렉터리리스팅제거) 진단 항목 대상이 아닙니다. 해당 진단은 WEB-04(웹서비스디렉터리리스팅방지설정)에서 이미 수행됩니다.",
+    "status": "N/A"
+  },
+  "final_result": "N/A",
+  "command": "echo 'Apache WEB-13 check skipped (refer to WEB-04)'",
+  "command_result": "N/A - Apache not in scope for WEB-13",
+  "guideline": {
+    "purpose": "웹서버에 대한 디렉터리 리스팅 기능을 차단하여 디렉터리 내의 모든 파일에 대한 접근 및 정보 노출을 차단하기 위함",
+    "security_threat": "디렉터리 리스팅 기능이 차단되지 않은 경우, 비인가자가 해당 디렉터리 내의 모든 파일의 리스트 확인 및 접근이 가능하고, 웹 서버의 구조 및 백업 파일이나 소스 파일 등 공개되면 안 되는 중요 파일들이 노출될 위험이 존재함",
+    "judgment_criteria_good": "디렉터리 리스팅이 설정되지 않은 경우",
+    "judgment_criteria_bad": "디렉터리 리스팅이 설정된 경우",
+    "remediation": "httpd.conf 또는 apache2.conf 내 모든 디렉터리의 Options 지시자에서 Indexes 옵션 제거 또는 -Indexes 설정"
+  },
+  "timestamp": "2026-03-31T21:21:35+09:00",
+  "hostname": "nacsc"
+}

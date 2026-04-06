@@ -32,11 +32,11 @@ ITEM_NAME="NFS 접근 통제"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="NFS 공유 시 허가된 호스트만 접근 가능하도록 제한하여 무단 파일 시스템 접근을 방지하기 위함"
-GUIDELINE_THREAT="NFS 접근 통제가 설정되지 않아 모든 호스트에 공유될 경우, 외부에서 네트워크를 통해 중요 데이터를 탈취할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="NFS 공유 설정 파일(/etc/exports)에 접근 허용 호스트가 명시되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="NFS 공유 설정을 모든 호스트('*' 등)에 허용하거나 접근 통제가 없는 경우"
-GUIDELINE_REMEDIATION="/etc/exports 파일에 특정 IP 주소 또는 네트워크 대역을 지정하여 공유 설정"
+GUIDELINE_PURPOSE="접근권한이없는비인가자의접근을통제하기위함"
+GUIDELINE_THREAT="접근통제설정이적절하지않을경우,인증절차없이비인가자가디렉터리나파일의접근이가능하며, 해당공유시스템에원격으로마운트하여중요파일을변조하거나유출할위험이존재함"
+GUIDELINE_CRITERIA_GOOD="접근통제가설정되어있으며NFS설정파일접근권한이644이하인경우"
+GUIDELINE_CRITERIA_BAD="접근통제가설정되어있지않고NFS설정파일접근권한이644를초과하는경우"
+GUIDELINE_REMEDIATION="Ÿ NFS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 불가피하게사용시접근통제설정및NFS설정파일접근권한644설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지
