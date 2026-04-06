@@ -39,7 +39,7 @@ if (-not (Test-RunallMode)) {
 $commandExecuted = 'Get-Service | Where-Object { $_.Status -eq "Running" }'
 $commandOutput = ""
 try {
-    # KISA 가이드라인 기반 불필요한 서비스 목록 (18개)
+    # KISA 가이드라인 기반 불필요한 서비스 목록 (17개)
     $unnecessaryServices = @(
         "TlntSvr",           # Telnet
         "MSFTPSVC",          # FTP Publishing Service
@@ -48,7 +48,6 @@ try {
         "Simptcp",           # Simple TCP/IP Services
         "Server",            # Server Service (파일 공유)
         "W3SVC",             # World Wide Web Publishing Service (IIS)
-        "Msftpsvc",          # FTP Service
         "TermService",       # Terminal Services (RDP) - 일부 환경
         "Schedule",          # Task Scheduler
         "Browser",           # Computer Browser

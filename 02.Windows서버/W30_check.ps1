@@ -85,7 +85,7 @@ $commandExecuted = "Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\SN
 
 # 2. lib를 통한 결과 저장
 $purpose = "SNMP에서 일종의 비밀번호로 사용하는 Community String을 유추할 수 없는 복잡한 값으로 변경하여불필요한시스템정보노출을차단하기위함"
-$threat = "Community String을 변경하지않고public, private등기본설정값으로사용하는경우,기본Com munityString값을통한시스템의주요정보및설정상태가비인가자에게노출될수있는위험이 존재함"
+$threat = "Community String을 변경하지않고public, private등기본설정값으로사용하는경우,기본CommunityString값을통한시스템의주요정보및설정상태가비인가자에게노출될수있는위험이 존재함"
 $criteria_good = "SNMP 서비스를사용하지않거나CommunityString이public, private이아닌경우"
 $criteria_bad = "SNMP 서비스를사용하며,Community String이 public, private인경우"
 $remediation = "불필요시서비스중지/사용안함,사용시기본CommunityString변경"

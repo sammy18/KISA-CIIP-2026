@@ -40,7 +40,7 @@ try {
     if ($service) {
         $serviceInfo = "Name: $($service.Name), Status: $($service.Status), StartType: $($service.StartType)"
 
-        if ($service.Status -eq 'Running' -or $service.StartType -eq 'Automatic' -or $service.StartType -eq 'Manual') {
+        if ($service.Status -eq 'Running' -or $service.StartType -eq 'Automatic') {
             $finalResult = "VULNERABLE"
             $summary = "Remote Registry Service가 사용 중"
             $status = "취약"

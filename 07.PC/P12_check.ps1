@@ -10,7 +10,7 @@
 # @ID          : PC-12
 # @Category    : PC (Personal Computer)
 # @Platform    : Windows 10, 11
-# @Severity    : 상
+# @Severity    : 중
 # @Title       : Windows자동로그인점검
 # @Description : Windows 자동 로그인 기능이 비활성화되어 있는지 점검하여 무단 접근 방지
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
