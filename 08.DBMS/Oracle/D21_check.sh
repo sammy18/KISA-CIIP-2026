@@ -33,11 +33,11 @@ ITEM_ID="D-21"
 ITEM_NAME="인가되지 않은 GRANT OPTION 사용 제한"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="GRANTOPTION을ROLE에의해설정하여권한의남용을방지하고,안정성을확보하기위함"
-GUIDELINE_THREAT="일반 사용자에게 GRANT OPTION이 부여된 경우, 일반 사용자가 Object 소유자인 것과 같이 다른 일반사용자에게권한을부여할수있어권한의무분별한확산으로인한중요정보의유출등의위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="WITH_GRANT_OPTION이ROLE에의하여설정된경우"
-GUIDELINE_CRITERIA_BAD="WITH_GRANT_OPTION이ROLE에의하여설정되지않은경우"
-GUIDELINE_REMEDIATION="WITH_GRANT_OPTION이ROLE에의하여설정되도록변경"
+GUIDELINE_PURPOSE="GRANTOPTION을 ROLE에 의해 설정하여 권한의 남용을 방지하고, 안정성을 확보하기 위함"
+GUIDELINE_THREAT="일반 사용자에게 GRANT OPTION이 부여된 경우, 일반 사용자가 Object 소유자인 것과 같이 다른 일반 사용자에게 권한을 부여할 수 있어 권한의 무분별한 확산으로 인한 중요 정보의 유출 등의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="WITH _GRANT _OPTION이 ROLE에 의하여 설정된 경우"
+GUIDELINE_CRITERIA_BAD="WITH _GRANT _OPTION이 ROLE에 의하여 설정되지 않은 경우"
+GUIDELINE_REMEDIATION="WITH _GRANT _OPTION이 ROLE에 의하여 설정되도록 변경"
 
 # Oracle 연결 정보 초기화 (fallback if library not loaded)
 ORACLE_USER="${ORACLE_USER:-system}"

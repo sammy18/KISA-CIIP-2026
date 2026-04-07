@@ -40,11 +40,11 @@ ITEM_ID="D-14"
 ITEM_NAME="데이터베이스의주요설정파일,비밀번호파일등과같은주요파일들의접근권한이적절하게설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="데이터베이스의 주요 파일에 관리자를 제외한 일반 사용자의 파일 수정 권한을 제거함으로써 비인가자에의한DBMS주요파일변경이나삭제를방지하고주요정보유출을방지할수있음"
-GUIDELINE_THREAT="데이터베이스주요파일에비인가자가접근하여수정및삭제시데이터베이스운영에장애가발생할수 있으며계정비밀번호정보등중요정보의유출위험이존재함"
-GUIDELINE_CRITERIA_GOOD="주요설정파일및디렉터리의권한설정시일반사용자의수정권한을제거한경우"
-GUIDELINE_CRITERIA_BAD="주요설정파일및디렉터리의권한설정시일반사용자의수정권한을제거하지않은경우"
-GUIDELINE_REMEDIATION="주요설정파일및디렉터리의권한설정변경"
+GUIDELINE_PURPOSE="데이터 베이스의 주요 파일에 관리자를 제외한 일반 사용자의 파일 수정 권한을 제거함으로써 비인가자에 의한 DBMS 주요 파일 변경이나 삭제를 방지하고 주요 정보 유출을 방지할 수 있음"
+GUIDELINE_THREAT="데이터베이스 주요 파일에 비인가자가 접근하여 수정 및 삭제 시 데이터베이스 운영에 장애가 발생할 수 있으며 계정 비밀번호 정보 등 중요 정보의 유출 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="주요 설정 파일 및 디렉터리의 권한 설정 시 일반 사용자의 수정 권한을 제거한 경우"
+GUIDELINE_CRITERIA_BAD="주요 설정 파일 및 디렉터리의 권한 설정 시 일반 사용자의 수정 권한을 제거하지 않은 경우"
+GUIDELINE_REMEDIATION="주요 설정 파일 및 디렉터리의 권한 설정 변경"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)

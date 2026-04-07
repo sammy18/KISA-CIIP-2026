@@ -32,11 +32,11 @@ ITEM_ID="D-06"
 ITEM_NAME="DB 사용자 계정의 개별적 부여 및 사용"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="사용자별별도DBMS계정을사용하여DB에접근하는지점검하여DB계정공유사용으로발생할수 있는로그감사추적문제를대비하고자함"
-GUIDELINE_THREAT="DB 계정을 공유하여 사용할 경우 비인가자의 DB 접근 발생 시 계정 공유 사용으로 인해 로그 감사 추적의어려움이발생할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="사용자별계정을사용하고있는경우"
-GUIDELINE_CRITERIA_BAD="공용계정을사용하고있는경우"
-GUIDELINE_REMEDIATION="사용자별계정생성및권한부여"
+GUIDELINE_PURPOSE="사용자별 별도 DBMS 계정을 사용하여 DB에 접근하는지 점검하여 DB 계정 공유 사용으로 발생할 수 있는 로그 감사 추적 문제를 대비하고자함"
+GUIDELINE_THREAT="DB 계정을 공유하여 사용할 경우 비인가자의 DB 접근 발생 시 계정 공유 사용으로 인해 로그 감사 추적의 어려움이 발생할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="사용자별 계정을 사용하고 있는 경우"
+GUIDELINE_CRITERIA_BAD="공용 계정을 사용하고 있는 경우"
+GUIDELINE_REMEDIATION="사용자별 계정 생성 및 권한 부여"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

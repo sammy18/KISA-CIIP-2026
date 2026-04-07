@@ -42,11 +42,11 @@ ITEM_ID="D-07"
 ITEM_NAME="DBMS 관리자 권한 점검"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="root 권한을 제한적으로 사용함으로써 시스템의 손상, 데이터의 유출 및 변조 등을 차단하여 보안 위협을방지하기위함"
-GUIDELINE_THREAT="root 권한으로서비스를구동할경우시스템손상, 데이터유출및변조,감사및추적의어려움등으로 인해서비스공격의표적이될위험이존재함"
-GUIDELINE_CRITERIA_GOOD="DBMS가root계정또는root권한이아닌별도의계정및권한으로구동되고있는경우"
-GUIDELINE_CRITERIA_BAD="DBMS가root계정또는root권한으로구동되고있는경우"
-GUIDELINE_REMEDIATION="DBMS구동계정변경"
+GUIDELINE_PURPOSE="root 권한을 제한적으로 사용함으로써 시스템의 손상, 데이터의 유출 및 변조 등을 차단하여 보안 위협을 방지하기 위함"
+GUIDELINE_THREAT="root 권한으로 서비스를 구동할 경우 시스템 손상, 데이터 유출 및 변조, 감사 및 추적의 어려움 등으로 인해 서비스 공격의 표적이 될 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="DBMS가 root 계정 또는 root 권한이 아닌 별도의 계정 및 권한으로 구동되고 있는 경우"
+GUIDELINE_CRITERIA_BAD="DBMS가 root 계정 또는 root 권한으로 구동되고 있는 경우"
+GUIDELINE_REMEDIATION="DBMS 구동 계정 변경"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)

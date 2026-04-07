@@ -40,11 +40,11 @@ ITEM_ID="D-24"
 ITEM_NAME="레지스트리접근제한"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="불필요한RegistryProcedure의권한설정을확인하고제한하여시스템의보안및안정성을강화하기 위함"
-GUIDELINE_THREAT="불필요한 레지스트리 접근 권한이 제한되지 않는 경우, 공격자가 시스템을 변경하거나 악성 소프트웨어를설치하여권한상승,데이터유출,시스템장애를발생시킬위험이존재함"
-GUIDELINE_CRITERIA_GOOD="제한이필요한시스템확장저장프로시저들이DBA외guest/public에게부여되지않은경우"
-GUIDELINE_CRITERIA_BAD="제한이필요한시스템확장저장프로시저들이DBA외guest/public에게부여된경우"
-GUIDELINE_REMEDIATION="guest/public에게부여된시스템확장저장프로시저권한제거"
+GUIDELINE_PURPOSE="불필요한 RegistryProcedure의 권한 설정을 확인하고 제한하여 시스템의 보안 및 안정성을 강화하기 위함"
+GUIDELINE_THREAT="불필요한 레지스트리 접근 권한이 제한되지 않는 경우, 공격자가 시스템을 변경하거나 악성 소프트웨어를 설치하여 권한 상승, 데이터 유출, 시스템 장애를 발생시킬 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="제한이 필요한 시스템 확장 저장 프로 시저들이 DBA 외 guest/public에게 부여되지 않은 경우"
+GUIDELINE_CRITERIA_BAD="제한이 필요한 시스템 확장 저장 프로 시저들이 DBA 외 guest/public에게 부여된 경우"
+GUIDELINE_REMEDIATION="guest/public에게 부여된 시스템 확장 저장 프로 시저 권한 제거"
 
 diagnose() {
     diagnosis_result="unknown"  # Global variable (not local)
