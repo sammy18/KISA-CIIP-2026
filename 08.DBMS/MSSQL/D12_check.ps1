@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = 'Oracle리스너비밀번호설정여부점검'
-$threat = '리스너비밀번호가설정되지않은경우비인가자가리스너접속을통해DBMS의정보를열람할수있는위험이존재함'
-$criteria_good = '리스너비밀번호가설정되어있는경우'
-$criteria_bad = '리스너비밀번호가설정되어있지않은경우'
-$remediation = '리스너비밀번호설치후lsnrctl명령어로비밀번호설정'
+$purpose = 'Listener의 Owner는 DBA가 아니더라도 Listener를 shutdown시키거나 DB 서버에 임의의 파일을 생성할 수 있으며, 원격에서 LSNRCTL 유틸리티를 사용하여 listener.ora 파일에 대한 변경이 가능하므로 Listener에 비밀번호를 설정하여 비인가자가 이를 수정하지 못하도록하기 위함'
+$threat = 'Listener에 비밀번호가 설정되지 않았을 경우 DoS, 정보 획득, Listener 프로세스를 중지시킬 수 있는 위험이 존재함'
+$criteria_good = 'Listener의 비밀번호가 설정된 경우'
+$criteria_bad = 'Listener의 비밀번호가 설정되어 있지 않은 경우'
+$remediation = 'Listener 비밀번호 설정'
 
 # 변수 초기화
 $diagnosis_result = "NA"

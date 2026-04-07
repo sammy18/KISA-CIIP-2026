@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = '레지스트리 관련 확장 저장 프로시저의 실행 권한을 제한하여 운영체제 레지스트리 무단 접근을 방지하기 위함'
-$threat = '레지스트리 프로시저 실행 권한이 부적절하게 부여된 경우 공격자가 시스템 레지스트리를 조작하여 시스템 권한을 상승시키거나 설정을 변경할 위험이 존재함'
-$criteria_good = '레지스트리 관련 확장 저장 프로시저가 비활성화되어 있거나 관리자만 실행 권한을 가진 경우'
-$criteria_bad = '레지스트리 관련 확장 저장 프로시저가 활성화되어 있고 비관리자에게 실행 권한이 부여된 경우'
-$remediation = '불필요한 레지스트리 프로시저 권한 회수: REVOKE EXECUTE ON xp_regwrite FROM [계정];'
+$purpose = '불필요한 RegistryProcedure의 권한 설정을 확인하고 제한하여 시스템의 보안 및 안정성을 강화하기 위함'
+$threat = '불필요한 레지스트리 접근 권한이 제한되지 않는 경우, 공격자가 시스템을 변경하거나 악성 소프트웨어를 설치하여 권한 상승, 데이터 유출, 시스템 장애를 발생시킬 위험이 존재함'
+$criteria_good = '제한이 필요한 시스템 확장 저장 프로 시저들이 DBA 외 guest/public에게 부여되지 않은 경우'
+$criteria_bad = '제한이 필요한 시스템 확장 저장 프로 시저들이 DBA 외 guest/public에게 부여된 경우'
+$remediation = 'guest/public에게 부여된 시스템 확장 저장 프로 시저 권한 제거'
 
 # 변수 초기화
 $diagnosis_result = "MANUAL"

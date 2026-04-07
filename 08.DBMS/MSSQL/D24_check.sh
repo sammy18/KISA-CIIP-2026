@@ -35,11 +35,11 @@ ITEM_ID="D-24"
 
 ITEM_NAME="DBMS 기본 포트 사용 점검"
 SEVERITY="하"
-GUIDELINE_PURPOSE="기본 포트 변경으로 스캔 공격 방지"
-GUIDELINE_THREAT="기본 포트 사용 시 자동 스캔 도구에 노출 위험"
-GUIDELINE_CRITERIA_GOOD="기본 포트가 아닌 경우"
-GUIDELINE_CRITERIA_BAD="기본 포트(1433) 사용"
-GUIDELINE_REMEDIATION="MSSQL 설정 파일에서 포트 번호 변경 권장"
+GUIDELINE_PURPOSE="불필요한 RegistryProcedure의 권한 설정을 확인하고 제한하여 시스템의 보안 및 안정성을 강화하기 위함"
+GUIDELINE_THREAT="불필요한 레지스트리 접근 권한이 제한되지 않는 경우, 공격자가 시스템을 변경하거나 악성 소프트웨어를 설치하여 권한 상승, 데이터 유출, 시스템 장애를 발생시킬 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="제한이 필요한 시스템 확장 저장 프로 시저들이 DBA 외 guest/public에게 부여되지 않은 경우"
+GUIDELINE_CRITERIA_BAD="제한이 필요한 시스템 확장 저장 프로 시저들이 DBA 외 guest/public에게 부여된 경우"
+GUIDELINE_REMEDIATION="guest/public에게 부여된 시스템 확장 저장 프로 시저 권한 제거"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

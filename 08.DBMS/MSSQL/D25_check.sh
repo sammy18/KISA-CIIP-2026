@@ -35,11 +35,11 @@ ITEM_ID="D-25"
 
 ITEM_NAME="DBMS 백업/복구 권한 점검"
 SEVERITY="중"
-GUIDELINE_PURPOSE="백업/복구 권한 제어로 데이터 무단 유출 방지"
-GUIDELINE_THREAT="과도한 백업 권한 부여 시 데이터 유출 위험"
-GUIDELINE_CRITERIA_GOOD="권한이 적절히 제한된 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 백업 권한 다수"
-GUIDELINE_REMEDIATION="불필요한 백업/복구 권한 취소 및 정기적 권한 감사"
+GUIDELINE_PURPOSE="안전한 버전의 데이터 베이스를 사용하여 알려진 보안 취약점으로 인한 공격을 차단하기 위함"
+GUIDELINE_THREAT="안전하지 않은 버전을 사용할 경우, 알려진 보안 취약점을 통해 시스템에 침투하거나 데이터의 탈취, 악성 코드 감염 및 서비스 중단 등의 보안 사고를 초래할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="보안 패치가 적용된 버전을 사용하는 경우"
+GUIDELINE_CRITERIA_BAD="보안 패치가 적용되지 않는 버전을 사용하는 경우"
+GUIDELINE_REMEDIATION="보안 패치가 적용된 버전으로 업데이트"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

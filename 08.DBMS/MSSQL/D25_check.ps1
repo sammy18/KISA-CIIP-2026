@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = '주기적 보안패치 적용으로 알려진 취약점 조치 및 보안 강화'
-$threat = '보안패치 미적용 시 알려진 취약점에 노출되어 공격 위험'
-$criteria_good = '최신 보안패치가 적용된 최신 버전 사용'
-$criteria_bad = '오래된 버전 사용 또는 보안패치 미적용'
-$remediation = 'SQL Server Latest Updates에서 최신 CU/SP 다운로드 및 적용, 주기적 업데이트'
+$purpose = '안전한 버전의 데이터 베이스를 사용하여 알려진 보안 취약점으로 인한 공격을 차단하기 위함'
+$threat = '안전하지 않은 버전을 사용할 경우, 알려진 보안 취약점을 통해 시스템에 침투하거나 데이터의 탈취, 악성 코드 감염 및 서비스 중단 등의 보안 사고를 초래할 위험이 존재함'
+$criteria_good = '보안 패치가 적용된 버전을 사용하는 경우'
+$criteria_bad = '보안 패치가 적용되지 않는 버전을 사용하는 경우'
+$remediation = '보안 패치가 적용된 버전으로 업데이트'
 
 # 변수 초기화
 $diagnosis_result = "MANUAL"

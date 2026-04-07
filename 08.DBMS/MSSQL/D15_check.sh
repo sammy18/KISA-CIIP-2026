@@ -35,11 +35,11 @@ ITEM_NAME="관리자이외의사용자가오라클리스너의접속을통해리
 SEVERITY="하"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="리스너 로그 및 trace 파일 접근 제한으로 무단 변경 및 정보 유출 방지"
-GUIDELINE_THREAT="관리자 외 사용자가 리스너 파일에 접근 가능할 경우 로그 조작 및 정보 유출 위험"
-GUIDELINE_CRITERIA_GOOD="리스너 파일이 oracle 소유이며 600/644 권한인 경우"
-GUIDELINE_CRITERIA_BAD="리스너 파일에 Other 쓰기 권한이 있는 경우"
-GUIDELINE_REMEDIATION="listener.ora에 LOG_DIRECTORY_<listener_name> 설정 및 파일 권한 644로 변경"
+GUIDELINE_PURPOSE="Listener 설정 파일 및 파라미터 변경 방지 옵션을 설정하여 비인가자의 Listener를 이용한 파라미터 변경을 방지하여 trace 파일 및 Listener 로그의 신뢰도를 유지하기 위함"
+GUIDELINE_THREAT="비인가자가 Oracle의 LSNRCTL 유틸리티를 이용하여 Listener에 직접 접근할 경우, 명령어를 통해 Listener의 모든 파라미터를 변경할 수 있으며, 이로 인해 trace 파일이나 Listener 로그 파일을 변경할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="Listener 관련 설정 파일에 대한 권한이 관리자로 설정되어 있으며, Listener로 파라미터를 변경할 수 없게 옵션이 설정된 경우"
+GUIDELINE_CRITERIA_BAD="Listener 관련 설정 파일에 대한 권한이 일반 사용자로 설정되어 있고, Listener로 파라미터를 변경할 수 없게 옵션이 설정되지 않은 경우"
+GUIDELINE_REMEDIATION="주요 파일 및 로그 파일에 대한 권한을 관리자로 제한"
 
 # ============================================================================
 # 진단 함수

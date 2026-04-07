@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = '비밀번호 변경 시 이전 비밀번호를 재사용할 수 없도록 비밀번호 제약 설정이 되어있는지 점검'
+$purpose = '비밀번호 재사용 제약 설정 적용 여부를 점검하여 비밀번호 변경 시 이전 비밀번호 재사용을 제약하여 형식적인 비밀번호 변경을 원천적으로 차단하기 위함'
 $threat = '비밀번호 재사용 제약 설정이 적용되어 있지 않을 경우 비밀번호 변경 전 사용했던 비밀번호를 재사용함으로써 비인가자의 계정 비밀번호 추측 공격에 대한 시간을 더 많이 허용하여 비밀번호 유출 위험이 증가함'
-$criteria_good = 'Windows 비밀번호 정책에서 비밀번호 기억 설정이 적용된 경우'
-$criteria_bad = '비밀번호 재사용 제한 설정이 적용되지 않은 경우'
-$remediation = 'Windows 로컬 보안 정책 > 계정 정책 > 비밀번호 정책 > ''비밀번호 기억'' 값 설정'
+$criteria_good = '비밀번호 재사용 제한 설정을 적용한 경우'
+$criteria_bad = '비밀번호 재사용 제한 설정을 적용하지 않은 경우'
+$remediation = 'PASSWORD _REUSE _TIME, PASSWORD _REUSE _MAX 파라미터 설정'
 
 # 변수 초기화
 $diagnosis_result = "MANUAL"

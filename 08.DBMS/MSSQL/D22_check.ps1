@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = '데이터베이스 자원 제한 기능을 활성화하여 과도한 자원 사용으로 인한 서비스 거부를 방지하기 위함'
-$threat = '자원 제한 기능이 비활성화된 경우 악의적 또는 비정상적인 쿼리로 인해 시스템 자원이 고갈될 위험이 존재함'
-$criteria_good = 'RESOURCE_LIMIT가 TRUE로 설정된 경우'
-$criteria_bad = 'RESOURCE_LIMIT가 FALSE로 설정된 경우'
-$remediation = 'Oracle: ALTER SYSTEM SET RESOURCE_LIMIT=TRUE SCOPE=SPFILE; (Oracle 전용 항목)'
+$purpose = 'RESOURCE _LIMIT 값을 TRUE로 설정하여 자원의 과도한 사용을 방지하여 데이터베이스의 안정성을 보장하고, 효율적인 자원 관리를 수행하기 위함'
+$threat = '자원 제한 기능을 TRUE로 설정하지 않을 경우, 특정 사용자가 과도하게 많은 자원을 소비할 수 있으며 이로 인해 시스템에 과부하가 발생할 위험이 존재함'
+$criteria_good = 'RESOURCE _LIMIT 설정이 TRUE로 되어 있는 경우'
+$criteria_bad = 'RESOURCE _LIMIT 설정이 FALSE로 되어 있는 경우'
+$remediation = 'RESOURCE _LIMIT 설정을 TRUE로 설정 변경'
 
 # N/A 반환 (Oracle 전용 항목)
 $diagnosis_result = "NA"

@@ -35,7 +35,7 @@ ITEM_ID="D-08"
 ITEM_NAME="안전한암호화알고리즘사용"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="해시 알고리즘 SHA-256 이상의 암호화 알고리즘을 사용하는지 점검"
+GUIDELINE_PURPOSE="안전한 해시 알고리즘 사용으로 데이터의 기밀성 및 무결성을 보장하고, 사용자 인증을 강화하기 위함"
 GUIDELINE_THREAT="SHA-1이나 MD5와 같은 오래된 알고리즘 사용 시 공격자의 무차별 대입 공격 등으로 비밀번호 유추가 가능하며, 데이터 변조 및 유출의 위험이 존재함"
 GUIDELINE_CRITERIA_GOOD="해시 알고리즘 SHA-256 이상의 암호화 알고리즘을 사용하고 있는 경우"
 GUIDELINE_CRITERIA_BAD="해시 알고리즘 SHA-256 미만의 암호화 알고리즘을 사용하고 있는 경우"

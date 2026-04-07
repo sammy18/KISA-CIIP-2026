@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = 'Public role에 불필요한 권한 부여 방지로 권한 상승 공격 방지'
-$threat = 'Public role에 과도한 권한 부여 시 모든 사용자에게 권한 부여 효과로 보안 위험'
-$criteria_good = 'Public role에 최소한의 권한만 부여된 경우'
-$criteria_bad = 'Public role에 불필요한 권한이 다수 부여된 경우'
-$remediation = 'REVOKE privilege FROM PUBLIC 명령어로 Public role에서 불필요한 권한 취소'
+$purpose = '응용 프로그램 또는 DBA 계정의 Role을 점검하여 일반 계정으로 응용 프로그램 테이블이나 DBA 테이블의 접근을 차단하기 위함'
+$threat = '응용 프로그램 또는 DBA 계정의 Role이 Public으로 설정된 경우 일반 계정에서도 응용 프로그램 테이블 및 DBA 테이블로 접근할 수 있으므로 중요 정보 유출의 위험이 존재함'
+$criteria_good = 'DBA 계정의 Role이 Public으로 설정되지 않은 경우'
+$criteria_bad = 'DBA 계정의 Role이 Public으로 설정된 경우'
+$remediation = 'DBA 계정의 Role 설정에서 Public 그룹 권한 취소'
 
 # 변수 초기화
 $diagnosis_result = "MANUAL"

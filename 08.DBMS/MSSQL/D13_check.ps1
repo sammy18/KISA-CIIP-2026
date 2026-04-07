@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = '불필요한 ODBC/OLE-DB 데이터소스와 드라이버 제거로 공격 표면 최소화'
-$threat = '불필요한 데이터소스와 드라이버 존재 시 악용될 수 있는 공격 경로 증가'
-$criteria_good = '필요한 데이터소스와 드라이버만 존재하는 경우'
-$criteria_bad = '불필요한 데이터소스와 드라이버가 다수 존재하는 경우'
-$remediation = 'ODBC 데이터소스 관리자(odbcad32.exe)에서 불필요한 DSN 삭제 및 사용하지 않는 드라이버 제거'
+$purpose = '불필요한 데이터 소스 및 드라이버를 제거함으로써 비인가자에 의한 데이터베이스 접속 및 자료 유출을 차단하기 위함'
+$threat = '불필요한 ODBC/OLE-DB 데이터 소스를 통한 비인가자의 데이터베이스 접속 및 주요 정보 유출에 대한 위험이 발생할 수 있음'
+$criteria_good = '불필요한 ODBC/OLE-DB가 설치되지 않은 경우'
+$criteria_bad = '불필요한 ODBC/OLE-DB가 설치된 경우'
+$remediation = '불필요한 ODBC/OLE-DB 제거'
 
 # 변수 초기화
 $diagnosis_result = "MANUAL"

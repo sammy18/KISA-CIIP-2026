@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = '관리자이외의사용자가오라클리스너의접속을통해리스너로그및trace파일에대한변경을제한하는지점검'
-$threat = '관리자이외의사용자가리스너로그및trace파일에접근할수있는경우비인가자가DBMS의정보를열람할수있는위험이존재함'
-$criteria_good = '관리자이외의사용자가리스너의접속을통해리스너로그및trace파일에대한변경이제한된경우'
-$criteria_bad = '관리자이외의사용자가리스너의접속을통해리스너로그및trace파일에대한변경이제한되지않은경우'
-$remediation = 'listener.ora설정파일에서ADMIN_RESTRICTIONS_listener명=ON설치'
+$purpose = 'Listener 설정 파일 및 파라미터 변경 방지 옵션을 설정하여 비인가자의 Listener를 이용한 파라미터 변경을 방지하여 trace 파일 및 Listener 로그의 신뢰도를 유지하기 위함'
+$threat = '비인가자가 Oracle의 LSNRCTL 유틸리티를 이용하여 Listener에 직접 접근할 경우, 명령어를 통해 Listener의 모든 파라미터를 변경할 수 있으며, 이로 인해 trace 파일이나 Listener 로그 파일을 변경할 위험이 존재함'
+$criteria_good = 'Listener 관련 설정 파일에 대한 권한이 관리자로 설정되어 있으며, Listener로 파라미터를 변경할 수 없게 옵션이 설정된 경우'
+$criteria_bad = 'Listener 관련 설정 파일에 대한 권한이 일반 사용자로 설정되어 있고, Listener로 파라미터를 변경할 수 없게 옵션이 설정되지 않은 경우'
+$remediation = '주요 파일 및 로그 파일에 대한 권한을 관리자로 제한'
 
 # 변수 초기화
 $diagnosis_result = "NA"

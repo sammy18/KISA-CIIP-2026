@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = 'GRANT OPTION 권한을 제한하여 비인가 사용자가 임의로 권한을 부여하는 것을 방지하기 위함'
-$threat = 'GRANT OPTION이 부여된 일반 사용자가 임의로 다른 사용자에게 권한을 부여할 수 있어 권한 관리 체계가 무너질 위험이 존재함'
-$criteria_good = '불필요한 계정에 GRANT OPTION이 부여되지 않은 경우'
-$criteria_bad = '불필요한 계정에 GRANT OPTION이 부여되어 있는 경우'
-$remediation = 'REVOKE GRANT OPTION FOR [권한] FROM [계정]; 또는 WITH GRANT OPTION이 부여된 권한을 취소'
+$purpose = 'GRANTOPTION을 ROLE에 의해 설정하여 권한의 남용을 방지하고, 안정성을 확보하기 위함'
+$threat = '일반 사용자에게 GRANT OPTION이 부여된 경우, 일반 사용자가 Object 소유자인 것과 같이 다른 일반 사용자에게 권한을 부여할 수 있어 권한의 무분별한 확산으로 인한 중요 정보의 유출 등의 위험이 존재함'
+$criteria_good = 'WITH _GRANT _OPTION이 ROLE에 의하여 설정된 경우'
+$criteria_bad = 'WITH _GRANT _OPTION이 ROLE에 의하여 설정되지 않은 경우'
+$remediation = 'WITH _GRANT _OPTION이 ROLE에 의하여 설정되도록 변경'
 
 # 변수 초기화
 $diagnosis_result = "MANUAL"

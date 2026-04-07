@@ -34,11 +34,11 @@ if (-not (Test-RunallMode)) {
 }
 
 # GUIDELINE 정보
-$purpose = 'xp_cmdshell 확장 저장 프로시저를 비활성화하여 운영체제 명령어 실행을 통한 시스템 침해를 방지하기 위함'
-$threat = 'xp_cmdshell이 활성화된 경우 SQL Injection 등을 통해 공격자가 운영체제 명령어를 실행할 수 있어 시스템 전체가 위험에 노출됨'
-$criteria_good = 'xp_cmdshell이 비활성화되어 있는 경우'
-$criteria_bad = 'xp_cmdshell이 활성화되어 있는 경우'
-$remediation = 'EXEC sp_configure ''xp_cmdshell'', 0; RECONFIGURE;'
+$purpose = '불필요하게 활성화되어 있는 xp_cmdshell를 제한하여 공격자의 무단 접근 및 악성 코드의 실행 위험을 감소시키기 위함'
+$threat = '해킹 툴에서 자주 이용되고 있으며, 권한 상승이나 데이터 유출 등의 위험이 존재함'
+$criteria_good = 'xp_cmdshell이 비활성화되어 있거나, 활성화되어 있으면 다음의 조건을 모두 만족하는 경우 1. public의 실행(Execute)권한이 부여되어 있지 않은 경우 2. 서비스 계정(애플리케이션 연동)에 sysadmin 권한이 부여되어 있지 않은 경우'
+$criteria_bad = 'xp_cmdshell이 활성화되어 있고, 양호의 조건을 만족하지 않는 경우'
+$remediation = 'xp_cmdshell 설정 값을 0 또는 False로 설정'
 
 # 변수 초기화
 $diagnosis_result = "MANUAL"

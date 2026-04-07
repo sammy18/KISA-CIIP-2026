@@ -35,10 +35,10 @@ ITEM_ID="D-11"
 ITEM_NAME="DBA이외의인가되지않은사용자가시스템테이블에접근할수없도록설정"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="시스템 테이블에 일반 사용자 계정이 접근할 수 없도록 설정되어있는지 점검"
-GUIDELINE_THREAT="시스템 테이블의 일반 사용자 계정 접근 제한 설정이 되어있지 않을 경우 Object, 사용자, 테이블 및 뷰, 작업 내역 등의 시스템 테이블에 저장된 정보가 누출될 수 있음"
-GUIDELINE_CRITERIA_GOOD="시스템 테이블에 DBA만 접근 가능하도록 설정되어있는 경우"
-GUIDELINE_CRITERIA_BAD="시스템 테이블에 DBA외 일반 사용자 계정이 접근 가능하도록 설정되어있는 경우"
+GUIDELINE_PURPOSE="시스템 테이블의 일반 사용자 계정 접근 제한 설정 적용 여부를 점검하여 일반 사용자 계정 유출 시 발생할 수 있는 비인가자의 시스템 테이블 접근 위험을 차단하기 위함"
+GUIDELINE_THREAT="시스템 테이블의 일반 사용자 계정 접근 제한 설정이 되어 있지 않을 경우 Object, 사용자, 테이블 및 뷰, 작업 내역 등의 시스템 테이블에 저장된 정보가 누출될 수 있음"
+GUIDELINE_CRITERIA_GOOD="시스템 테이블에 DBA만 접근 가능하도록 설정되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="시스템 테이블에 DBA 외 일반 사용자 계정이 접근 가능하도록 설정되어 있는 경우"
 GUIDELINE_REMEDIATION="시스템 테이블에 일반 사용자 계정이 접근할 수 없도록 설정"
 
 diagnose() {
