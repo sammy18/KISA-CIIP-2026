@@ -32,11 +32,11 @@ ITEM_ID="D-03"
 ITEM_NAME="비밀번호사용기간및복잡도를기관의정책에맞도록설정"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="비밀번호사용기간및복잡도설정유무를점검하여비인가자의비밀번호추측공격(무차별대입공격, 사전대입공격등)에대한대비가되어있는지확인하기위함"
-GUIDELINE_THREAT="비밀번호 사용 기간 및 복잡도 설정이 되어있지 않으면 비인가자가 비밀번호 추측 공격을 통해 획득한 계정의비밀번호를이용하여DB에접근할수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="기관정책에맞게비밀번호사용기간및복잡도설정이적용된경우"
-GUIDELINE_CRITERIA_BAD="기관정책에맞게비밀번호사용기간및복잡도설정이적용되지않은경우"
-GUIDELINE_REMEDIATION="기관정책에맞게비밀번호사용기간및복잡도정책설정"
+GUIDELINE_PURPOSE="비밀번호 사용 기간 및 복잡 도 설정 유무를 점검하여 비인가자의 비밀번호 추측 공격(무차별 대입 공격, 사전 대입 공격 등)에 대한 대비가 되어 있는지 확인하기 위함"
+GUIDELINE_THREAT="비밀번호 사용 기간 및 복잡 도 설정이 되어 있지 않으면 비인가자가 비밀번호 추측 공격을 통해 획득한 계정의 비밀번호를 이용하여 DB에 접근할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="기관 정책에 맞게 비밀번호 사용 기간 및 복잡 도 설정이 적용된 경우"
+GUIDELINE_CRITERIA_BAD="기관 정책에 맞게 비밀번호 사용 기간 및 복잡 도 설정이 적용되지 않은 경우"
+GUIDELINE_REMEDIATION="기관 정책에 맞게 비밀번호 사용 기간 및 복잡 도 정책 설정"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

@@ -36,11 +36,11 @@ ITEM_NAME="기본계정의 비밀번호, 정책 등을 변경하여 사용"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="DBMS기본계정의초기비밀번호및권한정책변경사용유무를점검하여비인가자의초기비밀번호 대입공격을차단하고있는지확인하기위함"
-GUIDELINE_THREAT="DBMS 기본 계정 초기 비밀번호 및 권한 정책을 변경하지 않을 경우 비인가자가 인터넷 통해 DBMS 기본 계정의 초기 비밀번호를 획득하여 초기 비밀번호를 그대로 사용하고 있는 DB에 접근하여 기본 계정에부여된권한의취약점을이용하여DB정보를유출할수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="기본계정의초기비밀번호를변경하거나잠금설정한경우"
-GUIDELINE_CRITERIA_BAD="기본계정의초기비밀번호를변경하지않거나잠금설정을하지않은경우"
-GUIDELINE_REMEDIATION="기본(관리자)계정의초기비밀번호및권한정책변경"
+GUIDELINE_PURPOSE="DBMS 기본 계정의 초기 비밀번호 및 권한 정책 변경 사용 유무를 점검하여 비인가자의 초기 비밀번호 대입 공격을 차단하고 있는지 확인하기 위함"
+GUIDELINE_THREAT="DBMS 기본 계정 초기 비밀번호 및 권한 정책을 변경하지 않을 경우 비인가자가 인터넷 통해 DBMS 기본 계정의 초기 비밀번호를 획득하여 초기 비밀번호를 그대로 사용하고 있는 DB에 접근하여 기본 계정에 부여된 권한의 취약점을 이용하여 DB 정보를 유출할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="기본 계정의 초기 비밀번호를 변경하거나 잠금 설정한 경우"
+GUIDELINE_CRITERIA_BAD="기본 계정의 초기 비밀번호를 변경하지 않거나 잠금 설정을 하지 않은 경우"
+GUIDELINE_REMEDIATION="기본(관리자)계정의 초기 비밀번호 및 권한 정책 변경"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

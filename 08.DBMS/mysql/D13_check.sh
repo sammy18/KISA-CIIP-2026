@@ -32,11 +32,11 @@ ITEM_ID="D-13"
 ITEM_NAME="DBMS INDEX 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="불필요한데이터소스및드라이버를제거함으로써비인가자에의한데이터베이스접속및자료유출을 차단하기위함"
-GUIDELINE_THREAT="불필요한 ODBC/OLE-DB 데이터 소스를 통한 비인가자의 데이터베이스 접속 및 주요 정보유출에 대한위험이발생할수있음"
-GUIDELINE_CRITERIA_GOOD="불필요한ODBC/OLE-DB가설치되지않은경우"
-GUIDELINE_CRITERIA_BAD="불필요한ODBC/OLE-DB가설치된경우"
-GUIDELINE_REMEDIATION="불필요한ODBC/OLE-DB제거"
+GUIDELINE_PURPOSE="불필요한 데이터 소스 및 드라이버를 제거함으로써 비인가자에 의한 데이터베이스 접속 및 자료 유출을 차단하기 위함"
+GUIDELINE_THREAT="불필요한 ODBC/OLE-DB 데이터 소스를 통한 비인가자의 데이터베이스 접속 및 주요 정보 유출에 대한 위험이 발생할 수 있음"
+GUIDELINE_CRITERIA_GOOD="불필요한 ODBC/OLE-DB가 설치되지 않은 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 ODBC/OLE-DB가 설치된 경우"
+GUIDELINE_REMEDIATION="불필요한 ODBC/OLE-DB 제거"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"
