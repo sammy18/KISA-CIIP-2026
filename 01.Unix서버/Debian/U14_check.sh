@@ -35,11 +35,11 @@ ITEM_NAME="root 홈, 패스 디렉터리 권한 및 PATH 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="root 계정의 PATH에서 현재 디렉토리(.) 제거를 통한 root 권한 탈취 방지"
-GUIDELINE_THREAT="root PATH에 현재 디렉토리(.) 포함 시 악의적 실행 파일을 통한 권한 상승 및 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="PATH에 '.' 미포함, 홈 디렉터리 권한 700 이하"
-GUIDELINE_CRITERIA_BAD=" PATH에 '.' 포함 또는 홈 권한 701 이상"
-GUIDELINE_REMEDIATION="root PATH에서 '.' 제거 및 /root 권한을 700으로 설정: chmod 700 /root"
+GUIDELINE_PURPOSE="비인가자가 불법적으로 생성한 디렉터리 및 명령어를 우선으로 실행되지 않도록 설정하기 위함"
+GUIDELINE_THREAT="root 계정의 PATH 환경 변수에 정상적인 관리자 명령어(ls, mv, cp 등)의 디렉터리 경로보다 현재 디렉터리를 지칭하는 '.' 표시가 우선하면 현재 디렉터리에 변조된 명령어를 삽입하여 관리자 명령어 입력 시 악의적인 기능이 실행될 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="PATH 환경 변수에'.'이 맨 앞이나 중간에 포함되지 않은 경우"
+GUIDELINE_CRITERIA_BAD="PATH 환경 변수에'.'이 맨 앞이나 중간에 포함된 경우"
+GUIDELINE_REMEDIATION="root 계정의 환경 설정 파일(/.profile, /.bashrc 등)과 시스템 환경 설정 파일(/etc/profile 등)에 설정된 PATH 환경 변수에서 현재 디렉터리를 나타내는'.'을 PATH 환경 변수의 마지막으로 이동하도록 설정 ※ /etc/profile 파일,root 계정, 일반 사용자 계정의 환경 설정 파일을 순차적으로 검색하여 확인"
 
 # ============================================================================
 # 진단 함수

@@ -35,11 +35,11 @@ ITEM_NAME="NTP 및 시각 동기화 설정"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="인증및감사목적을위한시간동기화는필수적이며,안전하고승인된NTP서비스와동기화하기위함"
+GUIDELINE_PURPOSE="인증 및 감사 목적을 위한 시간 동기화는 필수적이며, 안전하고 승인된 NTP 서비스와 동기화하기 위함"
 GUIDELINE_THREAT="시스템 간 시간 동기화 미흡으로 보안 사고 및 장애 발생 시 로그에 대한 신뢰도 확보 미흡 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="NTP및시각동기화설정이기준에따라적용된경우"
-GUIDELINE_CRITERIA_BAD="NTP및시각동기화설정이기준에따라적용되어있지않은경우"
-GUIDELINE_REMEDIATION="NTP설정및동기화주기설정"
+GUIDELINE_CRITERIA_GOOD="NTP 및 시각 동기화 설정이 기준에 따라 적용된 경우"
+GUIDELINE_CRITERIA_BAD="NTP 및 시각 동기화 설정이 기준에 따라 적용되어 있지 않은 경우"
+GUIDELINE_REMEDIATION="NTP 설정 및 동기화 주기 설정"
 
 # ============================================================================
 # 진단 함수

@@ -35,11 +35,11 @@ ITEM_NAME="시스템 시작 스크립트 권한 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="SUID/SGID 파일의 남용을 방지하여 특권 사용자 권한 상승 공격을 방지하기 위함"
-GUIDELINE_THREAT="불필요한 SUID/SGID 파일이 존재할 경우, 공격자가 이를 악용하여 root 권한으로 권한 상승하여 시스템 전체를 장악할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="시스템에서 불필요한 SUID/SGID 파일이 존재하지 않거나, 시스템 필수 바이너리로만 구성된 경우"
-GUIDELINE_CRITERIA_BAD="공격에 악용 가능한 스크립트 파일이나 일반 사용자 쓰기 권한이 있는 SUID/SGID 파일이 존재하는 경우"
-GUIDELINE_REMEDIATION="불필요한 SUID/SGID 파일의 SUID/SGID 비트를 제거하거나, 파일 소유권을 root로 변경하고 쓰기 권한을 제거"
+GUIDELINE_PURPOSE="시스템 시작 스크립트 파일을 관리자만 제어할 수 있게하여 비인가자들의 임의적인 파일 변조를 방지하기 위함"
+GUIDELINE_THREAT="시스템 시작 스크립트 파일의 소유권 및 권한 설정이 미흡할 경우, 비인가자가 스크립트의 내용 변경 등을 통해 시스템 침입 등 악용할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="시스템 시작 스크립트 파일의 소유자가 root이고, 일반 사용자의 쓰기 권한이 제거된 경우"
+GUIDELINE_CRITERIA_BAD="시스템 시작 스크립트 파일의 소유자가 root가 아니거나, 일반 사용자의 쓰기 권한이 부여된 경우"
+GUIDELINE_REMEDIATION="시스템 시작 스크립트 파일 소유자 및 권한 변경 설정"
 
 # ============================================================================
 # 진단 함수

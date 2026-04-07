@@ -35,11 +35,11 @@ ITEM_NAME="SNMP Community String 복잡성 설정"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="SNMP Community String을 복잡하게 설정하여 SNMP 무단 접속 방지"
-GUIDELINE_THREAT="SNMP Community String이 기본값(public)이거나 취약한 경우 비인가자가 시스템 정보 수집 및 장악 위험"
-GUIDELINE_CRITERIA_GOOD="Community String이 public이 아니고 8자리 이상으로 설정된 경우"
-GUIDELINE_CRITERIA_BAD=" Community String이 public이거나 복잡성 요건 미충족 / N/A: SNMP 서비스 미사용"
-GUIDELINE_REMEDIATION="SNMP 설정 파일(/etc/snmp/snmpd.conf)에서 Community String을 8자리 이상 영숫자특수문자 조합으로 변경"
+GUIDELINE_PURPOSE="SNMP 서비스의 Community String의 복잡성 설정을 통해 비인가자의 비밀번호 추측 공격에 대비하기 위함"
+GUIDELINE_THREAT="Community String에 복잡성 설정이 되어 있지 않을 경우, 비인가자가 비밀번호 추측 공격을 통해 계정 탈취 시 환경 설정 파일 열람 및 수정, 각종 정보 수집, 관리자 권한 획득 등 다양한 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP Community String 기본값인 'public', 'private'이 아닌 영문자, 숫자 포함 10 자리 이상 또는 영문자, 숫자, 특수 문자 포함 8 자리 이상인 경우 ※ SNMPv3의 경우 별도 인증 기능을 사용하고, 해당 비밀번호가 복잡 도를 만족하는 경우 양호"
+GUIDELINE_CRITERIA_BAD="아래의 내용 중 하나라도 해당되는 경우 1. SNMP Community String 기본값인'public', 'private'일 경우 2. 영문자, 숫자 포함 10 자리 미만인 경우 3. 영문자, 숫자, 특수 문자 포함 8 자리 미만인 경우"
+GUIDELINE_REMEDIATION="SNMP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 SNMP 서비스 사용 시 SNMP Community String 기본값인 'public', 'private'이 아닌 영문자, 숫자 포함 10 자리 이상 또는 영문자, 숫자, 특수 문자 포함 8 자리 이상으로 설정"
 
 # ============================================================================
 # 진단 함수

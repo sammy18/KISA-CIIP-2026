@@ -35,11 +35,11 @@ ITEM_NAME="SUID, SGID, Stickybit 설정 파일 점검"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="불필요한 SUID/SGID 설정 제거를 통한 권한 상승 취약점 방지"
-GUIDELINE_THREAT="불필요한 SUID/SGID 설정된 파일存在 시 일반 사용자가 root 권한 획득 및 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="주요 실행 파일에 불필요한 SUID/SGID 설정이 없는 경우"
-GUIDELINE_CRITERIA_BAD=" 불필요한 SUID/SGID 설정이 존재하는 경우"
-GUIDELINE_REMEDIATION="불필요한 SUID/SGID 제거: chmod u-s filename, chmod g-s filename 실행"
+GUIDELINE_PURPOSE="불필요한 SUID, SGID, Stickybit 설정 제거로 악의적인 사용자의 권한 상승을 방지하기 위함"
+GUIDELINE_THREAT="SUID, SGID, Sticky bit 설정이 적절하지 않을 경우, SUID, SGID, Sticky bit가 설정된 파일로 특정 명령어를 실행하여 root 권한 획득이 가능한 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="주요 실행 파일의 권한에 SUID와 SGID에 대한 설정이 부여되어 있지 않은 경우"
+GUIDELINE_CRITERIA_BAD="주요 실행 파일의 권한에 SUID와 SGID에 대한 설정이 부여된 경우"
+GUIDELINE_REMEDIATION="불필요한 SUID,SGID 권한 또는 해당 파일 제거하도록 설정 애플리케이션에서 생성한 파일이나 사용자가 임의로 생성한 파일 등 의심스럽거나 특이한 파일에 SUID 권한이 부여된 경우 제거하도록 설정"
 
 # ============================================================================
 # 진단 함수

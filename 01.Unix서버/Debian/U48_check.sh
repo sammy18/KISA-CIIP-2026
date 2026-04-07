@@ -35,11 +35,11 @@ ITEM_NAME="FTP 서비스 버전 확인"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="FTP 서비스의 취약점을 점검하여 무단 접속 및 데이터 유출을 방지하기 위함"
-GUIDELINE_THREAT="FTP 서비스 버전이 노출되거나 취약한 버전이 실행 중일 경우, 공격자가 버전 정보를 이용해 알려진 취약점을 공격하여 시스템 침투나 데이터 유출을 시도할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="FTP 서비스가 비활성화되어 있거나, 최신 보안 버전이 실행 중인 경우"
-GUIDELINE_CRITERIA_BAD="FTP 서비스가 활성화되어 있고, 버전 확인이 불가능하거나 취약한 버전이 실행 중인 경우"
-GUIDELINE_REMEDIATION="FTP 서비스가 불필요한 경우 서비스 중지 및 패키지 제거, 필요한 경우 최신 보안 패치가 적용된 버전으로 업데이트"
+GUIDELINE_PURPOSE="SMTP 서비스의 expn,vrfy 명령을 통한 정보 유출을 방지하기 위함"
+GUIDELINE_THREAT="expn, vrfy 명령어를 통하여 특정 사용자 계정의 존재 여부를 알 수 있고, 사용자의 정보를 외부로 유출할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="noexpn, novrfy 옵션이 설정된 경우"
+GUIDELINE_CRITERIA_BAD="noexpn, novrfy 옵션이 설정되어 있지 않은 경우"
+GUIDELINE_REMEDIATION="메일 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 메일 서비스 사용 시 메일 서비스 설정 파일에 noexpn,novrfy 또는 goaway 옵션 추가 설정"
 
 # ============================================================================
 # 진단 함수

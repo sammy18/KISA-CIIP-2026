@@ -35,11 +35,11 @@ ITEM_NAME="안전한 비밀번호 암호화 알고리즘 사용"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="안전한 비밀번호 암호화 알고리즘(SHA512+, yescrypt) 사용을 통한 비밀번호 보호 강화"
-GUIDELINE_THREAT="MD5, DES, SHA1 등 취약한 알고리즘 사용 시 레인보우 테이블 공격 및 무차별 대입 공격으로 인한 비밀번호 노출 위험"
-GUIDELINE_CRITERIA_GOOD="SHA512, SHA256, yescrypt 등 안전한 알고리즘 사용"
-GUIDELINE_CRITERIA_BAD=" MD5, DES, SHA1 등 취약한 알고리즘 사용"
-GUIDELINE_REMEDIATION="/etc/login.defs에 ENCRYPT_METHOD SHA512 설정 및 PAM 설정에 sha512 추가"
+GUIDELINE_PURPOSE="안전한 비밀번호 암호화 알고리즘을 사용하여 사용자 계정 정보를 보호하기 위함"
+GUIDELINE_THREAT="취약한 비밀번호 암호화 알고리즘을 사용할 경우, 노출된 계정에 대해 비인가자가 암호 복호화 공격을 통해 비밀번호를 획득할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="SHA-2 이상의 안전한 비밀번호 암호화 알고리즘을 사용하는 경우"
+GUIDELINE_CRITERIA_BAD="취약한 비밀번호 암호화 알고리즘을 사용하는 경우"
+GUIDELINE_REMEDIATION="SHA-2 이상의 안전한 비밀번호 암호화 알고리즘 적용 설정"
 
 # ============================================================================
 # 진단 함수
