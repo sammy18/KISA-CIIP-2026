@@ -104,11 +104,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "비밀번호설정시복잡성,최소비밀번호길이,최대/최소사용기간을만족하도록함"
-$threat = "사용자 비밀번호 관리 정책 설정을 만족하지 못하면 무차별 대입 공격(Brute Force Attack)이나 비밀번호추측공격(Password GuessingAttack)에쉽게크랙될위험이존재함"
-$criteria_good = "계정비밀번호관리정책이모두적용된경우"
-$criteria_bad = "계정비밀번호관리정책이모두적용되어있지않은경우"
-$remediation = "비밀번호복잡성,최소비밀번호길이,최대/최소사용기간을기준에맞게설정"
+$purpose = "비밀번호 설정 시 복잡성, 최소 비밀번호 길이, 최대/ 최소 사용 기간을 만족하도록함"
+$threat = "사용자 비밀번호 관리 정책 설정을 만족하지 못하면 무차별 대입 공격(Brute Force Attack)이나 비밀번호 추측 공격(Password GuessingAttack)에 쉽게 크랙될 위험이 존재함"
+$criteria_good = "계정 비밀번호 관리 정책이 모두 적용된 경우"
+$criteria_bad = "계정 비밀번호 관리 정책이 모두 적용되어 있지 않은 경우"
+$remediation = "비밀번호 복잡성, 최소 비밀번호 길이, 최대/ 최소 사용 기간을 기준에 맞게 설정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

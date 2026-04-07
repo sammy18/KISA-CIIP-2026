@@ -91,11 +91,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "기본 공유인 C$, D$, Admin$, IPC$ 등을 제외한 공유 폴더에 Everyone 그룹으로 공유되는 것을 금지하여익명사용자의접근을차단하기위함"
-$threat = "Everyone이공유계정에포함되어있으면익명사용자의접근이가능하여내부정보유출및악성코드 감염위험이존재함"
-$criteria_good = "일반공유디렉터리가없거나공유디렉터리접근권한에Everyone권한이없는경우"
-$criteria_bad = "일반공유디렉터리의접근권한에Everyone권한이있는경우"
-$remediation = "공유디렉터리접근권한에서Everyone권한제거후필요한계정추가"
+$purpose = "기본 공유인 C $, D $, Admin $, IPC $ 등을 제외한 공유 폴더에 Everyone 그룹으로 공유되는 것을 금지하여 익명 사용자의 접근을 차단하기 위함"
+$threat = "Everyone이 공유 계정에 포함되어 있으면 익명 사용자의 접근이 가능하여 내부 정보 유출 및 악성 코드 감염 위험이 존재함"
+$criteria_good = "일반 공유 디렉터리가 없거나 공유 디렉터리 접근 권한에 Everyone 권한이 없는 경우"
+$criteria_bad = "일반 공유 디렉터리의 접근 권한에 Everyone 권한이 있는 경우"
+$remediation = "공유 디렉터리 접근 권한에서 Everyone 권한 제거 후 필요한 계정 추가"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

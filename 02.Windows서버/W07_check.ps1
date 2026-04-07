@@ -63,11 +63,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "익명 사용자가Everyone그룹으로사용권한을준모든리소스에접근하는것을차단하여비인가자에 의한접근가능성을제한하기위함"
+$purpose = "익명 사용자가 Everyone 그룹으로 사용 권한을 준 모든 리소스에 접근하는 것을 차단하여 비인가자에 의한 접근 가능성을 제한하기 위함"
 $threat = "해당 정책이 '사용'으로 설정될 경우 권한이 없는 사용자가 익명으로 계정 이름 및 공유 리소스를 나열하고 이 정보를 사용하여 암호를 추측하거나 DoS(Denial of Service) 공격을 실행할 위험이 존재함"
-$criteria_good = "'Everyone사용권한을익명사용자에게적용'정책이'사용안함'으로되어있는경우"
-$criteria_bad = "'Everyone사용권한을익명사용자에게적용'정책이'사용'으로되어있는경우"
-$remediation = "'Everyone사용권한을익명사용자에게적용'정책을'사용안함'으로설정"
+$criteria_good = '''Everyone 사용 권한을 익명 사용자에게 적용''정책이''사용 안 함''으로 되어 있는 경우'
+$criteria_bad = '''Everyone 사용 권한을 익명 사용자에게 적용''정책이''사용''으로 되어 있는 경우'
+$remediation = '''Everyone 사용 권한을 익명 사용자에게 적용''정책을''사용 안 함''으로 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

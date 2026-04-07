@@ -74,11 +74,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "NetBIOS와TCP/IP바인딩을제거하여TCP/IP를거치게되는파일공유서비스를제공하지못하도록 하고,인터넷에서의공유자원에대한접근시도를방지하고자함"
-$threat = "인터넷에 직접 연결된 윈도우 시스템에서 NetBIOS TCP/IP 바인딩이 활성화되어 있으면 공격자가 네트워크공유자원을사용할위험이존재함"
-$criteria_good = "TCP/IP와NetBIOS간의바인딩이제거되어있는경우"
-$criteria_bad = "TCP/IP와NetBIOS간의바인딩이제거되어있지않은경우"
-$remediation = "네트워크제어판을이용하여TCP/IP와NetBIOS 간의바인딩(binding)제거"
+$purpose = "NetBIOS와 TCP/IP 바인 딩을 제거하여 TCP/IP를 거치게 되는 파일 공유 서비스를 제공하지 못하도록하고, 인터넷에서의 공유 자원에 대한 접근 시도를 방지하고자 함"
+$threat = "인터넷에 직접 연결된 윈도우 시스템에서 NetBIOS TCP/IP 바인딩이 활성화되어 있으면 공격자가 네트워크 공유 자원을 사용할 위험이 존재함"
+$criteria_good = "TCP/IP와 NetBIOS 간의 바인 딩이 제거되어 있는 경우"
+$criteria_bad = "TCP/IP와 NetBIOS 간의 바인 딩이 제거되어 있지 않은 경우"
+$remediation = "네트워크 제어 판을 이용하여 TCP/IP와 NetBIOS 간의 바인 딩(binding)제거"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

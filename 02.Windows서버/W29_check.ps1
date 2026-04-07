@@ -68,11 +68,11 @@ try {
 $commandExecuted = "Get-Service -Name 'SNMP*'"
 
 # 2. lib를 통한 결과 저장
-$purpose = "취약한SNMP서비스를비활성화하여시스템의주요정보유출및불법수정을방지하기위함"
-$threat = "취약한SNMP 서비스를사용하는경우서비스거부공격(DoS, DDoS), 버퍼오버플로우, 비인가접속 등의공격위험이존재함"
-$criteria_good = "SNMP 서비스를 사용하지 않는 경우 또는 Community String을 설정하여 SNMP 서비스를 사용하는경우"
-$criteria_bad = "불필요하게SNMP서비스를사용하는경우"
-$remediation = "불필요시서비스중지/사용안함"
+$purpose = "취약한 SNMP 서비스를 비활성화하여 시스템의 주요 정보 유출 및 불법 수정을 방지하기 위함"
+$threat = "취약한 SNMP 서비스를 사용하는 경우 서비스 거부 공격(DoS, DDoS), 버퍼오버플로우, 비인가 접속 등의 공격 위험이 존재함"
+$criteria_good = "SNMP 서비스를 사용하지 않는 경우 또는 Community String을 설정하여 SNMP 서비스를 사용하는 경우"
+$criteria_bad = "불필요하게 SNMP 서비스를 사용하는 경우"
+$remediation = "불필요시 서비스 중지/ 사용 안 함"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

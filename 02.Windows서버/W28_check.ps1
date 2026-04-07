@@ -68,11 +68,11 @@ try {
 $commandExecuted = "Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name MinEncryptionLevel"
 
 # 2. lib를 통한 결과 저장
-$purpose = "원격 데스크톱 서비스 암호화 설정으로 데이터를 암호화하여 클라이언트와 서버 간의 통신에서 전송되는데이터를보호하기위함"
-$threat = "서버 접속 시에 낮은 암호화 수준을 적용할 경우 악의적인 사용자에 의해 서버와 클라이언트 간 주고받는정보가노출될위험이존재함"
-$criteria_good = "원격데스크톱서비스를사용하지않거나사용시암호화수준을'클라이언트와호환가능(중간)' 이상으로설정한경우"
-$criteria_bad = "원격데스크톱서비스를사용하고암호화수준이'낮음'으로설정한경우"
-$remediation = "원격 데스크톱 서비스의 가동을 '중지' 및 '사용 안 함' 설정을 하거나, 부득이하게 사용할 경우 암호화 수준설정적용"
+$purpose = "원격 데스크톱 서비스 암호화 설정으로 데이터를 암호화하여 클라이언트와 서버 간의 통신에서 전송되는 데이터를 보호하기 위함"
+$threat = "서버 접속 시에 낮은 암호화 수준을 적용할 경우 악의적인 사용자에 의해 서버와 클라이언트 간 주고받는 정보가 노출될 위험이 존재함"
+$criteria_good = "원격 데스크톱 서비스를 사용하지 않거나 사용 시 암호화 수준을'클라이언트와 호환 가능(중간)' 이상으로 설정한 경우"
+$criteria_bad = "원격 데스크톱 서비스를 사용하고 암호화 수준이'낮음'으로 설정한 경우"
+$remediation = "원격 데스크톱 서비스의 가동을 '중지' 및 '사용 안 함' 설정을 하거나, 부득이하게 사용할 경우 암호화 수준 설정 적용"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

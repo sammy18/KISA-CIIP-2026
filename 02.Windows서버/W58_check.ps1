@@ -80,10 +80,10 @@ try {
 
 # 2. lib를 통한 결과 저장
 $purpose = "사용자 홈 디렉터리에 적절한 권한을 부여하여 비인가 사용자에 의한 불필요한 정보 노출을 방지하기 위함"
-$threat = "사용자 계정별 홈 디렉터리의 권한이 제한되어 있지 않으면 임의의 사용자나 다른 사용자의 홈 디렉터리에 악의적인 목적으로 접근할 수 있으며, 접근 후 의도 또는, 의도하지 않은 행위로 시스템에 악영향을미칠위험이존재함"
-$criteria_good = "홈디렉터리에Everyone 권한이없는경우(All Users, Default User디렉터리제외)"
-$criteria_bad = "홈디렉터리에Everyone권한이있는경우"
-$remediation = "Everyone권한제거"
+$threat = "사용자 계정별 홈 디렉터리의 권한이 제한되어 있지 않으면 임의의 사용자나 다른 사용자의 홈 디렉터리에 악의적인 목적으로 접근할 수 있으며, 접근 후 의도 또는, 의도하지 않은 행위로 시스템에 악영향을 미칠 위험이 존재함"
+$criteria_good = "홈 디렉터리에 Everyone 권한이 없는 경우(All Users, Default User 디렉터리 제외)"
+$criteria_bad = "홈 디렉터리에 Everyone 권한이 있는 경우"
+$remediation = "Everyone 권한 제거"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

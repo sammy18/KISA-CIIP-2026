@@ -84,11 +84,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = "적절한 백신 프로그램을 설치하여 바이러스 감염 여부 진단, 치료 및 파일 보호를 통해 보안 사고를 예방하기위함"
-$threat = "백신 프로그램이 설치되지 않으면 웜, 트로이목마 등의 악성 바이러스로 인한 시스템 피해 위험이 존재함"
-$criteria_good = "바이러스백신프로그램이설치된경우"
-$criteria_bad = "바이러스백신프로그램이설치되어있지않은경우"
-$remediation = "백신프로그램설치"
+$purpose = "적절한 백신 프로그램을 설치하여 바이러스 감염 여부 진단, 치료 및 파일 보호를 통해 보안 사고를 예방하기 위함"
+$threat = "백신 프로그램이 설치되지 않으면 웜, 트로이 목마 등의 악성 바이러스로 인한 시스템 피해 위험이 존재함"
+$criteria_good = "바이러스 백신 프로그램이 설치된 경우"
+$criteria_bad = "바이러스 백신 프로그램이 설치되어 있지 않은 경우"
+$remediation = "백신 프로그램 설치"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

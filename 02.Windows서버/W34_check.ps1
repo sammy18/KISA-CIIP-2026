@@ -73,11 +73,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = "취약 프로토콜인 Telnet 서비스의 사용을 원칙적으로 금지하고, 부득이 이용할 경우 네트워크상으로 비밀번호를전송하지않는NTLM인증을사용하도록하여인증정보의노출을차단하기위함"
-$threat = "Telnet 서비스는 평문으로 데이터를 송수신하기 때문에 비밀번호 방식으로 인증을 수행할 경우 ID 및 비밀번호가외부로노출될위험이존재함"
-$criteria_good = "Telnet서비스가구동되어있지않거나인증방법이NTLM인경우"
-$criteria_bad = "Telnet서비스가구동되어있으며인증방법이NTLM이아닌경우"
-$remediation = "불필요시서비스중지/사용안함설정,사용시인증방법으로NTLM만사용"
+$purpose = "취약 프로토콜인 Telnet 서비스의 사용을 원칙적으로 금지하고, 부득이 이용할 경우 네트워크상으로 비밀번호를 전송하지 않는 NTLM 인증을 사용하도록하여 인증 정보의 노출을 차단하기 위함"
+$threat = "Telnet 서비스는 평 문으로 데이터를 송수신하기 때문에 비밀번호 방식으로 인증을 수행할 경우 ID 및 비밀번호가 외부로 노출될 위험이 존재함"
+$criteria_good = "Telnet 서비스가 구동되어 있지 않거나 인증 방법이 NTLM인 경우"
+$criteria_bad = "Telnet 서비스가 구동되어 있으며 인증 방법이 NTLM이 아닌 경우"
+$remediation = "불필요시 서비스 중지/ 사용 안 함 설정, 사용 시 인증 방법으로 NTLM만 사용"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

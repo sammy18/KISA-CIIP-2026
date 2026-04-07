@@ -67,11 +67,11 @@ try {
 $commandExecuted = "Get-Service -Name 'MSADC*'; Get-WindowsFeature -Name 'RDS-*'"
 
 # 2. lib를 통한 결과 저장
-$purpose = "취약한RDS서비스를제거하여불법적인원격공격을차단하기위함"
-$threat = "취약한플랫폼의RDS가사용되는경우서비스거부공격이나원격에서관리자권한으로임의의명령을 실행할수있는위험이존재함"
-$criteria_good = "다음중한가지라도해당하는경우 1. IIS를사용하지않는경우 2. Windows2008이상버전을사용하는경우 3. Windows 2000 서비스팩4, Windows2003서비스팩2이상설치된경우 4.기본웹사이트에MSADC가상디렉터리가존재하지않는경우 5.해당레지스트리값이존재하지않는경우"
-$criteria_bad = "양호기준에한가지도해당하지않는경우"
-$remediation = "사용하지 않는 경우 IIS 서비스 중지/사용 안 함, 사용할 경우 레지스트리 키 값 제거 또는 관련 패치 적용"
+$purpose = "취약한 RDS 서비스를 제거하여 불법적인 원격 공격을 차단하기 위함"
+$threat = "취약한 플랫폼의 RDS가 사용되는 경우 서비스 거부 공격이나 원격에서 관리자 권한으로 임의의 명령을 실행할 수 있는 위험이 존재함"
+$criteria_good = "다음 중 한 가지라도 해당하는 경우 1. IIS를 사용하지 않는 경우 2. Windows2008 이상 버전을 사용하는 경우 3. Windows 2000 서비스 팩 4, Windows2003 서비스 팩 2 이상 설치된 경우 4. 기본 웹 사이트에 MSADC 가상 디렉터리가 존재하지 않는 경우 5. 해당 레지스트리값이 존재하지 않는 경우"
+$criteria_bad = "양호 기준에 한 가지도 해당하지 않는 경우"
+$remediation = "사용하지 않는 경우 IIS 서비스 중지/ 사용 안 함, 사용할 경우 레지스트리 키 값 제거 또는 관련 패치 적용"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

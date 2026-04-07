@@ -60,11 +60,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "FAT 파일 시스템에 비해 더 강화된 보안 기능을 제공하는 파일 시스템을 사용하기 위함 (파일과 디렉터리에소유권과사용권한설정이가능하고ACL(접근통제목록)을제공)"
-$threat = "FAT 파일 시스템 사용 시 사용자별 접근통제를 적용할 수 없어 중요 정보에 대한 책임 추적성 확보가 어려운위험이존재함"
-$criteria_good = "NTFS파일시스템을사용하는경우"
-$criteria_bad = "FAT파일시스템을사용하는경우"
-$remediation = "FAT파일시스템을사용시가능한NTFS파일시스템변환설정"
+$purpose = "FAT 파일 시스템에 비해 더 강화된 보안 기능을 제공하는 파일 시스템을 사용하기 위함 (파일과 디렉터리에 소유권과 사용 권한 설정이 가능하고 ACL(접근 통제 목록)을 제공)"
+$threat = "FAT 파일 시스템 사용 시 사용자별 접근 통제를 적용할 수 없어 중요 정보에 대한 책임 추적성 확보가 어려운 위험이 존재함"
+$criteria_good = "NTFS 파일 시스템을 사용하는 경우"
+$criteria_bad = "FAT 파일 시스템을 사용하는 경우"
+$remediation = "FAT 파일 시스템을 사용 시 가능한 NTFS 파일 시스템 변환 설정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

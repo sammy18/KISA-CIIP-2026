@@ -73,11 +73,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "하드디스크기본공유를제거하여시스템정보노출을차단하고자함"
-$threat = "Windows는 프로그램 및 서비스를 네트워크나 컴퓨터 환경에서 관리하기 위해 시스템 기본 공유 항목을자동으로생성함.이를제거하지않으면비인가자가모든시스템자원에접근할수있는위험한 상황이발생할수있으며이러한공유기능의경로를이용하여바이러스가침투위험이존재함"
-$criteria_good = "레지스트리의AutoShareServer (WinNT: AutoShareWks)가0이며기본공유가존재하지않 는경우"
-$criteria_bad = "레지스트리의AutoShareServer (WinNT: AutoShareWks)가1이거나기본공유가존재하는 경우"
-$remediation = "기본공유중지후레지스트리값설정(IPC$,일반공유제외)"
+$purpose = "하드 디스크 기본 공유를 제거하여 시스템 정보 노출을 차단하고자함"
+$threat = "Windows는 프로그램 및 서비스를 네트워크나 컴퓨터 환경에서 관리하기 위해 시스템 기본 공유 항목을 자동으로 생성함. 이를 제거하지 않으면 비인가자가 모든 시스템 자원에 접근할 수 있는 위험한 상황이 발생할 수 있으며 이러한 공유 기능의 경로를 이용하여 바이러스가 침투 위험이 존재함"
+$criteria_good = "레지스트리의 AutoShareServer (WinNT: AutoShareWks)가 0이며 기본 공유가 존재하지 않는 경우"
+$criteria_bad = "레지스트리의 AutoShareServer (WinNT: AutoShareWks)가 1이거나 기본 공유가 존재하는 경우"
+$remediation = "기본 공유 중지 후 레지스트리 값 설정(IPC $, 일반 공유 제외)"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

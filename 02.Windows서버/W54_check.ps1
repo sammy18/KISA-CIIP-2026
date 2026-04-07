@@ -67,11 +67,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "TCP/IP스택(Stack)을강화하는레지스트리값변경을통하여DoS공격을방어하기위함"
-$threat = "DoS방어레지스트리를설정하지않은경우, DoS공격에의한시스템다운으로서비스제공이중단될 위험이존재함"
-$criteria_good = "아래4가지DoS방어레지스트리를설정한경우 Ÿ SynAttackProtect→1이상 Ÿ EnableDeadGWDetect→0 Ÿ KeepAliveTime →300,000 Ÿ NoNameReleaseOnDemand→1"
-$criteria_bad = "DoS방어레지스트리값이설정되어있지않은경우"
-$remediation = "레지스트리값을추가또는수정"
+$purpose = "TCP/ IP스택(Stack)을 강화하는 레지스트리 값 변경을 통하여 DoS 공격을 방어하기 위함"
+$threat = "DoS 방어레지스 트리를 설정하지 않은 경우, DoS 공격에 의한 시스템 다운으로 서비스 제공이 중단될 위험이 존재함"
+$criteria_good = "아래 4가지 DoS 방어레지스 트리를 설정한 경우 SynAttackProtect →1 이상 EnableDeadGWDetect →0 KeepAliveTime →300,000 NoNameReleaseOnDemand →1"
+$criteria_bad = "DoS 방어 레지스트리 값이 설정되어 있지 않은 경우"
+$remediation = "레지스트리 값을 추가 또는 수정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

@@ -69,11 +69,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = "원격레지스트리서비스를비활성화하여레지스트리에대한원격접근을차단하기위함"
-$threat = "Ÿ 원격 레지스트리 서비스는 액세스에 대한 인증이 취약하여 관리자 계정 외 다른 계정들에도 원격 레지스트리 액세스를 허용할 우려가 있으며, 레지스트리에 대한 권한 설정이 잘못되어 있는 경우 원격에서레지스트리를통해임의의파일을실행할위험이존재함 Ÿ 레지스트리서비스의장애는전체시스템에영향을줄수있어서비스거부공격(DoS)공격에이용될 위험이존재함"
-$criteria_good = "Remote Registry Service가중지된경우"
-$criteria_bad = "Remote Registry Service가사용중인경우"
-$remediation = "불필요시서비스중지및사용안함으로설정"
+$purpose = "원격레지스트리 서비스를 비활성화하여 레지스트리에 대한 원격 접근을 차단하기 위함"
+$threat = "원격 레지스트리 서비스는 액세스에 대한 인증이 취약하여 관리자 계정 외 다른 계정들에도 원격 레지스트리 액세스를 허용할 우려가 있으며, 레지스트리에 대한 권한 설정이 잘못되어 있는 경우 원격에서 레지스트리를 통해 임의의 파일을 실행할 위험이 존재함 레지스트리 서비스의 장애는 전체 시스템에 영향을 줄 수 있어 서비스 거부 공격(DoS)공격에 이용될 위험이 존재함"
+$criteria_good = "Remote Registry Service가 중지된 경우"
+$criteria_bad = "Remote Registry Service가 사용 중인 경우"
+$remediation = "불필요시 서비스 중지 및 사용 안 함으로 설정"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

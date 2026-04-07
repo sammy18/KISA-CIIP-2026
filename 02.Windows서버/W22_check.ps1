@@ -77,11 +77,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "FTP서비스디렉터리의접근권한을적절하게설정하여의도치않은정보유출을방지하기위함"
-$threat = "FTP 홈 디렉터리에 과도한 권한(예. Everyone Full Control)이 부여된 경우 임의의 사용자가 쓰기, 수정이가능하여정보유출,파일위 ‧ 변조등의위험이존재함"
-$criteria_good = "FTP홈디렉터리에Everyone권한이없는경우"
-$criteria_bad = "FTP홈디렉터리에Everyone권한이있는경우"
-$remediation = "FTP홈디렉터리에서Everyone권한삭제,각사용자에게적절한권한부여"
+$purpose = "FTP 서비스 디렉터리의 접근 권한을 적절하게 설정하여 의도치 않은 정보 유출을 방지하기 위함"
+$threat = "FTP 홈 디렉터리에 과도한 권한(예. Everyone Full Control)이 부여된 경우 임의의 사용자가 쓰기, 수정이 가능하여 정보 유출, 파일 위 ‧ 변조 등의 위험이 존재함"
+$criteria_good = "FTP 홈 디렉터리에 Everyone 권한이 없는 경우"
+$criteria_bad = "FTP 홈 디렉터리에 Everyone 권한이 있는 경우"
+$remediation = "FTP 홈 디렉터리에서 Everyone 권한 삭제, 각 사용자에게 적절한 권한 부여"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

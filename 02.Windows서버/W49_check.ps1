@@ -85,11 +85,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "원격에서 네트워크를 통하여 운영체제를 종료할 수 있는 사용자나 그룹을 설정하여 특정 사용자만 시스템종료를허용하기위함"
-$threat = "원격시스템강제종료설정이부적절한경우서비스거부공격등에악용될위험이존재함"
-$criteria_good = "'원격시스템에서강제로시스템종료'정책에'Administrators'만존재하는경우"
-$criteria_bad = "'원격시스템에서강제로시스템종료'정책에'Administrators'외다른계정및그룹이존재하 는경우"
-$remediation = "'원격시스템에서강제로시스템종료'정책에'Administrators'외다른계정및그룹제거"
+$purpose = "원격에서 네트워크를 통하여 운영 체제를 종료할 수 있는 사용자나 그룹을 설정하여 특정 사용자만 시스템 종료를 허용하기 위함"
+$threat = "원격 시스템 강제 종료 설정이 부적절한 경우 서비스 거부 공격 등에 악용될 위험이 존재함"
+$criteria_good = '''원격 시스템에서 강제로 시스템 종료''정책에''Administrators''만 존재하는 경우'
+$criteria_bad = '''원격 시스템에서 강제로 시스템 종료''정책에''Administrators''외 다른 계정 및 그룹이 존재하는 경우'
+$remediation = '''원격 시스템에서 강제로 시스템 종료''정책에''Administrators''외 다른 계정 및 그룹 제거'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

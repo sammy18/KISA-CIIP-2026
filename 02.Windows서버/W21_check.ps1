@@ -60,11 +60,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "인증정보가기본적으로평문전송되는취약한프로토콜인FTP의사용을제한하기위함"
-$threat = "OS에서 제공하는 기본적인 FTP 서비스를 사용할 경우 계정과 패스워드가 암호화되지 않은 채로 전송되어Sniffer에의한계정정보의노출위험이존재함"
-$criteria_good = "FTP서비스를사용하지않는경우또는SecureFTP서비스를사용하는경우"
-$criteria_bad = "암호화되지않는FTP서비스를사용하는경우"
-$remediation = "FTP서비스가필요하지않다면서비스중지또는SecureFTP응용프로그램사용"
+$purpose = "인증 정보가 기본적으로 평 문 전송되는 취약한 프로토콜인 FTP의 사용을 제한하기 위함"
+$threat = "OS에서 제공하는 기본적인 FTP 서비스를 사용할 경우 계정과 패스워드가 암호화되지 않은 채로 전송되어 Sniffer에 의한 계정 정보의 노출 위험이 존재함"
+$criteria_good = "FTP 서비스를 사용하지 않는 경우 또는 SecureFTP 서비스를 사용하는 경우"
+$criteria_bad = "암호화되지 않는 FTP 서비스를 사용하는 경우"
+$remediation = "FTP 서비스가 필요하지 않다면 서비스 중지 또는 SecureFTP 응용 프로그램 사용"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

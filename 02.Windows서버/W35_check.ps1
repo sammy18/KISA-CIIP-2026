@@ -81,11 +81,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = "불필요한 데이터 소스 및 드라이버를 ODBC 데이터 소스 관리자 도구를 이용해 제거하여 비인가자에 의한데이터베이스접속및자료유출을차단하기위함"
-$threat = "불필요한 ODBC/OLE-DB 데이터 소스를 통한 비인가자에 의한 데이터베이스 접속 및 자료 유출 이 존재함"
-$criteria_good = "시스템DSN부분의데이터소스를현재사용하고있는경우"
-$criteria_bad = "시스템DSN부분의데이터소스를현재사용하고있지않은경우"
-$remediation = "사용하지않는불필요한ODBC데이터소스제거"
+$purpose = "불필요한 데이터 소스 및 드라이버를 ODBC 데이터 소스 관리자 도구를 이용해 제거하여 비인가자에 의한 데이터베이스 접속 및 자료 유출을 차단하기 위함"
+$threat = "불필요한 ODBC/OLE-DB 데이터 소스를 통한 비인가자에 의한 데이터베이스 접속 및 자료 유출이 존재함"
+$criteria_good = "시스템 DSN 부분의 데이터 소스를 현재 사용하고 있는 경우"
+$criteria_bad = "시스템 DSN 부분의 데이터 소스를 현재 사용하고 있지 않은 경우"
+$remediation = "사용하지 않는 불필요한 ODBC 데이터 소스 제거"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `

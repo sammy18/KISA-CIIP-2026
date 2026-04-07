@@ -82,11 +82,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "DNSZoneTransfer차단설정을적용하여도메인정보의불법외부유출을방지하기위함"
-$threat = "DNSZoneTransfer차단설정이적용되지않는경우DNS서버에저장된도메인정보를승인된DNS 서버가아닌외부로유출위험이존재함"
-$criteria_good = "아래기준에해당하는경우 1.DNS서비스가비활성화인경우 2.영역전송허용을하지않는경우 3.특정서버로만설정이되어있는경우"
-$criteria_bad = "위3개기준중하나라도해당하지않는경우"
-$remediation = "불필요시서비스중지/사용안함설정,사용하는경우영역전송을특정서버로제한하거나'영역전송 허용'에체크해제"
+$purpose = "DNSZoneTransfer 차단 설정을 적용하여 도메인 정보의 불법 외부 유출을 방지하기 위함"
+$threat = "DNSZoneTransfer 차단 설정이 적용되지 않는 경우 DNS 서버에 저장된 도메인 정보를 승인된 DNS 서버가 아닌 외부로 유출 위험이 존재함"
+$criteria_good = "아래 기준에 해당하는 경우 1.DNS 서비스가 비활성화인 경우 2. 영역 전송 허용을 하지 않는 경우 3. 특정 서버로만 설정이 되어 있는 경우"
+$criteria_bad = "위 3개 기준 중 하나라도 해당하지 않는 경우"
+$remediation = "불필요시 서비스 중지/ 사용 안 함 설정, 사용하는 경우 영역 전송을 특정 서버로 제한하거나'영역 전송 허용'에 체크 해제"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

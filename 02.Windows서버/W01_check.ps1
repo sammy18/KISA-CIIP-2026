@@ -61,11 +61,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "윈도우 기본관리자계정인Administrator의이름을변경또는보안을고려한,잘알려진계정을통한 악의적인패스워드추측공격을차단하기위함"
-$threat = "Ÿ 일반적으로 관리자 계정으로 잘 알려진 Administrator를 변경하지 않는 경우 악의적인 사용자의 패스워드 추측 공격을 통해 사용 권한 상승의 위험이 있으며, 관리자를 유인하여 침입자의 액세스를 허용하는악성코드를실행할위험이존재함 Ÿ 윈도우 최상위 관리자 계정인 Administrator는 기본적으로 삭제하거나 잠글 수 없어 악의적인 사용자의목표가될위험이존재함"
-$criteria_good = "Administrator기본계정이름을변경하거나강화된비밀번호를적용한경우"
-$criteria_bad = "Administrator기본계정이름을변경하지않거나단순비밀번호를적용한경우"
-$remediation = "Administrator기본계정이름변경및보안성이있는비밀번호설정"
+$purpose = "윈도우 기본 관리자 계정인 Administrator의 이름을 변경 또는 보안을 고려한, 잘 알려진 계정을 통한 악의적인 패스워드 추측 공격을 차단하기 위함"
+$threat = "일반적으로 관리자 계정으로 잘 알려진 Administrator를 변경하지 않는 경우 악의적인 사용자의 패스워드 추측 공격을 통해 사용 권한 상승의 위험이 있으며, 관리자를 유인하여 침입자의 액세스를 허용하는 악성 코드를 실행할 위험이 존재함 윈도우 최상위 관리자 계정인 Administrator는 기본적으로 삭제하거나 잠글 수 없어 악의적인 사용자의 목표가 될 위험이 존재함"
+$criteria_good = "Administrator 기본 계정 이름을 변경하거나 강화된 비밀번호를 적용한 경우"
+$criteria_bad = "Administrator 기본 계정 이름을 변경하지 않거나 단순 비밀번호를 적용한 경우"
+$remediation = "Administrator 기본 계정 이름 변경 및 보안성이 있는 비밀번호 설정"
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

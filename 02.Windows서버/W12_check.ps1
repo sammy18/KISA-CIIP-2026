@@ -63,11 +63,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = "익명 SID/이름 변환 정책을 '사용 안 함'으로 설정하여, SID(보안 식별자)를 사용하여 관리자 이름을 찾을수없도록하기위함"
-$threat = "해당 정책이 '사용함'으로 설정될 경우 로컬 접근 권한이 있는 사용자가 잘 알려진 Administrator SID를사용하여Administrator계정의실제이름을알아낼수있으며암호추측공격위험이존재함"
-$criteria_good = "'익명SID/이름변환허용'정책이'사용안함'으로설정된경우"
-$criteria_bad = "'익명SID/이름변환허용'정책이'사용'으로설정된경우"
-$remediation = "'네트워크액세스:익명SID/이름변환허용'정책'사용안함'설정"
+$purpose = "익명 SID/ 이름 변환 정책을 '사용 안 함'으로 설정하여, SID(보안 식별자)를 사용하여 관리자 이름을 찾을 수 없도록하기 위함"
+$threat = '해당 정책이 ''사용함''으로 설정될 경우 로컬 접근 권한이 있는 사용자가 잘 알려진 Administrator SID를 사용하여 Administrator 계정의 실제 이름을 알아낼 수 있으며 암호 추측 공격 위험이 존재함'
+$criteria_good = '''익명 SID/ 이름 변환 허용''정책이''사용 안 함''으로 설정된 경우'
+$criteria_bad = '''익명 SID/ 이름 변환 허용''정책이''사용''으로 설정된 경우'
+$remediation = '''네트워크 액세스: 익명 SID/ 이름 변환 허용''정책''사용 안 함''설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

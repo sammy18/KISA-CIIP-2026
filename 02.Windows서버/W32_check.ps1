@@ -86,11 +86,11 @@ try {
 }
 
 # Define guideline variables
-$purpose = "DNS 동적 업데이트를 비활성화함으로 신뢰할 수 없는 원본으로부터 업데이트를 받아들이는 위험을 차단하기위함"
-$threat = "DNS 서버에서 동적 업데이트를 사용할 경우 악의적인 사용자에 의해 신뢰할 수 없는 데이터가 받아들여질위험이존재함"
-$criteria_good = "DNS서비스를사용하지않거나동적업데이트'없음(아니오)'으로설정된경우"
-$criteria_bad = "서비스를사용하며동적업데이트가설정된경우"
-$remediation = "DNS서비스의동적업데이트비활성화설정"
+$purpose = "DNS 동적 업데이트를 비활성화함으로 신뢰할 수 없는 원본으로부터 업데이트를 받아들이는 위험을 차단하기 위함"
+$threat = "DNS 서버에서 동적 업데이트를 사용할 경우 악의적인 사용자에 의해 신뢰할 수 없는 데이터가 받아들여질 위험이 존재함"
+$criteria_good = "DNS 서비스를 사용하지 않거나 동적 업데이트'없음(아니오)'으로 설정된 경우"
+$criteria_bad = "서비스를 사용하며 동적 업데이트가 설정된 경우"
+$remediation = "DNS 서비스의 동적 업데이트 비활성화 설정"
 
 # Save results using lib
 Save-DualResult -ItemId $ITEM_ID `
