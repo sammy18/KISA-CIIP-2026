@@ -60,11 +60,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = 'Windows자동로그인이비활성화되어있는지점검하여비인가자의로그인을방지하고자하기위함'
-$threat = 'Windows 자동 로그인이 활성화되어 있을 때 비인가자가 별도의 로그인 과정을 거치지 않고 계정에 자동으로로그인할수있는위험이존재함'
-$criteria_good = 'Windows자동로그인이비활성화된경우'
-$criteria_bad = 'Windows자동로그인이활성화된경우'
-$remediation = 'Windows자동로그인비활성화설정'
+$purpose = 'Windows 자동 로그인이 비활성화되어 있는지 점검하여 비인가자의 로그인을 방지하고자하기 위함'
+$threat = 'Windows 자동 로그인이 활성화되어 있을 때 비인가자가 별도의 로그인 과정을 거치지 않고 계정에 자동으로 로그인할 수 있는 위험이 존재함'
+$criteria_good = 'Windows 자동 로그인이 비활성화된 경우'
+$criteria_bad = 'Windows 자동 로그인이 활성화된 경우'
+$remediation = 'Windows 자동 로그인 비활성화 설정'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

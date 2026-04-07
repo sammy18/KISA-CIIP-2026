@@ -64,11 +64,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = '공개된취약점을통한침해사고발생을방지하기위함'
-$threat = 'HOT FIX및최신보안패치적용을시키지않을경우, 이미공개된취약점을통하여비인가자의시스템 접근및관리자권한획득이가능해지는위험이존재함'
-$criteria_good = 'HOTFIX설치및자동업데이트설정이되어있고내부적으로관리절차를수립하여이행한경우'
-$criteria_bad = 'HOTFIX설치되어있지않거나내부적으로관리절차가수립되지않은경우'
-$remediation = 'WindowsUpdate사이트에접속하여최신패치존재여부확인및패치적용'
+$purpose = '공개된 취약점을 통한 침해 사고 발생을 방지하기 위함'
+$threat = 'HOT FIX 및 최신 보안 패치 적용을 시키지 않을 경우, 이미 공개된 취약점을 통하여 비인가자의 시스템 접근 및 관리자 권한 획득이 가능해지는 위험이 존재함'
+$criteria_good = 'HOTFIX 설치 및 자동 업데이트 설정이 되어 있고 내부적으로 관리 절차를 수립하여 이행한 경우'
+$criteria_bad = 'HOTFIX 설치되어 있지 않거나 내부적으로 관리 절차가 수립되지 않은 경우'
+$remediation = 'WindowsUpdate 사이트에 접속하여 최신 패치 존재 여부 확인 및 패치 적용'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

@@ -92,11 +92,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = '원격지원기능을비활성화하여비인가자가원격에서접근을방지하기위함'
-$threat = '원격지원기능이활성화되어비인가자에게원격에서의접근이허용될경우,시스템제어권한이악용될 수있는위험이존재함'
-$criteria_good = '원격지원이''사용안함''으로설정된경우'
-$criteria_bad = '원격지원이''사용''으로설정된경우'
-$remediation = '원격지원서비스비활성화'
+$purpose = '원격 지원 기능을 비활성화하여 비인가자가 원격에서 접근을 방지하기 위함'
+$threat = '원격 지원 기능이 활성화되어 비인가자에게 원격에서의 접근이 허용될 경우, 시스템 제어 권한이 악용될 수 있는 위험이 존재함'
+$criteria_good = '원격 지원이''사용 안 함''으로 설정된 경우'
+$criteria_bad = '원격 지원이''사용''으로 설정된 경우'
+$remediation = '원격 지원 서비스 비활성화'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

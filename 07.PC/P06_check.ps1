@@ -85,11 +85,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '상용메신저차단을통하여메신저를이용한개인정보및내부주요정보유출을막기위함'
-$threat = '일반사용자PC에서메신저차단을하지않을경우,메신저를통해주요정보가유출되거나,악성코드가 유입될위험이존재함'
-$criteria_good = 'WindowsMessenger가실행중지된상태이거나상용메신저가설치되지않은경우'
-$criteria_bad = 'WindowsMessenger가실행중이거나상용메신저가설치된경우'
-$remediation = '''WindowsMessenger를실행하지않음''설정및상용메신저삭제'
+$purpose = '상용 메신저 차단을 통하여 메신저를 이용한 개인 정보 및 내부 주요 정보 유출을 막기 위함'
+$threat = '일반 사용자 PC에서 메신저 차단을 하지 않을 경우, 메신저를 통해 주요 정보가 유출되거나, 악성 코드가 유입될 위험이 존재함'
+$criteria_good = 'WindowsMessenger가 실행 중지된 상태이거나 상용 메신저가 설치되지 않은 경우'
+$criteria_bad = 'WindowsMessenger가 실행 중이거나 상용 메신저가 설치된 경우'
+$remediation = '''WindowsMessenger를 실행하지 않음''설정 및 상용 메신저 삭제'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

@@ -70,11 +70,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = '최신 서비스팩이 적용되어 있는지 점검하여 시스템 취약점을 이용한 공격(익스플로잇)에 대비가 되어있는지확인하기위함'
-$threat = '최신 서비스팩이 적용되지 않았을 경우 비인가자의 시스템 취약점을 이용한 공격(익스플로잇)에 노출될 수있는위험이존재함'
-$criteria_good = '최신빌드가적용되어있고내부적으로관리절차를수립하여이행한경우'
-$criteria_bad = '최신빌드가적용되어있지않거나내부적으로관리절차가수립되지않은경우'
-$remediation = 'WindowsUpdate사이트에접속하여최신서비스팩여부확인및적용'
+$purpose = '최신 서비스 팩이 적용되어 있는지 점검하여 시스템 취약점을 이용한 공격(익스플로잇)에 대비가 되어 있는지 확인하기 위함'
+$threat = '최신 서비스 팩이 적용되지 않았을 경우 비인가자의 시스템 취약점을 이용한 공격(익스플로잇)에 노출될 수 있는 위험이 존재함'
+$criteria_good = '최신빌드가 적용되어 있고 내부적으로 관리 절차를 수립하여 이행한 경우'
+$criteria_bad = '최신빌드가 적용되어 있지 않거나 내부적으로 관리 절차가 수립되지 않은 경우'
+$remediation = 'WindowsUpdate 사이트에 접속하여 최신 서비스 팩 여부 확인 및 적용'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `

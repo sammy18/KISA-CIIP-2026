@@ -76,11 +76,11 @@ try {
 }
 
 # 2. Define guideline variables
-$purpose = 'CD/DVD,USB메모리등과같은이동식미디어를USBport에연결시자동실행을차단하기위함'
-$threat = 'Ÿ CD/DVD, USB 메모리등과같은이동식미디어가자동실행되는경우미디어에탑재된''Autorun.i nf''파일을통해다른응용프로그램이자동실행될수있는위험이존재함 Ÿ 이동식미디어가사용될때읽기기능을통해바이러스감염이생길수있고,쓰기기능을통하여주요 정보유출이발생할수있음'
-$criteria_good = '미디어사용시자동실행되지않고내부적으로관리절차를수립하여이행된경우'
-$criteria_bad = '미디어사용시자동실행되거나내부적으로관리절차가수립되지않은경우'
-$remediation = '미디어자동실행방지설정'
+$purpose = 'CD/DVD,USB 메모리 등과 같은 이동식 미디어를 USBport에 연결 시 자동 실행을 차단하기 위함'
+$threat = 'CD/DVD, USB 메모리 등과 같은 이동식 미디어가 자동 실행되는 경우 미디어에 탑재된''Autorun.i nf''파일을 통해 다른 응용 프로그램이 자동 실행될 수 있는 위험이 존재함 이동식 미디어가 사용될 때 읽기 기능을 통해 바이러스 감염이 생길 수 있고, 쓰기 기능을 통하여 주요 정보 유출이 발생할 수 있음'
+$criteria_good = '미디어 사용 시 자동 실행되지 않고 내부적으로 관리 절차를 수립하여 이행된 경우'
+$criteria_bad = '미디어 사용 시 자동 실행되거나 내부적으로 관리 절차가 수립되지 않은 경우'
+$remediation = '미디어 자동 실행 방지 설정'
 
 # 3. Save results using Save-DualResult
 Save-DualResult -ItemId $ITEM_ID `
