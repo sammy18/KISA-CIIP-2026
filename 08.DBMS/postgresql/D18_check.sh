@@ -32,11 +32,11 @@ ITEM_ID="D-18"
 ITEM_NAME="DBMS DELETE 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="응용 프로그램 또는 DBA 계정의 Role을 점검하여 일반 계정으로 응용 프로그램 테이블이나 DBA 테이블의접근을차단하기위함"
-GUIDELINE_THREAT="응용 프로그램 또는 DBA 계정의 Role이 Public으로 설정된 경우 일반 계정에서도 응용 프로그램 테이블및DBA테이블로접근할수있으므로중요정보유출의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="DBA계정의Role이Public으로설정되지않은경우"
-GUIDELINE_CRITERIA_BAD="DBA 계정의Role이Public으로설정된경우"
-GUIDELINE_REMEDIATION="DBA계정의Role설정에서Public그룹권한취소"
+GUIDELINE_PURPOSE="응용 프로그램 또는 DBA 계정의 Role을 점검하여 일반 계정으로 응용 프로그램 테이블이나 DBA 테이블의 접근을 차단하기 위함"
+GUIDELINE_THREAT="응용 프로그램 또는 DBA 계정의 Role이 Public으로 설정된 경우 일반 계정에서도 응용 프로그램 테이블 및 DBA 테이블로 접근할 수 있으므로 중요 정보 유출의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="DBA 계정의 Role이 Public으로 설정되지 않은 경우"
+GUIDELINE_CRITERIA_BAD="DBA 계정의 Role이 Public으로 설정된 경우"
+GUIDELINE_REMEDIATION="DBA 계정의 Role 설정에서 Public 그룹 권한 취소"
 
 # PostgreSQL 연결 정보 초기화
 DB_ADMIN_USER="${DB_ADMIN_USER:-postgres}"

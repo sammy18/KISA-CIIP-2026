@@ -32,11 +32,11 @@ ITEM_ID="D-25"
 
 ITEM_NAME="DBMS 백업/복구 권한 점검"
 SEVERITY="중"
-GUIDELINE_PURPOSE="안전한버전의데이터베이스를사용하여알려진보안취약점으로인한공격을차단하기위함"
-GUIDELINE_THREAT="안전하지 않은 버전을 사용할 경우, 알려진 보안 취약점을 통해 시스템에 침투하거나 데이터의 탈취, 악성코드감염및서비스중단등의보안사고를초래할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="보안패치가적용된버전을사용하는경우"
-GUIDELINE_CRITERIA_BAD="보안패치가적용되지않는버전을사용하는경우"
-GUIDELINE_REMEDIATION="보안패치가적용된버전으로업데이트"
+GUIDELINE_PURPOSE="안전한 버전의 데이터 베이스를 사용하여 알려진 보안 취약점으로 인한 공격을 차단하기 위함"
+GUIDELINE_THREAT="안전하지 않은 버전을 사용할 경우, 알려진 보안 취약점을 통해 시스템에 침투하거나 데이터의 탈취, 악성 코드 감염 및 서비스 중단 등의 보안 사고를 초래할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="보안 패치가 적용된 버전을 사용하는 경우"
+GUIDELINE_CRITERIA_BAD="보안 패치가 적용되지 않는 버전을 사용하는 경우"
+GUIDELINE_REMEDIATION="보안 패치가 적용된 버전으로 업데이트"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -32,11 +32,11 @@ ITEM_ID="D-26"
 
 ITEM_NAME="DBMS 감사 로깅 점검"
 SEVERITY="중"
-GUIDELINE_PURPOSE="데이터,로그,응용프로그램에대한감사기록정책을수립하고적용하여데이터베이스에문제발생시 원활하게대응하기위함"
-GUIDELINE_THREAT="감사기록정책이설정되어있지않을경우,데이터베이스에문제발생시원인을규명할수있는자료가 존재하지않아이에대한대처및개선방안수립이어려워장기적으로심각한보안위험이존재함"
-GUIDELINE_CRITERIA_GOOD="DBMS의감사로그저장정책이수립되어있으며,정책설정이적용된경우"
-GUIDELINE_CRITERIA_BAD="DBMS에대한감사로그저장을하지않거나,정책설정이적용되지않은경우"
-GUIDELINE_REMEDIATION="DBMS에대한감사로그저장정책수립,적용"
+GUIDELINE_PURPOSE="데이터, 로그, 응용 프로그램에 대한 감사 기록 정책을 수립하고 적용하여 데이터베이스에 문제 발생 시 원활하게 대응하기 위함"
+GUIDELINE_THREAT="감사 기록 정책이 설정되어 있지 않을 경우, 데이터베이스에 문제 발생 시 원인을 규명할 수 있는 자료가 존재하지 않아 이에 대한 대처 및 개선 방안 수립이 어려워 장기적으로 심각한 보안 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="DBMS의 감사로 그저 장 정책이 수립되어 있으며, 정책 설정이 적용된 경우"
+GUIDELINE_CRITERIA_BAD="DBMS에 대한 감사로 그 저장을 하지 않거나, 정책 설정이 적용되지 않은 경우"
+GUIDELINE_REMEDIATION="DBMS에 대한 감사로 그저 장 정책 수립, 적용"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"
