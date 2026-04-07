@@ -34,11 +34,11 @@ ITEM_ID="WEB-03"
 ITEM_NAME="비밀번호파일권한관리"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="비밀번호 파일의 접근 권한을 적절하게 설정하여 비인가자가 비밀번호 파일에 무단 접근 및 유출 등을 방지하기위함"
-GUIDELINE_THREAT="비밀번호파일의권한을적절하게설정하지않은경우,비인가자에게비밀번호정보가노출될수있고웹 서버에접속하는등의침해사고가발생할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="비밀번호파일에권한이600이하로설정된경우"
-GUIDELINE_CRITERIA_BAD="비밀번호파일에권한이600초과로설정된경우"
-GUIDELINE_REMEDIATION="비밀번호파일권한600이하로설정"
+GUIDELINE_PURPOSE="비밀번호 파일의 접근 권한을 적절하게 설정하여 비인가자가 비밀번호 파일에 무단 접근 및 유출 등을 방지하기 위함"
+GUIDELINE_THREAT="비밀번호 파일의 권한을 적절하게 설정하지 않은 경우, 비인가자에게 비밀번호 정보가 노출될 수 있고 웹 서버에 접속하는 등의 침해 사고가 발생할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="비밀번호 파일에 권한이 600 이하로 설정된 경우"
+GUIDELINE_CRITERIA_BAD="비밀번호 파일에 권한이 600 초과로 설정된 경우"
+GUIDELINE_REMEDIATION="비밀번호 파일 권한 600 이하로 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

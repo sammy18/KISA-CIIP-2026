@@ -33,11 +33,11 @@ ITEM_ID="WEB-20"
 ITEM_NAME="SSL/TLS활성화"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="서버와 클라이언트 간 통신 시 데이터의 평문 전송을 사용하지 않고 데이터가 암호화되는 SSL/TLS 인증암호화접속을통해스니핑을통한정보유출의위험을방지하기위함"
-GUIDELINE_THREAT="Ÿ 웹상의데이터통신시서버와클라이언트간에데이터를평문전송하는경우,간단한도청(스니핑)을 통해정보가탈취및도용될위험이존재함 Ÿ SSL/TLS가 활성화되어 있지 않을 경우, 데이터는 암호화되지 않아 공격자가 중간에서 데이터를 가로채거나 도청할 수 있으며, 더 나아가 평문으로 전송되어 중간에서 변경될 우려가 있어 데이터의 정확성이훼손될위험이존재함"
-GUIDELINE_CRITERIA_GOOD="SSL/TLS설정이활성화되어있는경우"
-GUIDELINE_CRITERIA_BAD="SSL/TLS설정이비활성화되어있는경우"
-GUIDELINE_REMEDIATION="웹서비스내SSL/TLS활성화설정"
+GUIDELINE_PURPOSE="서버와 클라이언트 간 통신 시 데이터의 평 문 전송을 사용하지 않고 데이터가 암호화되는 SSL/TLS 인증 암호화 접속을 통해 스니 핑을 통한 정보 유출의 위험을 방지하기 위함"
+GUIDELINE_THREAT="웹상의 데이터 통신 시 서버와 클라이언트 간에 데이터를 평 문 전송하는 경우, 간단한 도청(스니핑)을 통해 정보가 탈취 및 도용될 위험이 존재함 SSL/TLS가 활성화되어 있지 않을 경우, 데이터는 암호화되지 않아 공격자가 중간에서 데이터를 가로채거나 도청할 수 있으며, 더 나아가 평 문으로 전송되어 중간에서 변경될 우려가 있어 데이터의 정확성이 훼손될 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="SSL/TLS 설정이 활성화되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="SSL/TLS 설정이 비활성화되어 있는 경우"
+GUIDELINE_REMEDIATION="웹 서비스 내 SSL/TLS 활성화 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

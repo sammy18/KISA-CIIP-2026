@@ -33,11 +33,11 @@ ITEM_ID="WEB-19"
 ITEM_NAME="웹서비스WebDAV비활성화"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="웹서비스내SSI사용을제한하여불법적인데이터접근을차단하여웹서버의보안을강화하기위함"
-GUIDELINE_THREAT="Ÿ 웹서비스내SSI사용을제한하지않을경우,공격자가SSI기능을이용하여시스템명령실행및중요 파일탈취등공격이가능하며,이를통해서버시스템침해,데이터유출등이발생할위험이존재함 Ÿ SSI 공격 시 HTML 페이지에 스크립트를 삽입하거나 원격으로 코드를 실행하여 웹 서비스를 악용할 위험이존재함"
-GUIDELINE_CRITERIA_GOOD="웹서비스SSI사용설정이비활성화되어있는경우"
-GUIDELINE_CRITERIA_BAD="웹서비스SSI사용설정이활성화되어있는경우"
-GUIDELINE_REMEDIATION="웹서비스내불필요한SSI사용제한설정"
+GUIDELINE_PURPOSE="웹 서비스 내 SSI 사용을 제한하여 불법적인 데이터 접근을 차단하여 웹 서버의 보안을 강화하기 위함"
+GUIDELINE_THREAT="웹 서비스 내 SSI 사용을 제한하지 않을 경우, 공격자가 SSI 기능을 이용하여 시스템 명령 실행 및 중요 파일 탈취 등 공격이 가능하며, 이를 통해 서버 시스템 침해, 데이터 유출 등이 발생할 위험이 존재함 SSI 공격 시 HTML 페이지에 스크립트를 삽입하거나 원격으로 코드를 실행하여 웹 서비스를 악용할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="웹 서비스 SSI 사용 설정이 비활성화되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="웹 서비스 SSI 사용 설정이 활성화되어 있는 경우"
+GUIDELINE_REMEDIATION="웹 서비스 내 불필요한 SSI 사용 제한 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"
