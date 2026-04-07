@@ -78,11 +78,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '디렉터리 리스팅을 비활성화하여 중요 파일 및 디렉터리 정보 노출 방지'
-$threat = '디렉터리 리스팅 활성화 시 공격자가 웹 서버의 디렉터리 구조를 확인하고 정보 유출 위험 존재'
-$criteria_good = '디렉터리 리스팅이 비활성화되어 있는 경우'
-$criteria_bad = '디렉터리 리스팅이 활성화되어 있는 경우'
-$remediation = 'IIS 관리자 > 해당 사이트 > Directory Browsing > Disable 선택'
+$purpose = '웹 서버에 대한 디렉터리 리스 팅 기능을 차단하여 디렉터리 내의 모든 파일에 대한 접근 및 정보 노출을 차단하기 위함'
+$threat = '디렉터리 리스 팅 기능이 차단되지 않은 경우, 비인가자가 해당 디렉터리 내의 모든 파일의 리스트 확인 및 접근이 가능하고, 웹 서버의 구조 및 백업 파일이나 소스 파일 등 공개되면 안 되는 중요 파일들이 노출될 위험이 존재함'
+$criteria_good = '디렉터리 리스팅이 설정되지 않은 경우'
+$criteria_bad = '디렉터리 리스팅이 설정된 경우'
+$remediation = '디렉터리 리스팅 기능 차단 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

@@ -88,11 +88,11 @@ try {
 }
 
 # 가이드라인 변수
-$purpose = '불필요한 스크립트 매핑 제거로 악의적인 스크립트 실행 방지'
-$threat = '불필요한 확장자 매핑 존재 시 공격자가 악의적인 스크립트를 업로드하여 실행할 수 있는 위험'
-$criteria_good = '불필요한 스크립트 매핑이 제거된 경우 (.exe, .dll, .bat 등 실행 파일 매핑 제거)'
+$purpose = '웹 서비스에서 사용하지 않는 불필요 스크립트 매핑이 존재하는지 점검하여 잠재적 보안 위협을 방지하기 위함'
+$threat = '웹 서비스에서 불필요한 스크립트 매핑을 제거하지 않은 경우, 버퍼오버플로우(Buffer Overflow), 서비스 거부 공격(Denial of Service), 크로스 사이트 스크립 팅(CrossSiteScripting)등의 공격 위험이 존재함'
+$criteria_good = '불필요한 스크립트 매핑이 존재하지 않는 경우'
 $criteria_bad = '불필요한 스크립트 매핑이 존재하는 경우'
-$remediation = 'IIS 관리자 > Handler Mappings > 불필요한 매핑 제거 (특히 .exe, .dll, .bat 등 시스템 파일)'
+$remediation = '불필요한 스크립트 매핑 존재 여부 점검 및 제거 설정'
 
 # 결과 저장
 Save-DualResult -ItemId "${ITEM_ID}" `

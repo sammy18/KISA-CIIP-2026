@@ -91,11 +91,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'X-Frame-Options 헤더 설정으로 Clickjacking 공격 방지'
-$threat = 'X-Frame-Options 헤더 미설정 시 공격자가 피해자 사이트를 iframe으로 로드하여 Clickjacking 공격 가능'
-$criteria_good = 'X-Frame-Options 헤더가 설정된 경우 (DENY, SAMEORIGIN, ALLOW-FROM 등)'
-$criteria_bad = 'X-Frame-Options 헤더가 설정되지 않은 경우'
-$remediation = 'IIS 관리자 > HTTP Response Headers > Add > Name: X-Frame-Options, Value: DENY 또는 SAMEORIGIN (web.config에 <add name="X-Frame-Options" value="SAMEORIGIN" />)'
+$purpose = '웹 서버 루트 디렉터리 내 업로드 경로가 아닌 별도의 디렉터리에서 파일을 업로드할 수 있도록하여 루트 디렉터리 내 악의적인 파일 업로드 및 실행을 방지하기 위함'
+$threat = '웹 서버 내 별도의 파일 업로드 경로 사용 및 적절한 권한 설정을 하지 않을 경우, 악의적인 목적을 가진 파일을 업로드하여 시스템 침투, 중요 정보 유출 및 변조 등의 침해 사고의 가능성이 있음'
+$criteria_good = '별도의 업로드 경로를 사용하고 일반 사용자의 접근 권한이 부여되지 않은 경우'
+$criteria_bad = '별도의 업로드 경로를 사용하지 않거나, 일반 사용자의 접근 권한이 부여된 경우'
+$remediation = '기본 경로가 아닌 별도의 업로드 경로를 지정하고, 해당 경로에 대한 일반 사용자의 접근 권한을 제한하도록 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

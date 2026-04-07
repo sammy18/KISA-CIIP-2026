@@ -91,11 +91,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'X-XSS-Protection 헤더 설정으로 XSS(Cross-Site Scripting) 공격 방지'
-$threat = 'X-XSS-Protection 헤더 미설정 시 브라우저의 XSS 필터 비활성화로 XSS 공격에 취약'
-$criteria_good = 'X-XSS-Protection 헤더가 설정된 경우 (1; mode=block 권장)'
-$criteria_bad = 'X-XSS-Protection 헤더가 설정되지 않은 경우'
-$remediation = 'IIS 관리자 > HTTP Response Headers > Add > Name: X-XSS-Protection, Value: 1; mode=block (web.config에 <add name="X-XSS-Protection" value="1; mode=block" />)'
+$purpose = '주기적인 최신 보안 패치를 통해 보안성 및 시스템 안정성을 확보하기 위함'
+$threat = '주기적으로 최신 보안 패치를 적용하지 않을 경우, 알려진 취약점을 이용한 공격 또는 새로운 공격에 대한 침해 사고 발생 위험이 존재함'
+$criteria_good = '최신 보안 패치가 적용되어 있으며, 패치 적용 정책을 수립하여 주기적인 패치 관리를 하는 경우'
+$criteria_bad = '최신 보안 패치가 적용되어 있지 않거나 패치 적용 정책을 수립 및 주기적인 패치 관리를 하지'
+$remediation = '패치 적용에 따른 서비스 영향 정도를 정확히 파악하여 주기적인 패치 적용 정책 수립 및 적용하도록 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

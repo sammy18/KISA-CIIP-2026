@@ -44,11 +44,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'Apache .htaccess 오버라이드 제한으로 설정 파일 무결성성 보장'
-$threat = 'Apache는 .htaccess가 비활성화되어야 함. IIS는 해당하지 않음 (web.config 사용)'
-$criteria_good = 'Apache만 해당. .htaccess 비활성화된 경우'
-$criteria_bad = 'Apache만 해당. .htaccess가 활성화된 경우'
-$remediation = 'Apache: AllowOverride None 설정. IIS는 해당하지 않음'
+$purpose = '기반 시설 시스템은 원칙적으로 파일 업로드 및 다운로드를 금지하지만 불가피하게 파일의 업로드 및 다운로드 기능이 필요한 경우, 파일의 용량 제한을 설정하여 불필요한 업로드 및 다운로드를 방지해 서버의 과부하를 예방하고, 웹 서버 자원을 효율적으로 관리하기 위함'
+$threat = '웹 서비스의 파일 업로드 및 다운로드의 용량을 제한하지 않은 경우, 악의적인 목적을 가진 사용자가 반복 업로드 및 웹 쉘 공격 등으로 시스템 권한을 탈취하거나 대용량 파일의 업로드 및 다운로드로 서버 자원을 고갈시켜 서비스 장애를 발생시킬 위험이 존재함'
+$criteria_good = '파일 업로드 및 다운로드 용량을 제한한 경우'
+$criteria_bad = '파일 업로드 및 다운로드 용량을 제한하지 않은 경우'
+$remediation = '파일 업로드 및 다운로드 용량을 허용 가능한 최소 범위로 제한하여 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

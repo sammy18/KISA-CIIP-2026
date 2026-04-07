@@ -90,11 +90,11 @@ try {
 }
 
 # 가이드라인 변수
-$purpose = '웹서버 헤더 정보(Server, Version, X-Powered-By 등) 노출 제한으로 정보 유출 방지'
-$threat = '서버 버전 정보 노출 시 공격자가 해당 버전의 취약점을 악용한 공격 가능'
-$criteria_good = 'Server 헤더, X-Powered-By 헤더 등 서버 정보 노출이 제한된 경우'
-$criteria_bad = 'Server 헤더, X-Powered-By 헤더 등을 통해 서버 정보가 노출되는 경우'
-$remediation = 'IIS 관리자 > HTTP Response Headers > Remove 또는 URL Rewrite 모듈 사용 (web.config에 <remove name="X-Powered-By"> 및 customHeader로 Server 헤더 제거)'
+$purpose = 'HTTP 응답 헤더에서 웹 서버 버전 및 종류,OS 정보 등 웹 서버와 관련된 정보가 불필요하게 노출되는 것을 최소화하기 위함'
+$threat = '웹 서버 및 OS 정보가 노출될 경우 공격자에 의해 해당 버전의 알려진 취약점을 이용하여 시스템 구조와 특성 노출 및 해당 취약점을 통한 공격의 위험이 존재함'
+$criteria_good = 'HTTP 응답 헤더에서 웹 서버 정보가 노출되지 않는 경우'
+$criteria_bad = 'HTTP 응답 헤더에서 웹 서버 정보가 노출되는 경우'
+$remediation = '응답 헤더에 표시되는 정보를 최소한으로 제한하여 설정'
 
 # 결과 저장
 Save-DualResult -ItemId "${ITEM_ID}" `

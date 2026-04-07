@@ -70,11 +70,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '동적 페이지 요청 및 응답값 검증으로 SQL Injection, XSS 등 공격 방지'
-$threat = '입력값 검증 미비 시 SQL Injection, XSS, Command Injection 등 공격에 취약'
-$criteria_good = '웹서버 Request Filtering 활성화 및 애플리케이션 레벨에서 입력값 검증 수행'
-$criteria_bad = '입력값 검증이 수행되지 않는 경우'
-$remediation = 'IIS 관리자 > Request Filtering 활성화 (URL, Query String 길이 제한 등) 및 애플리케이션 코드에서 입력값 검증 로직 구현'
+$purpose = 'HTTP 차단 및 HTTPS로 Redirection 활성화를 통해 평 문으로 전송되는 데이터를 암호화하여 공격자의 데이터 스니 핑에 대비하기 위함'
+$threat = 'HTTP 통신은 암호화 전송이 아닌 평 문 전송을 하므로 공격자가 스니핑을 시도할 경우 관리자의 ID, 비밀번호가 노출되어 악의적 사용자가 관리자 계정을 탈취할 수 있는 위험이 존재함'
+$criteria_good = 'HTTP 접근 시 HTTPSRedirection이 활성화된 경우'
+$criteria_bad = 'HTTP 접근 시 HTTPSRedirection이 비활성화된 경우'
+$remediation = 'HTTP Redirection 활성화 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

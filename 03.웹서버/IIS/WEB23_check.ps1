@@ -100,11 +100,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = '불필요한 HTTP 메서드(PUT, DELETE, TRACE 등) 제한으로 서버 파일 변조 및 정보 노출 방지'
-$threat = '불필요한 HTTP 메서드 허용 시 공격자가 파일 업로드, 삭제, 수정 및 Cross-Site Tracing 공격 가능'
-$criteria_good = '필요한 HTTP 메서드(GET, POST, HEAD)만 허용하고 불필요한 메서드는 차단된 경우'
-$criteria_bad = 'PUT, DELETE, TRACE 등 불필요한 HTTP 메서드가 허용된 경우'
-$remediation = 'IIS 관리자 > Request Filtering > HTTP Verbs > 불필요한 메서드(Deny) 추가 (TRACE, PUT, DELETE, OPTIONS, CONNECT 등)'
+$purpose = 'LDAP 연결 시 안전한 비밀번호 다이제스트 알고리즘을 사용하여 비밀번호 평 문 전송 시 발생할 수 있는 스니핑 등의 공격에 대비하기 위함'
+$threat = '취약한 다이제스트 알고리즘을 사용하는 경우 공격자의 스니핑, 무차별 공격 등을 통해 인증 정보가 노출될 위험이 존재함'
+$criteria_good = 'LDAP 연결 인증 시 안전한 비밀번호 다이제스트 알고리즘을 사용하는 경우'
+$criteria_bad = 'LDAP 연결 인증 시 안전한 비밀번호 다이제스트 알고리즘을 사용하지 않는 경우'
+$remediation = 'LDAP 연결 인증 시 SHA-256 이상의 알고리즘을 사용하도록 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

@@ -78,11 +78,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'SSI(Server Side Includes) 사용 제한으로 악의적인 명령 실행 방지'
-$threat = 'SSI 활성화 시 공격자가 악의적인 스크립트를 삽입하여 시스템 명령 실행 가능'
-$criteria_good = 'SSI가 비활성화되어 있거나 필수 기능 외에는 사용 제한된 경우'
-$criteria_bad = 'SSI가 불필요하게 활성화되어 있는 경우'
-$remediation = 'IIS 관리자 > 해당 사이트 > Server-Side Includes > Uninstall 또는 Disable 선택 (필요 시 확장자 제한 적용)'
+$purpose = '웹 서비스 내 SSI 사용을 제한하여 불법적인 데이터 접근을 차단하여 웹 서버의 보안을 강화하기 위함'
+$threat = '웹 서비스 내 SSI 사용을 제한하지 않을 경우, 공격자가 SSI 기능을 이용하여 시스템 명령 실행 및 중요 파일 탈취 등 공격이 가능하며, 이를 통해 서버 시스템 침해, 데이터 유출 등이 발생할 위험이 존재함 SSI 공격 시 HTML 페이지에 스크립트를 삽입하거나 원격으로 코드를 실행하여 웹 서비스를 악용할 위험이 존재함'
+$criteria_good = '웹 서비스 SSI 사용 설정이 비활성화되어 있는 경우'
+$criteria_bad = '웹 서비스 SSI 사용 설정이 활성화되어 있는 경우'
+$remediation = '웹 서비스 내 불필요한 SSI 사용 제한 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `

@@ -73,11 +73,11 @@ try {
 }
 
 # 2. lib를 통한 결과 저장
-$purpose = 'SSL/TLS 활성화로 통신 데이터 암호화 및 중간자 공격(Man-in-the-Middle) 방지'
-$threat = 'SSL/TLS 미사용 시 평문 통신으로 인한 정보 탈취 및 도청 위험'
-$criteria_good = '웹서비스가 HTTPS(SSL/TLS)를 사용하는 경우'
-$criteria_bad = '웹서비스가 HTTP만 사용하거나 SSL/TLS가 비활성화된 경우'
-$remediation = 'IIS 관리자 > 해당 사이트 > Bindings > Add > Type: https > SSL 인증서 선택 및 적용 (포트 443 권장)'
+$purpose = '서버와 클라이언트 간 통신 시 데이터의 평 문 전송을 사용하지 않고 데이터가 암호화되는 SSL/TLS 인증 암호화 접속을 통해 스니 핑을 통한 정보 유출의 위험을 방지하기 위함'
+$threat = '웹상의 데이터 통신 시 서버와 클라이언트 간에 데이터를 평 문 전송하는 경우, 간단한 도청(스니핑)을 통해 정보가 탈취 및 도용될 위험이 존재함 SSL/TLS가 활성화되어 있지 않을 경우, 데이터는 암호화되지 않아 공격자가 중간에서 데이터를 가로채거나 도청할 수 있으며, 더 나아가 평 문으로 전송되어 중간에서 변경될 우려가 있어 데이터의 정확성이 훼손될 위험이 존재함'
+$criteria_good = 'SSL/TLS 설정이 활성화되어 있는 경우'
+$criteria_bad = 'SSL/TLS 설정이 비활성화되어 있는 경우'
+$remediation = '웹 서비스 내 SSL/TLS 활성화 설정'
 
 Save-DualResult -ItemId $ITEM_ID `
     -ItemName $ITEM_NAME `
