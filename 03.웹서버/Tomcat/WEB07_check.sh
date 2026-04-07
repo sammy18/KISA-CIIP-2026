@@ -33,11 +33,11 @@ ITEM_ID="WEB-07"
 ITEM_NAME="웹서비스로그분석관리"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="웹 서비스 설치 시 기본으로 생성되는 샘플, 매뉴얼 파일 등 서비스에 불필요한 파일을 제거하여 불필요한공격대상으로이용되는것을방지하기위함"
-GUIDELINE_THREAT="웹서비스설치시기본으로생성되는파일및디렉터리나백업, 테스트 파일 등을 제거하지 않은 경우, 비인가자에게시스템관련정보및웹서버정보가노출되거나해킹에악용될수있음"
-GUIDELINE_CRITERIA_GOOD="기본으로생성되는불필요한파일및디렉터리가존재하지않을경우"
-GUIDELINE_CRITERIA_BAD="기본으로생성되는불필요한파일및디렉터리가존재하는경우"
-GUIDELINE_REMEDIATION="불필요한파일및디렉터리를제거하도록설정"
+GUIDELINE_PURPOSE="웹 서비스 설치 시 기본으로 생성되는 샘플, 매뉴얼 파일 등 서비스에 불필요한 파일을 제거하여 불필요한 공격 대상으로 이용되는 것을 방지하기 위함"
+GUIDELINE_THREAT="웹 서비스 설치 시 기본으로 생성되는 파일 및 디렉터리나 백 업, 테스트 파일 등을 제거하지 않은 경우, 비인가자에게 시스템 관련 정보 및 웹 서버 정보가 노출되거나 해킹에 악용될 수 있음"
+GUIDELINE_CRITERIA_GOOD="기본으로 생성되는 불필요한 파일 및 디렉터리가 존재하지 않을 경우"
+GUIDELINE_CRITERIA_BAD="기본으로 생성되는 불필요한 파일 및 디렉터리가 존재하는 경우"
+GUIDELINE_REMEDIATION="불필요한 파일 및 디렉터리를 제거하도록 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

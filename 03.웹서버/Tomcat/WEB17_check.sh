@@ -33,11 +33,11 @@ ITEM_ID="WEB-17"
 ITEM_NAME="웹서비스가상디렉토리삭제"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="불필요한가상디렉터리를삭제하여공격이가능한영역을최소화하고정보노출방지및권한상승공격 등의위험을제거하기위함"
-GUIDELINE_THREAT="불필요한 가상 디렉터리를 삭제하지 않은 경우, 취약한 가상 디렉터리를 통해 시스템 권한 탈취 및 시스템구조등의중요정보가노출될위험이존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한가상디렉터리가존재하지않는경우"
-GUIDELINE_CRITERIA_BAD="불필요한가상디렉터리가존재하는경우"
-GUIDELINE_REMEDIATION="불필요한가상디렉터리존재여부점검및삭제하도록설정"
+GUIDELINE_PURPOSE="불필요한 가상 디렉터리를 삭제하여 공격이 가능한 영역을 최소화하고 정보 노출 방지 및 권한 상승 공격 등의 위험을 제거하기 위함"
+GUIDELINE_THREAT="불필요한 가상 디렉터리를 삭제하지 않은 경우, 취약한 가상 디렉터리를 통해 시스템 권한 탈취 및 시스템 구조 등의 중요 정보가 노출될 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한 가상 디렉터리가 존재하지 않는 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 가상 디렉터리가 존재하는 경우"
+GUIDELINE_REMEDIATION="불필요한 가상 디렉터리 존재 여부 점검 및 삭제하도록 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

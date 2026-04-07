@@ -33,11 +33,11 @@ ITEM_ID="WEB-10"
 ITEM_NAME="불필요한스크립트매핑제거"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="불필요한 Proxy 설정을 제한하여 자원 낭비 예방 및 관리의 복잡성을 감소시키며, 중간자 공격 등의 해킹공격으로부터시스템관련정보가노출되거나악용되는것을방지하기위함"
-GUIDELINE_THREAT="불필요한 Proxy 설정을 제한하지 않는 경우 공격자가 Proxy 서버를 이용하여 원래 의도되지 않은 방식으로시스템에접근하거나시스템관련정보가유출될위험이존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한Proxy설정을제한한경우"
-GUIDELINE_CRITERIA_BAD="불필요한Proxy설정을제한하지않은경우"
-GUIDELINE_REMEDIATION="불필요한Proxy설정존재여부점검및제한설정"
+GUIDELINE_PURPOSE="불필요한 Proxy 설정을 제한하여 자원 낭비 예방 및 관리의 복잡성을 감소시키며, 중간자 공격 등의 해킹 공격으로부터 시스템 관련 정보가 노출되거나 악용되는 것을 방지하기 위함"
+GUIDELINE_THREAT="불필요한 Proxy 설정을 제한하지 않는 경우 공격자가 Proxy 서버를 이용하여 원래 의도되지 않은 방식으로 시스템에 접근하거나 시스템 관련 정보가 유출될 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한 Proxy 설정을 제한한 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 Proxy 설정을 제한하지 않은 경우"
+GUIDELINE_REMEDIATION="불필요한 Proxy 설정 존재 여부 점검 및 제한 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"
