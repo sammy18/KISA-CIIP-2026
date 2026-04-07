@@ -35,11 +35,11 @@ ITEM_NAME="세션 종료시간 설정"
 SEVERITY="하"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="안전한비밀번호암호화알고리즘을사용하여사용자계정정보를보호하기위함"
-GUIDELINE_THREAT="취약한 비밀번호 암호화 알고리즘을 사용할 경우, 노출된 계정에 대해 비인가자가 암호 복호화 공격을 통해비밀번호를획득할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="SHA-2이상의안전한비밀번호암호화알고리즘을사용하는경우"
-GUIDELINE_CRITERIA_BAD="취약한비밀번호암호화알고리즘을사용하는경우"
-GUIDELINE_REMEDIATION="SHA-2이상의안전한비밀번호암호화알고리즘적용설정"
+GUIDELINE_PURPOSE="사용자의 고의 또는 실수로 시스템에 계정이 접속된 상태로 방치됨을 차단하기 위함"
+GUIDELINE_THREAT="Sessiontimeout 값이 설정되지 않을 경우, 유휴 시간 내 비인가자가 시스템에 접근하여 불필요한 내부 정보를 노출할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="Session Timeout이 600초(10분)이하로 설정된 경우"
+GUIDELINE_CRITERIA_BAD="Session Timeout이 600초(10분)이하로 설정되지 않은 경우"
+GUIDELINE_REMEDIATION="600초(10분)동안 입력이 없는 경우 접속된 Session을 끊도록 설정"
 
 # ============================================================================
 # 진단 함수

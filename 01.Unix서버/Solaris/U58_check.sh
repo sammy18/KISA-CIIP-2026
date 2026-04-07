@@ -35,11 +35,11 @@ ITEM_NAME="불필요한 SNMP 서비스 구동 점검"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="불필요한 SNMP 서비스를 비활성화하여 시스템 정보 노출 방지"
-GUIDELINE_THREAT="SNMP 서비스 활성화 시 비인가자가 시스템 정보 수집 및 설정 변경을 통해 공격 대상 선정 및 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="SNMP 서비스가 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD=" SNMP 서비스가 활성화된 경우 / N/A: SNMP 모니터링 필요"
-GUIDELINE_REMEDIATION="SNMP 서비스 중지 및 비활성화: systemctl stop snmpd && systemctl disable snmpd 실행"
+GUIDELINE_PURPOSE="불필요한 SNMP 서비스를 비활성화하여 필요 이상의 정보가 노출되는 것을 방지하기 위함"
+GUIDELINE_THREAT="SNMP 서비스가 활성화되어 있을 경우, 비인가자가 시스템의 중요 정보를 유출하거나 불법적으로 수정할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP 서비스를 사용하지 않는 경우"
+GUIDELINE_CRITERIA_BAD="SNMP 서비스를 사용하는 경우"
+GUIDELINE_REMEDIATION="SNMP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정"
 
 # ============================================================================
 # 진단 함수

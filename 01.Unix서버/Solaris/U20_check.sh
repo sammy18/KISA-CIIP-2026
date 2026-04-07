@@ -35,11 +35,11 @@ ITEM_NAME="/etc/(x)inetd.conf 파일 소유자 및 권한 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="/etc/(x)inetd.conf 파일을 관리자만 제어하여 비인가자의 임의적인 서비스 등록 방지"
-GUIDELINE_THREAT="inetd.conf 파일에 소유자 외 쓰기 권한이 부여된 경우 일반 사용자가 악의적인 서비스를 등록하거나 기존 서비스 변조 위험"
-GUIDELINE_CRITERIA_GOOD="/etc/(x)inetd.conf 파일 소유자가 root이고 권한이 600 이하인 경우"
-GUIDELINE_CRITERIA_BAD=" 소유자가 root가 아니거나 권한이 601 이상인 경우 / N/A: 파일 없음"
-GUIDELINE_REMEDIATION="chown root:root /etc/xinetd.conf && chmod 600 /etc/xinetd.conf 실행"
+GUIDELINE_PURPOSE="/etc/(x)inetd.conf 파일을 관리자만 제어하여 비인가자들의 임의적인 파일 변조를 방지하기 위함"
+GUIDELINE_THREAT="/etc/(x)inetd.conf 파일에 소유자 외 쓰기 권한이 부여된 경우, 일반 사용자 권한으로 해당 파일에 등록된 서비스를 변조하거나 악의적인 프로그램(서비스)을 등록할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/(x)inetd.conf 파일의 소유자가 root이고, 권한이 600 이하인 경우"
+GUIDELINE_CRITERIA_BAD="/etc/(x)inetd.conf 파일의 소유자가 root가 아니거나, 권한이 600 이하가 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/(x)inetd.conf 파일 소유자 및 권한 변경 설정"
 
 # ============================================================================
 # 진단 함수

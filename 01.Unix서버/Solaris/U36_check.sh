@@ -35,11 +35,11 @@ ITEM_NAME="자동 로그아웃 설정"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="사용자의 부주의로 인한 정보 유출을 방지하고, 불필요한 세션 점유를 방지하기 위함"
-GUIDELINE_THREAT="자동 로그아웃 설정이 미흡할 경우, 사용자가 부주의하여 자리를 비웠을 때 타인이 해당 시스템에 접근하여 중요 정보를 탈취하거나, 불필요한 세션 점유로 인한 시스템 자원 낭비가 발생할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="자동 로그아웃 시간이 600초(10분) 이하로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="자동 로그아웃 설정이 되어 있지 않거나, 설정 시간이 600초를 초과하는 경우"
-GUIDELINE_REMEDIATION="/etc/profile, /etc/bash.bashrc 또는 /etc/profile.d/*.sh 파일에 TMOUT 또는 TIMEOUT 값을 600 이하로 설정"
+GUIDELINE_PURPOSE="r-command 사용을 통한 원격 접속은 NET Backup 또는 클러스터 링 등 용도로 사용되기도하나, 인증 없이 관리자 원격 접속이 가능하여 이에 대한 보안 위협을 방지하기 위함"
+GUIDELINE_THREAT="rlogin, rsh, rexec 등의 r-command를 이용하여 원격에서 인증 절차 없이 터미널 접속, 쉘 명령어를 실행이 가능한 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한 r 계열 서비스가 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 r 계열 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="불필요한 r 계열 서비스 중지 및 비활성화 설정 ※ NET Backup 등 특별한 용도로 사용하지 않는다면 shell(514), login(513), exec(512)서비스 중 지 ※ rlogin, rsh, rexec 서비스는 backup, 클러스터 링 등의 용도로 종종 사용되고 있으므로 해당 서 비 스 사용 유무를 확인하여 미사용 시 서비스 중지 ※ /etc/hosts.equiv 또는 $HOME/.rhosts 파일을 통해 해당 서비스 사용 여부 확인 (파일이 존재하지 않거나 해당 파일 내에 설정이 없다면 사용하지 않는 것으로 간주)"
 
 # ============================================================================
 # 진단 함수

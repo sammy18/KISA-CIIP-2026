@@ -35,11 +35,11 @@ ITEM_NAME="DNS 보안 버전 패치"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="취약점이발표되지않은BIND버전을사용하여시스템보안성을높이기위함"
-GUIDELINE_THREAT="취약점이 내포된 BIND 버전을 사용할 경우, DoS 공격, 버퍼 오버플로우(Buffer Overflow) 및 DNS 서버원격침입등의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="주기적으로패치를관리하는경우"
-GUIDELINE_CRITERIA_BAD="주기적으로패치를관리하고있지않은경우"
-GUIDELINE_REMEDIATION="Ÿ DNS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ DNS서비스사용시패치관리정책수립및주기적으로패치적용설정 ※ DNS서비스의경우대부분의버전에서취약점이보고되고있으므로OS관리자, 서비스 개발자가 패치적용에따른서비스영향정도를정확히파악하여주기적인패치적용정책수리후적용"
+GUIDELINE_PURPOSE="취약점이 발표되지 않은 BIND 버전을 사용하여 시스템 보안성을 높이기 위함"
+GUIDELINE_THREAT="취약점이 내포된 BIND 버전을 사용할 경우, DoS 공격, 버퍼 오버 플로우(Buffer Overflow) 및 DNS 서버 원격 침입 등의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="주기적으로 패치를 관리하는 경우"
+GUIDELINE_CRITERIA_BAD="주기적으로 패치를 관리하고 있지 않은 경우"
+GUIDELINE_REMEDIATION="DNS 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 DNS 서비스 사용 시 패치 관리 정책 수립 및 주기적으로 패치 적용 설정 ※ DNS 서비스의 경우 대부분의 버전에서 취약점이 보고되고 있으므로 OS 관리자, 서비스 개발자가 패치 적용에 따른 서비스 영향 정도를 정확히 파악하여 주기적인 패치 적용 정책 수리 후 적용"
 
 # ============================================================================
 # 진단 함수

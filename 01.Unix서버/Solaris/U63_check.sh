@@ -35,11 +35,11 @@ ITEM_NAME="sudo 명령어 접근 관리"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="비인가자가관리자권한을남용하여시스템손상,악성코드실행,민감한데이터유출등의보안위협을 방지하기위함"
-GUIDELINE_THREAT="sudo 명령어 접근을 제한하지 않을 경우, 비인가자가 관리자 권한으로 허가되지 않은 명령어를 사용하여루트권한오용,악성코드실행,데이터유출등의시도를할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/sudoers파일소유자가root이고,파일권한이640인경우"
-GUIDELINE_CRITERIA_BAD=" /etc/sudoers파일소유자가root가아니거나,파일권한이640을초과하는경우"
-GUIDELINE_REMEDIATION="/etc/sudoers파일소유자및권한변경설정"
+GUIDELINE_PURPOSE="비인가자가 관리자 권한을 남용하여 시스템 손상, 악성 코드 실행, 민감한 데이터 유출 등의 보안 위협을 방지하기 위함"
+GUIDELINE_THREAT="sudo 명령어 접근을 제한하지 않을 경우, 비인가자가 관리자 권한으로 허가되지 않은 명령어를 사용하여 루트 권한 오용, 악성 코드 실행, 데이터 유출 등의 시도를 할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/sudoers 파일 소유자가 root이고, 파일 권한이 640인 경우"
+GUIDELINE_CRITERIA_BAD="/etc/sudoers 파일 소유자가 root가 아니거나, 파일 권한이 640을 초과하는 경우"
+GUIDELINE_REMEDIATION="/etc/sudoers 파일 소유자 및 권한 변경 설정"
 
 # ============================================================================
 # 진단 함수

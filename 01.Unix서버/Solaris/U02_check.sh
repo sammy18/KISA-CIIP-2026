@@ -35,11 +35,11 @@ ITEM_NAME="비밀번호 관리 정책 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="비밀번호 복잡성 및 사용 기간 설정을 통한 무차별 대입 공격 및 사전 대입 공격 방지"
-GUIDELINE_THREAT="비밀번호 관리 정책 미설정 시 무차별 대입 공격, 사전 대입 공격 등으로 인한 비밀번호 노출 및 계정 탈취 위험"
-GUIDELINE_CRITERIA_GOOD="비밀번호 복잡성(8자리 이상, 영문/숫자/특수문자 조합) 및 사용 기간(최소 1일, 최대 90일) 설정된 경우"
-GUIDELINE_CRITERIA_BAD=" 정책 미설정 또는 부적절하게 설정된 경우"
-GUIDELINE_REMEDIATION="/etc/login.defs에 PASS_MAX_DAYS 90, PASS_MIN_DAYS 1 설정 및 /etc/security/pwquality.conf에 복잡성 설정 추가"
+GUIDELINE_PURPOSE="사용자의 비밀번호 복잡성과 주기적 변경을 통해 시스템 보안을 강화하기 위함"
+GUIDELINE_THREAT="비밀번호 관련 정책이 설정되지 않을 경우, 비인가자의 각종 공격(무차별 대입 공격, 사전 대입 공격 등)에 의해 비밀번호가 노출될 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="비밀번호 관리 정책이 설정된 경우"
+GUIDELINE_CRITERIA_BAD="비밀번호 관리 정책이 설정되지 않은 경우"
+GUIDELINE_REMEDIATION="root 계정을 포함한 사용자 계정의 비밀번호를 영문, 숫자, 특수 문자를 포함하여 최소 8 자리 이상 및 최소 사용 기간 1일, 최대 사용 기간 90일, 최근 비밀번호 기억 4회 이상으로 설정"
 
 # ============================================================================
 # 진단 함수

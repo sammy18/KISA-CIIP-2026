@@ -35,11 +35,11 @@ ITEM_NAME="hosts.lpd 파일 소유자 및 권한 설정"
 SEVERITY="하"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="/etc/hosts.lpd 파일을 관리자만 제어하여 비인가자의 인쇄 서비스 등록 방지"
-GUIDELINE_THREAT="hosts.lpd 파일의 권한 설정 미흡 시 비인가자가 인쇄 서비스 변조 및 악의적인 프린터 등록 위험"
-GUIDELINE_CRITERIA_GOOD="hosts.lpd 파일 소유자가 root이고 권한이 600 이하인 경우"
-GUIDELINE_CRITERIA_BAD=" 소유자가 root가 아니거나 권한이 601 이상인 경우 / N/A: LPD 서비스 미사용"
-GUIDELINE_REMEDIATION="chown root:root /etc/hosts.lpd && chmod 600 /etc/hosts.lpd 실행"
+GUIDELINE_PURPOSE="비인가자의 임의적인/etc/hosts.lpd 변조를 막기 위해/etc/hosts.lpd 파일 제거 또는 소유자 및 권한 관리하기 위함"
+GUIDELINE_THREAT="/etc/hosts.lpd 파일의 접근 권한이 적절하지 않을 경우, 비인가자가/etc/hosts.lpd 파일을 수정하여 허용된 사용자의 서비스를 방해할 수 있으며, 호스트 정보를 획득할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/hosts.lpd 파일이 존재하지 않거나, 불가피하게 사용 시/etc/hosts.lpd 파일의 소유자가 root이고, 권한이 600 이하인 경우"
+GUIDELINE_CRITERIA_BAD="/etc/hosts.lpd 파일이 존재하며, 파일의 소유자가 root가 아니거나, 권한이 600 이하가 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/hosts.lpd 파일 제거 또는/etc/hosts.lpd 파일 소유자 및 권한 변경 설정"
 
 # ============================================================================
 # 진단 함수
