@@ -1,35 +1,37 @@
 # KISA CIIP 2026 - 진단 스크립트 공개 저장소
 
-**버전**: 1.0.0
-**최종 수정**: 2026-01-19
+**버전**: 2.0.0
+**최종 수정**: 2026-04-07
 **Repository**: https://github.com/rebugui/KISA-CIIP-2026
 
 ---
 
 ## 📋 개요
 
-이 저장소는 **KISA(한국인터넷진흥원) 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드**에 따른 기술적 취약점 진단 스크립트의 공개 버전입니다.
+이 저장소는 **KISA(한국인터넷진흥원) 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드(2026)** 에 따른 기술적 취약점 진단 스크립트의 공개 버전입니다.
 
 
 ### 지원 플랫폼
 
 | 카테고리 | 플랫폼 | 진단 항목 수 |
 |----------|--------|-------------|
-| Unix 서버 | Debian, RedHat, AIX, HP-UX, Solaris | U-01 ~ U-67 (67개 × 5) |
+| Unix 서버 | Debian, RedHat, AIX, HP-UX, Solaris | U-01 ~ U-67 (67개 × 5 = 335) |
 | Windows 서버 | Windows Server 2019+ | W-01 ~ W-64 (64개) |
-| 웹서버 | Apache, Nginx, Tomcat, IIS | WEB-01 ~ WEB-26 (26개 × 4) |
-| DBMS | MySQL, PostgreSQL, Oracle, MSSQL | D-01 ~ D-26 (26개 × 4) |
+| 웹서버 | Apache, Nginx, Tomcat (.sh) | WEB-01 ~ WEB-26 (26개 × 3 = 78) |
+| 웹서버 | IIS (.ps1) | WEB-01 ~ WEB-26 (26개) |
+| DBMS | MySQL, PostgreSQL, Oracle, MSSQL | D-01 ~ D-26 (26개 × 4 = 104) |
 | PC | Windows PC | P-01 ~ P-18 (18개) |
 
-**총 진단 항목**: 671개 스크립트
+**총 진단 항목**: 625개 스크립트
 
 ### 주요 기능
 
-✅ **단일 항목 진단**: 개별 취약점 항목 진단
-✅ **일괄 진단**: 전체 항목 자동 진단 및 통합 결과 생성
-✅ **플랫폼 자동 감지**: OS 및 미들웨어 자동 식별
-✅ **멀티 포맷 결과**: JSON + 텍스트 이중 결과 저장
-✅ **보안**: 화이트리스트 기반 명령어 검증, 30초 타임아웃
+- **단일 항목 진단**: 개별 취약점 항목 진단
+- **일괄 진단**: 전체 항목 자동 진단 및 통합 결과 생성
+- **플랫폼 자동 감지**: OS 및 미들웨어 자동 식별
+- **멀티 포맷 결과**: JSON + 텍스트 이중 결과 저장
+- **보안**: 화이트리스트 기반 명령어 검증, 30초 타임아웃
+- **KISA 가이드라인 내장**: 각 스크립트에 목적, 위협, 판단기준, 조치방법 포함
 
 ---
 
@@ -38,62 +40,56 @@
 ### 1. 다운로드
 
 ```bash
-# 독립 사용
 git clone https://github.com/rebugui/KISA-CIIP-2026.git
 cd KISA-CIIP-2026
-
-# 또는 메인 프로젝트의 submodule로 사용
-git clone https://github.com/rebugui/KISA-CIIP-2026-dev.git
-cd KISA-CIIP-2026-dev
-git submodule update --init --recursive
 ```
 
 ### 2. 실행 권한 부여 (Unix/Linux)
 
 ```bash
-chmod +x 01.Unix서버/*/*.sh
-chmod +x 03.웹서버/*/*.sh
-chmod +x 08.DBMS/*/*.sh
 chmod +x lib/*.sh
+chmod +x 01.Unix서버/*/*_check.sh
+chmod +x 03.웹서버/*/*_check.sh
+chmod +x 08.DBMS/*/*_check.sh
 ```
 
 ### 3. 진단 실행
 
-#### Unix 서버 (Debian)
+#### Unix 서버 (RedHat 예시)
 
 ```bash
-cd 01.Unix서버/Debian
+cd 01.Unix서버/RedHat
 
 # 단일 항목 진단
 ./U01_check.sh
 
-# 전체 항목 진단 (67개, 약 10-15분)
-./01.Unix서버_Debian_run_all.sh
+# 전체 항목 일괄 진단
+./01.Unix서버_RedHat_run_all.sh
 ```
 
 #### Windows 서버
 
-```cmd
+```powershell
 cd 02.Windows서버
 
 # 단일 항목 진단
 powershell -ExecutionPolicy Bypass -File .\W01_check.ps1
 
-# 전체 항목 진단
-02.Windows서버_run_all.ps1
+# 전체 항목 일괄 진단
+.\02.Windows서버_run_all.ps1
 ```
 
-#### 웹서버 (Apache)
+#### 웹서버 (Apache 예시)
 
 ```bash
 cd 03.웹서버/Apache
 ./03.웹서버_Apache_run_all.sh
 ```
 
-#### DBMS (MySQL)
+#### DBMS (MySQL 예시)
 
 ```bash
-cd 08.DBMS/MySQL
+cd 08.DBMS/mysql
 
 # 진단 시작 (연결 정보 입력 프롬프트)
 ./D01_check.sh
@@ -105,50 +101,65 @@ cd 08.DBMS/MySQL
 # 비밀번호: ********
 ```
 
+#### PC
+
+```powershell
+cd 07.PC
+
+# 단일 항목 진단
+powershell -ExecutionPolicy Bypass -File .\P01_check.ps1
+
+# 전체 항목 일괄 진단
+.\07.PC_run_all.ps1
+```
+
 ---
 
 ## 📁 디렉토리 구조
 
 ```
-scripts/
-├── lib/                          # 핵심 라이브러리
-│   ├── common.sh                 # 공통 함수
-│   ├── platform_detector.sh      # 플랫폼 감지
-│   ├── command_validator.sh      # 명령어 검증 (화이트리스트)
-│   ├── timeout_handler.sh        # 타임아웃 처리
-│   ├── result_manager.sh         # 결과 저장
-│   ├── dbms_connector.sh         # DBMS 연결
+KISA-CIIP-2026/
+├── lib/                          # 공유 라이브러리
+│   ├── common.sh                 # 공통 함수 (호스트네임, 경로 생성)
+│   ├── result_manager.sh         # 결과 파일 생성, JSON/TXT 출력
+│   ├── command_validator.sh      # 명령어 화이트리스트 검증
+│   ├── timeout_handler.sh        # 타임아웃 처리, 재시도 로직
+│   ├── platform_detector.sh      # 플랫폼 자동 감지
+│   ├── dbms_connector.sh         # DBMS 연결, 3회 재시도
 │   ├── json_formatter.sh         # JSON 포맷팅
-│   └── output_mode.sh            # 출력 모드
+│   ├── output_mode.sh            # dual/json/text 출력 모드
+│   ├── result_manager.ps1        # PowerShell 결과 저장
+│   ├── output_format.ps1         # PowerShell 출력 모드
+│   └── ...
 │
 ├── 01.Unix서버/
-│   ├── Debian/
+│   ├── RedHat/                   # U-01 ~ U-67 (67개)
 │   │   ├── U01_check.sh ~ U67_check.sh
-│   │   └── 01.Unix서버_Debian_run_all.sh
-│   ├── RedHat/
-│   ├── AIX/
-│   ├── HP-UX/
-│   └── Solaris/
+│   │   └── 01.Unix서버_RedHat_run_all.sh
+│   ├── Debian/                   # U-01 ~ U-67 (67개)
+│   ├── AIX/                      # U-01 ~ U-67 (67개)
+│   ├── HP-UX/                    # U-01 ~ U-67 (67개)
+│   └── Solaris/                  # U-01 ~ U-67 (67개)
 │
 ├── 02.Windows서버/
 │   ├── W01_check.ps1 ~ W64_check.ps1
 │   └── 02.Windows서버_run_all.ps1
 │
 ├── 03.웹서버/
-│   ├── Apache/
-│   ├── Nginx/
-│   ├── Tomcat/
-│   └── IIS/
+│   ├── Apache/                   # WEB-01 ~ WEB-26 (.sh)
+│   ├── Nginx/                    # WEB-01 ~ WEB-26 (.sh)
+│   ├── Tomcat/                   # WEB-01 ~ WEB-26 (.sh)
+│   └── IIS/                      # WEB-01 ~ WEB-26 (.ps1)
 │
 ├── 07.PC/
 │   ├── P01_check.ps1 ~ P18_check.ps1
 │   └── 07.PC_run_all.ps1
 │
 └── 08.DBMS/
-    ├── MySQL/
-    ├── PostgreSQL/
-    ├── Oracle/
-    └── MSSQL/
+    ├── mysql/                    # D-01 ~ D-26 (.sh)
+    ├── postgresql/               # D-01 ~ D-26 (.sh)
+    ├── Oracle/                   # D-01 ~ D-26 (.sh)
+    └── MSSQL/                    # D-01 ~ D-26 (.sh)
 ```
 
 ---
@@ -159,9 +170,9 @@ scripts/
 
 ```
 results/YYYYMMDD/
-├── hostname_U01_result_20260119_143020.json
-├── hostname_U01_result_20260119_143020.txt
-└── hostname_Unix_Debian_all_results_20260119_150000.json
+├── hostname_U01_result_20260407_143020.json
+├── hostname_U01_result_20260407_143020.txt
+└── hostname_Unix_RedHat_all_results_20260407_150000.json
 ```
 
 ### JSON 결과 예시
@@ -172,7 +183,7 @@ results/YYYYMMDD/
   "item_name": "root 계정 원격 접속 제한",
   "status": "양호",
   "diagnosis_result": "GOOD",
-  "timestamp": "2026-01-19T14:30:20+09:00",
+  "timestamp": "2026-04-07T14:30:20+09:00",
   "hostname": "server01",
   "inspection_summary": "SSH 설정 확인 완료",
   "command_result": "PermitRootLogin no",
@@ -224,15 +235,16 @@ PROMPT_TIMEOUT=60s        # 사용자 응답 타임아웃
 
 ### 핵심 라이브러리
 
-| 라이브러리 | 라인 수 | 기능 | 참조 수 |
-|-----------|---------|------|--------|
-| common.sh | 74 | 기반 함수 (호스트네임, 경로 생성) | 354 |
-| result_manager.sh | 634 | 결과 파일 생성, JSON/TXT 출력 | 354 |
-| command_validator.sh | 329 | 명령어 화이트리스트 검증 | 321 |
-| timeout_handler.sh | 208 | 타임아웃 처리, 재시도 로직 | 320 |
-| output_mode.sh | 111 | dual/json/text 모드 | 353 |
-| dbms_connector.sh | 468 | DBMS 연결, 3회 재시도 | 104 |
-| platform_detector.sh | 275 | 플랫폼 자동 감지 | 354 |
+| 라이브러리 | 기능 | 참조 수 |
+|-----------|------|--------|
+| common.sh | 기반 함수 (호스트네임, 경로 생성) | 전체 Unix 스크립트 |
+| result_manager.sh | 결과 파일 생성, JSON/TXT 출력 | 전체 Unix 스크립트 |
+| command_validator.sh | 명령어 화이트리스트 검증 | 전체 Unix 스크립트 |
+| timeout_handler.sh | 타임아웃 처리, 재시도 로직 | 전체 Unix 스크립트 |
+| output_mode.sh | dual/json/text 모드 | 전체 Unix 스크립트 |
+| dbms_connector.sh | DBMS 연결, 3회 재시도 | DBMS 스크립트 |
+| platform_detector.sh | 플랫폼 자동 감지 | 전체 Unix 스크립트 |
+| result_manager.ps1 | PowerShell 결과 저장 | Windows/PC 스크립트 |
 
 ### 진단 스크립트 구조
 
@@ -245,8 +257,15 @@ ITEM_ID="U-01"
 ITEM_NAME="root 계정 원격 접속 제한"
 
 # 라이브러리 로드
-source "$(dirname "${BASH_SOURCE[0]}")/../../../lib/common.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/../../../lib/result_manager.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../lib/common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../lib/result_manager.sh"
+
+# KISA 가이드라인 정보
+GUIDELINE_PURPOSE="..."
+GUIDELINE_THREAT="..."
+GUIDELINE_CRITERIA_GOOD="..."
+GUIDELINE_CRITERIA_BAD="..."
+GUIDELINE_REMEDIATION="..."
 
 # 진단 함수 (Template Method)
 diagnose() {
@@ -272,40 +291,89 @@ main "$@"
 ### Unix/Linux 진단
 
 ```bash
+# RedHat
+cd 01.Unix서버/RedHat
+./01.Unix서버_RedHat_run_all.sh
+
 # Debian
 cd 01.Unix서버/Debian
 ./01.Unix서버_Debian_run_all.sh
 
-# RedHat
-cd 01.Unix서버/RedHat
-./01.Unix서버_RedHat_run_all.sh
+# AIX
+cd 01.Unix서버/AIX
+./01.Unix서버_AIX_run_all.sh
+
+# HP-UX
+cd 01.Unix서버/HP-UX
+./01.Unix서버_HP-UX_run_all.sh
+
+# Solaris
+cd 01.Unix서버/Solaris
+./01.Unix서버_Solaris_run_all.sh
 ```
 
 ### Windows 진단
 
 ```powershell
-# PowerShell
+# Windows 서버
 cd 02.Windows서버
 .\02.Windows서버_run_all.ps1
+
+# Windows PC
+cd 07.PC
+.\07.PC_run_all.ps1
+```
+
+### 웹서버 진단
+
+```bash
+# Apache
+cd 03.웹서버/Apache
+./03.웹서버_Apache_run_all.sh
+
+# Nginx
+cd 03.웹서버/Nginx
+./03.웹서버_Nginx_run_all.sh
+
+# Tomcat
+cd 03.웹서버/Tomcat
+./03.웹서버_Tomcat_run_all.sh
+```
+
+### IIS 진단 (PowerShell)
+
+```powershell
+cd 03.웹서버/IIS
+.\03.웹서버_IIS_run_all.ps1
 ```
 
 ### DBMS 진단
 
 ```bash
 # MySQL
-cd 08.DBMS/MySQL
-./08.DBMS_MySQL_run_all.sh
+cd 08.DBMS/mysql
+./08.DBMS_mysql_run_all.sh
 
 # PostgreSQL
-cd 08.DBMS/PostgreSQL
-./08.DBMS_PostgreSQL_run_all.sh
+cd 08.DBMS/postgresql
+./08.DBMS_postgresql_run_all.sh
+
+# Oracle
+cd 08.DBMS/Oracle
+./08.DBMS_Oracle_run_all.sh
+
+# MSSQL
+cd 08.DBMS/MSSQL
+./08.DBMS_MSSQL_run_all.sh
 ```
 
 ---
 
 ## 📄 라이선스
 
-MIT License
+GNU Affero General Public License v3.0 (AGPL-3.0)
+
+자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
 
 ---
 
@@ -330,6 +398,6 @@ MIT License
 
 ---
 
-**버전**: 1.0.0
-**최종 수정**: 2026-01-19
+**버전**: 2.0.0
+**최종 수정**: 2026-04-07
 **호환성**: KISA CIIP 2026 가이드라인 준수
