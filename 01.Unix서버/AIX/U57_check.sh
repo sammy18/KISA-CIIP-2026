@@ -35,11 +35,11 @@ ITEM_NAME="Ftpusers 파일 설정"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="ftpusers 파일에 root, bin, daemon 등 시스템 계정을 등록하여 FTP 접속 제한"
-GUIDELINE_THREAT="ftpusers 파일 설정 미흡 시 시스템 관리자 계정이 FTP를 통해 무단 접속하여 시스템 장악 및 정보 유출 위험"
-GUIDELINE_CRITERIA_GOOD="ftpusers 파일에 시스템 계정이 등록된 경우"
-GUIDELINE_CRITERIA_BAD=" ftpusers 파일이 없거나 시스템 계정 미등록 / N/A: FTP 서비스 미설치"
-GUIDELINE_REMEDIATION="ftpusers 파일에 root, bin, daemon, sys, uucp 등 시스템 계정 추가: echo 'root' >> /etc/ftpusers"
+GUIDELINE_PURPOSE="root 계정의 FTP 직접 접속을 제한하여 root 비밀번호 정보 노출을 방지하기 위함"
+GUIDELINE_THREAT="FTP 서비스에 root 계정으로 접근할 경우, 데이터가 평 문으로 전송되어 비인가자가 스니핑을 통해 관리자 계정 및 중요 정보를 외부로 유출할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="root 계정 접속을 차단한 경우"
+GUIDELINE_CRITERIA_BAD="root 계정 접속을 허용한 경우"
+GUIDELINE_REMEDIATION="FTP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 FTP 서비스 사용 시 root 계정으로 직접 접속할 수 없도록 설정"
 
 # ============================================================================
 # 진단 함수

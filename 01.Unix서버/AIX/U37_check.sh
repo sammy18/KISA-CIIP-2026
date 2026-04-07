@@ -35,11 +35,11 @@ ITEM_NAME="crontab 설정 파일 권한 설정 미흡"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="crontab 설정 파일을 관리자만 제어하여 비인가자의 예약 작업 등록 방지"
-GUIDELINE_THREAT="crontab 파일의 권한 설정 미흡 시 비인가자가 악의적인 예약 작업을 등록하여 주기적 악성코드 실행 및 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="crontab 파일 소유자가 root이고 권한이 600 이하인 경우"
-GUIDELINE_CRITERIA_BAD=" 소유자가 root가 아니거나 권한이 601 이상인 경우"
-GUIDELINE_REMEDIATION="chown root:root /etc/crontab && chmod 600 /etc/crontab 실행, crontab 파일 접근 제한 설정"
+GUIDELINE_PURPOSE="관리자 외에는 서비스를 사용할 수 없도록 설정하고 있는지 점검하기 위함"
+GUIDELINE_THREAT="일반 사용자가 crontab 및 at 서비스를 사용할 수 있을 경우, 고의 또는 실수로 불법적인 예약 파일 실행으로 시스템 피해를 일으킬 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="crontab 및 at 명령어에 일반 사용자 실행 권한이 제거되어 있으며,cron 및 at 관련 파일 권한이 640 이하인 경우"
+GUIDELINE_CRITERIA_BAD="crontab 및 at 명령어에 일반 사용자 실행 권한이 부여되어 있으며,cron 및 at 관련 파일 권한이 640 이상인 경우"
+GUIDELINE_REMEDIATION="crontab 및 at 명령어 파일 권한 750 이하,cron 및 at 관련 파일 소유자 및 파일 권한 640 이하 설정"
 
 # ============================================================================
 # 진단 함수

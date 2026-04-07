@@ -35,11 +35,11 @@ ITEM_NAME="/etc/hosts 파일 소유자 및 권한 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="/etc/hosts 파일을 관리자만 제어할 수 있게 하여 비인가자의 임의적인 파일 변조 방지"
-GUIDELINE_THREAT="/etc/hosts 파일의 소유권 및 권한 설정이 미흡할 경우 비인가자가 호스트 정보를 변경하여 피싱 사이트 연결 등 악용 위험"
-GUIDELINE_CRITERIA_GOOD="/etc/hosts 파일 소유자가 root이고 권한이 644 이하인 경우"
-GUIDELINE_CRITERIA_BAD=" 소유자가 root가 아니거나 권한이 645 이상인 경우"
-GUIDELINE_REMEDIATION="chown root:root /etc/hosts && chmod 644 /etc/hosts 실행"
+GUIDELINE_PURPOSE="/etc/hosts 파일을 관리자만 제어할 수 있게하여 비인가자들의 임의적인 파일 변조를 방지하기 위함"
+GUIDELINE_THREAT="/etc/hosts 파일에 비인가자가 쓰기 권한이 부여된 경우, 공격자는 /etc/hosts 파일에 악의적인 시스템을 등록하여, 이를 통해 정상적인 DNS를 우회하여 악성 사이트로의 접속을 유도하는 파밍(Pharming)공격 등에 악용될 수 있는 위험이 존재함 /etc/hosts 파일에 소유자의 쓰기 권한이 부여된 경우, 일반 사용자 권한으로 /etc/hosts 파일에 변조된 IP 주소를 등록하여 정상적인 DNS를 방해하고 악성 사이트로의 접속을 유도하는 파밍(Pharming)공격 등에 악용될 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/hosts 파일의 소유자가 root이고, 권한이 644 이하인 경우"
+GUIDELINE_CRITERIA_BAD="/etc/hosts 파일의 소유자가 root가 아니거나, 권한이 644 이하가 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/hosts 파일 소유자 및 권한 변경 설정"
 
 # ============================================================================
 # 진단 함수

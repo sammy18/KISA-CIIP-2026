@@ -35,11 +35,11 @@ ITEM_NAME="SUID, SGID, Stickybit 설정 파일 점검"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="불필요한 SUID/SGID 설정 제거를 통한 권한 상승 취약점 방지"
-GUIDELINE_THREAT="불필요한 SUID/SGID 설정된 파일存在 시 일반 사용자가 root 권한 획득 및 시스템 장악 위험"
-GUIDELINE_CRITERIA_GOOD="주요 실행 파일에 불필요한 SUID/SGID 설정이 없는 경우"
-GUIDELINE_CRITERIA_BAD=" 불필요한 SUID/SGID 설정이 존재하는 경우"
-GUIDELINE_REMEDIATION="불필요한 SUID/SGID 제거: chmod u-s filename, chmod g-s filename 실행"
+GUIDELINE_PURPOSE="불필요한 SUID, SGID, Stickybit 설정 제거로 악의적인 사용자의 권한 상승을 방지하기 위함"
+GUIDELINE_THREAT="SUID, SGID, Sticky bit 설정이 적절하지 않을 경우, SUID, SGID, Sticky bit가 설정된 파일로 특정 명령어를 실행하여 root 권한 획득이 가능한 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="주요 실행 파일의 권한에 SUID와 SGID에 대한 설정이 부여되어 있지 않은 경우"
+GUIDELINE_CRITERIA_BAD="주요 실행 파일의 권한에 SUID와 SGID에 대한 설정이 부여된 경우"
+GUIDELINE_REMEDIATION="불필요한 SUID,SGID 권한 또는 해당 파일 제거하도록 설정 애플리케이션에서 생성한 파일이나 사용자가 임의로 생성한 파일 등 의심스럽거나 특이한 파일에 SUID 권한이 부여된 경우 제거하도록 설정"
 
 # ============================================================================
 # 진단 함수
@@ -57,88 +57,109 @@ diagnose() {
     local newline=$'\n'
 
     # 진단 로직 구현
-    # 중요 시스템 설정 파일의 SUID/SGID 및 권한 점검
+    # SUID/SGID 파일 점검 (AIX)
 
-    local config_dirs="/etc /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin"
-    local world_writable_files=""
-    local ww_count=0
-    local details=""
+    local suid_files=""
+    local sgid_files=""
+    local suid_count=0
+    local sgid_count=0
+    local vulnerable_files=""
+    local vulnerable_count=0
 
-    # world-writable 파일 검색 (일반 사용자 쓰기 권한) - 실제 명령어 결과 저장
-    local raw_find_output=""
-    for dir in $config_dirs; do
+    # AIX 핵심 시스템 디렉토리로 검색 범위 제한
+    local search_dirs=(
+        "/usr/bin"
+        "/usr/sbin"
+        "/bin"
+        "/sbin"
+        "/usr/ccs/bin"
+        "/usr/local/bin"
+        "/usr/local/sbin"
+        "/usr/lib"
+    )
+
+    # 검색 경로 구성
+    local find_paths=""
+    for dir in "${search_dirs[@]}"; do
         if [ -d "$dir" ]; then
-            local dir_output=$(find "$dir" -perm -2 -type f 2>/dev/null | head -20 || true)
-            if [ -n "$dir_output" ]; then
-                raw_find_output="${raw_find_output}${dir_output}"$'\n'
+            if [ -z "$find_paths" ]; then
+                find_paths="$dir"
+            else
+                find_paths="${find_paths} $dir"
             fi
-            while IFS= read -r file; do
-                if [ -n "$file" ]; then
-                    ((ww_count++)) || true
-                    local perms=$(perl -e '@s=stat(shift); printf "%04o\n", $s[2] & 07777' "$file" 2>/dev/null)
-                    local owner=$(perl -e '@s=lstat(shift); printf "%s:%s\n", getpwuid($s[4]), getgrgid($s[5])' "$file" 2>/dev/null)
-
-                    world_writable_files="${world_writable_files}${file} (권한: ${perms}, 소유자: ${owner}), "
-                fi
-            done <<< "$dir_output" || true
         fi
     done || true
 
-    # 추가: 중요 설정 파일의 권한 확인 (AIX doesn't use /etc/shadow or /etc/gshadow) - 실제 명령어 결과 저장
-    local important_files="/etc/passwd /etc/group /etc/hosts /etc/services /etc/inetd.conf /etc/rsyslog.conf"
-    local important_vulnerable=""
-    local important_count=0
-    local raw_important_output=""
-
-    for file in $important_files; do
-        if [ -f "$file" ]; then
+    # SUID 파일 검색 (AIX: perl 사용)
+    while IFS= read -r file; do
+        if [ -n "$file" ]; then
+            ((suid_count++)) || true
             local perms=$(perl -e '@s=stat(shift); printf "%04o\n", $s[2] & 07777' "$file" 2>/dev/null)
-            local owner=$(perl -e '@s=lstat(shift); printf "%s:%s\n", getpwuid($s[4]), getgrgid($s[5])' "$file" 2>/dev/null)
-            raw_important_output="${raw_important_output}${file}: ${perms} ${owner}"$'\n'
+            local owner=$(perl -e '($dev,$ino,$mode,$nlink,$uid,$gid)=stat(shift); print getpwuid($uid)' "$file" 2>/dev/null)
 
-            # world-writable 확인 (마지막 숫자가 7, 6, 3, 2인 경우)
-            local last_char="${perms: -1}"
+            # 예상되는 SUID 파일 목록 (시스템 바이너리)
+            local expected_suid_patterns="^(ping|ping6|traceroute|traceroute6|sudo|passwd|su|gpasswd|chsh|chfn|newgrp|umount|mount|pkexec|at|fusermount|Xorg|wbem|doas|chage|expire|ssh-keysign)"
 
-            if [ "$last_char" = "7" ] || [ "$last_char" = "6" ] || [ "$last_char" = "3" ] || [ "$last_char" = "2" ]; then
-                ((important_count++)) || true
-                important_vulnerable="${important_vulnerable}${file} (권한: ${perms}), "
+            # 파일명만 추출
+            local filename=$(basename "$file")
+
+            # 예상되는 시스템 바이너리가 아닌 경우 취약
+            if ! [[ "$filename" =~ $expected_suid_patterns ]]; then
+                # 사용자가 쓰기 가능한 스크립트 등 취약한 파일
+                if [[ "$file" =~ \.(sh|bash|pl|py|rb)$ ]] || [ -w "$file" ]; then
+                    ((vulnerable_count++)) || true
+                    vulnerable_files="${vulnerable_files}${file} (SUID, 권한: ${perms}, 소유자: ${owner}), "
+                fi
             fi
+
+            suid_files="${suid_files}${file} (SUID, ${perms}:${owner}), "
         fi
-    done || true
+    done < <(eval "find $find_paths -perm -4000 -type f 2>/dev/null | head -50") || true
+
+    # SGID 파일 검색
+    while IFS= read -r file; do
+        if [ -n "$file" ]; then
+            ((sgid_count++)) || true
+            local perms=$(perl -e '@s=stat(shift); printf "%04o\n", $s[2] & 07777' "$file" 2>/dev/null)
+            local owner=$(perl -e '($dev,$ino,$mode,$nlink,$uid,$gid)=stat(shift); print getpwuid($uid)' "$file" 2>/dev/null)
+
+            # 예상되는 SGID 디렉터리/파일 (write 가능한 공유 디렉터리 등)
+            if [[ "$file" =~ \.(sh|bash|pl|py|rb)$ ]] || [ -w "$file" ]; then
+                ((vulnerable_count++)) || true
+                vulnerable_files="${vulnerable_files}${file} (SGID, 권한: ${perms}, 소유자: ${owner}), "
+            fi
+
+            sgid_files="${sgid_files}${file} (SGID, ${perms}:${owner}), "
+        fi
+    done < <(eval "find $find_paths -perm -2000 -type f 2>/dev/null | head -50") || true
 
     # 결과 판정
-    if [ "$ww_count" -eq 0 ] && [ "$important_count" -eq 0 ]; then
-        diagnosis_result="GOOD"
-        status="양호"
-        inspection_summary="world-writable 설정 파일 없음, 중요 설정 파일 보안 양호"
-        command_result="[Command: find world-writable files]${newline}${raw_find_output}${newline}${newline}[Command: Check important files]${newline}${raw_important_output}"
-        command_executed="find /etc /usr/bin /usr/sbin -perm -2 -type f 2>/dev/null; perl -e 'for (@ARGV) {@s=stat; printf \"%04o %s:%s %s\\n\", \$s[2]&07777, getpwuid(\$s[4]), getgrgid(\$s[5]), $_}' /etc/passwd /etc/group"
+    local suid_find_output=$(eval "find $find_paths -perm -4000 -type f 2>/dev/null" | head -20 || echo "No SUID files found")
+    local sgid_find_output=$(eval "find $find_paths -perm -2000 -type f 2>/dev/null" | head -20 || echo "No SGID files found")
+
+    if [ "$vulnerable_count" -eq 0 ]; then
+        if [ "$suid_count" -eq 0 ] && [ "$sgid_count" -eq 0 ]; then
+            diagnosis_result="GOOD"
+            status="양호"
+            inspection_summary="SUID/SGID 파일 없음 (시스템 보안 양호)"
+            command_result="[Command: find $find_paths -perm -4000 -type f]${newline}${suid_find_output}${newline}${newline}[Command: find $find_paths -perm -2000 -type f]${newline}${sgid_find_output}"
+            command_executed="find $find_paths -perm -4000 -type f 2>/dev/null; find $find_paths -perm -2000 -type f 2>/dev/null"
+        else
+            diagnosis_result="GOOD"
+            status="양호"
+            inspection_summary="SUID/SGID 파일이 시스템 바이너리로만 구성됨 (SUID: ${suid_count}개, SGID: ${sgid_count}개)"
+            command_result="[Command: find $find_paths -perm -4000 -type f]${newline}${suid_find_output}${newline}${newline}[Command: find $find_paths -perm -2000 -type f]${newline}${sgid_find_output}"
+            command_executed="find $find_paths -perm -4000 -type f 2>/dev/null; find $find_paths -perm -2000 -type f 2>/dev/null"
+        fi
     else
         diagnosis_result="VULNERABLE"
         status="취약"
-        details=""
-
-        if [ "$ww_count" -gt 0 ]; then
-            details="${details}world-writable 파일 ${ww_count}개 발견: ${world_writable_files%, }. "
-        fi
-
-        if [ "$important_count" -gt 0 ]; then
-            details="${details}중요 설정 파일 취약 ${important_count}개: ${important_vulnerable%, }. "
-        fi
-
-        inspection_summary="취약: ${details}"
-        command_result="[Command: find world-writable files]${newline}${raw_find_output}${newline}${newline}[Command: Check important files]${newline}${raw_important_output}"
-        command_executed="find /etc /usr/bin /usr/sbin -perm -2 -type f 2>/dev/null; perl -e 'for (@ARGV) {@s=stat; printf \"%04o %s:%s %s\\n\", \$s[2]&07777, getpwuid(\$s[4]), getgrgid(\$s[5]), $_}' /etc/passwd /etc/group"
+        inspection_summary="취약한 SUID/SGID 파일 ${vulnerable_count}개 발견: ${vulnerable_files%, }"
+        command_result="[Command: find $find_paths -perm -4000 -type f]${newline}${suid_find_output}${newline}${newline}[Command: find $find_paths -perm -2000 -type f]${newline}${sgid_find_output}${newline}${newline}[Summary] Total SUID: ${suid_count}, SGID: ${sgid_count} (vulnerable: ${vulnerable_count})"
+        command_executed="find $find_paths -perm -4000 -type f 2>/dev/null; find $find_paths -perm -2000 -type f 2>/dev/null"
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
+    # 결과 저장
     save_dual_result \
         "${ITEM_ID}" \
         "${ITEM_NAME}" \
@@ -155,7 +176,6 @@ diagnose() {
 
     # 결과 저장 확인
     verify_result_saved "${ITEM_ID}"
-
 
     return 0
 }

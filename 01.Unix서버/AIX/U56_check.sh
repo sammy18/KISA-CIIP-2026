@@ -35,11 +35,11 @@ ITEM_NAME="FTP 서비스 접근 제어 설정"
 SEVERITY="하"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="FTP 서비스 접근 제어 설정을 통한 비인가자 FTP 접속 차단"
-GUIDELINE_THREAT="FTP 접근 제어 미흡 시 비인가자가 무단 접속을 시도하여 정보 유출 및 시스템 침해 위험"
-GUIDELINE_CRITERIA_GOOD="FTP 접근 제어가 적절하게 설정된 경우"
-GUIDELINE_CRITERIA_BAD=" FTP 접근 제어가 설정되지 않은 경우 / N/A: FTP 서비스 미사용"
-GUIDELINE_REMEDIATION="/etc/hosts.allow, /etc/hosts.deny에 FTP 접근 허용 IP 설정 및 ftpusers 파일에 시스템 계정 등록"
+GUIDELINE_PURPOSE="접근 권한이 없는 비인가자의 접근을 통제하기 위함"
+GUIDELINE_THREAT="FTP 서비스의 접근 제한 설정이 적절하지 않을 경우, 인증 절차 없이 비인가자가 디렉터리나 파일에 접근할 수 있어 중요 파일 변조 및 유출을 시도할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="특정 IP 주소 또는 호스트에서만 FTP 서버에 접속할 수 있도록 접근 제어 설정을 적용한 경우"
+GUIDELINE_CRITERIA_BAD="FTP 서버에 접근 제어 설정을 적용하지 않은 경우"
+GUIDELINE_REMEDIATION="FTP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 FTP 서비스 사용 시 접근 제어 설정"
 
 # ============================================================================
 # 진단 함수

@@ -35,11 +35,11 @@ ITEM_NAME="SSH 서비스 보안 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="SSH 서비스의 보안 설정을 적절히 구성하여 무단 접속 및 정보 유출 방지"
-GUIDELINE_THREAT="SSH 보안 설정 미흡 시 비인가자의 무단 접속, 패킷 스니핑, MITM 공격 등의 위험"
-GUIDELINE_CRITERIA_GOOD="Protocol 2 사용, PermitRootLogin no, X11Forwarding no, MaxAuthTries <= 3 설정된 경우"
-GUIDELINE_CRITERIA_BAD="보안 설정이 미흡하거나 기본값(취약)인 경우"
-GUIDELINE_REMEDIATION="/etc/ssh/sshd_config에서 Protocol 2, PermitRootLogin no, X11Forwarding no, MaxAuthTries 3 설정 후 sshd 재시작"
+GUIDELINE_PURPOSE="NFS(Network File System) 서비스는 한 서버의 파일을 많은 서비스 서버들이 공유하여 사용할 때 이용하는 서비스지만 이를 이용한 침해 사고 위험성이 높으므로 사용하지 않는 경우 중지하기 위함"
+GUIDELINE_THREAT="NFS 서비스는 서버의 디스크를 클라이언트와 공유하는 서비스로 적정한 보안 설정이 적용되어 있지 않다면 불필요한 파일 공유로 인한 유출 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한 NFS 서비스 관련 데몬 이 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 NFS 서비스 관련 데몬이 활성화된 경우"
+GUIDELINE_REMEDIATION="NFS 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 ※ 로컬 서버에 마운트되어 있는 디렉터리 제거 및 공유 디렉터리 제거 후 서비스 중지 가능"
 
 # ============================================================================
 # 진단 함수

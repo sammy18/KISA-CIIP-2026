@@ -35,11 +35,11 @@ ITEM_NAME="로그인 시 경고 메시지 설정"
 SEVERITY="하"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="비인가자들에게 서버에 대한 불필요한 정보를 제공하지 않고, 서버 접속 시 관계자만 접속해야 한다는 경각심을심어주기위함"
-GUIDELINE_THREAT="로그온 시 경고 메시지가 설정되어 있지 않을 경우, 기본 설정값엔 서버 OS 버전 및 서비스 버전이 비인가자에게노출되어해당정보를통해서비스의취약점을이용하여공격을시도할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="서버및Telnet,FTP,SMTP,DNS서비스에로그온시경고메시지가설정된경우"
-GUIDELINE_CRITERIA_BAD="서버및Telnet,FTP,SMTP,DNS서비스에로그온시경고메시지가설정되어있지않은경우"
-GUIDELINE_REMEDIATION="Telnet,FTP,SMTP,DNS서비스를사용하는경우설정파일을통해로그온시경고메시지설정"
+GUIDELINE_PURPOSE="비인가자들에게 서버에 대한 불필요한 정보를 제공하지 않고, 서버 접속 시 관계자만 접속해야한다는 경각심을 심어 주기 위함"
+GUIDELINE_THREAT="로그온 시 경고 메시지가 설정되어 있지 않을 경우, 기본 설정 값엔 서버 OS 버전 및 서비스 버전이 비인가자에게 노출되어 해당 정보를 통해 서비스의 취약점을 이용하여 공격을 시도할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="서버 및 Telnet,FTP,SMTP,DNS 서비스에 로그온 시 경고 메시지가 설정된 경우"
+GUIDELINE_CRITERIA_BAD="서버 및 Telnet,FTP,SMTP,DNS 서비스에 로그 온 시 경고 메시지가 설정되어 있지 않은 경우"
+GUIDELINE_REMEDIATION="Telnet,FTP,SMTP,DNS 서비스를 사용하는 경우 설정 파일을 통해 로그온 시 경고 메시지 설정"
 
 # ============================================================================
 # 진단 함수

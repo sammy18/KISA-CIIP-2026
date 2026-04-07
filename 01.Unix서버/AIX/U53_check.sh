@@ -35,11 +35,11 @@ ITEM_NAME="FTP 서비스 정보 노출 제한"
 SEVERITY="하"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="FTP서비스접속배너를통한불필요한정보노출을방지하기위함"
-GUIDELINE_THREAT="서비스 접속 배너가 차단되지 않을 경우, 비인가자가 FTP 접속 시도 시 노출되는 접속 배너 정보를 수집하여악의적인공격에이용할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="FTP접속배너에노출되는정보가없는경우"
-GUIDELINE_CRITERIA_BAD="FTP접속배너에노출되는정보가있는경우"
-GUIDELINE_REMEDIATION="Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP서비스사용시FTP설정파일을통해접속배너설정 ※ 접속배너에서비스이름이나버전정보를노출하지않는것을권고"
+GUIDELINE_PURPOSE="FTP 서비스 접속 배너를 통한 불필요한 정보 노출을 방지하기 위함"
+GUIDELINE_THREAT="서비스 접속 배너가 차단되지 않을 경우, 비인가자가 FTP 접속 시도 시 노출되는 접속 배너 정보를 수집하여 악의적인 공격에 이용할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="FTP 접속 배너에 노출되는 정보가 없는 경우"
+GUIDELINE_CRITERIA_BAD="FTP 접속 배너에 노출되는 정보가 있는 경우"
+GUIDELINE_REMEDIATION="FTP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 FTP 서비스 사용 시 FTP 설정 파일을 통해 접속 배너 설정 ※ 접속 배너에 서비스 이름이나 버전 정보를 노출하지 않는 것을 권고"
 
 # ============================================================================
 # 진단 함수

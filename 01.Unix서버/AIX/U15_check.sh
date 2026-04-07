@@ -35,11 +35,11 @@ ITEM_NAME="파일 및 디렉터리 소유자 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="사용자 홈 디렉터리의 적절한 소유자 및 권한 설정을 통한 무단 접근 방지"
-GUIDELINE_THREAT="홈 디렉터리 소유자 불일치 또는 타인 쓰기 권한 허용 시 비인가자가 사용자 파일 열람 및 수정 위험"
-GUIDELINE_CRITERIA_GOOD="홈 디렉터리 소유자가 사용자 본인이고 others 쓰기 권한 없음"
-GUIDELINE_CRITERIA_BAD=" 소유자 불일치 또는 others 쓰기 권한 있음"
-GUIDELINE_REMEDIATION="chown username /home/username 및 chmod go-w /home/username 실행"
+GUIDELINE_PURPOSE="소유자가 존재하지 않는 파일 및 디렉터리를 제거 또는 관리하여 임의의 사용자가 해당 파일을 열람, 수정하는 행위를 사전에 차단하기 위함"
+GUIDELINE_THREAT="소유자가 존재하지 않는 파일의 UID와 동일한 값으로 특정 계정의 UID를 변경하면 해당 파일의 소유자가 되어 모든 작업이 가능한 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="소유자가 존재하지 않는 파일 및 디렉터리가 존재하지 않는 경우"
+GUIDELINE_CRITERIA_BAD="소유자가 존재하지 않는 파일 및 디렉터리가 존재하는 경우"
+GUIDELINE_REMEDIATION="소유자가 존재하지 않는 파일 및 디렉터리 제거 또는 소유자 변경 설정"
 
 # ============================================================================
 # 진단 함수

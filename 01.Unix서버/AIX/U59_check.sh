@@ -35,11 +35,11 @@ ITEM_NAME="안전한 SNMP 버전 사용"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="SNMP 서비스의 Community String의 복잡성 설정을 통해 비인가자의 비밀번호 추측 공격에 대비하기위함"
-GUIDELINE_THREAT="Community String에 복잡성 설정이 되어 있지 않을 경우, 비인가자가 비밀번호 추측 공격을 통해 계정탈취시환경설정파일열람및수정,각종정보수집,관리자권한획득등다양한위험이존재함"
-GUIDELINE_CRITERIA_GOOD="SNMP서비스를v3이상으로사용하는경우"
-GUIDELINE_CRITERIA_BAD="SNMP서비스를v2이하로사용하는경우 취약:아래의내용중하나라도해당되는경우 1. SNMP Community String 기본값인'public', 'private'일경우 2.영문자,숫자포함10자리미만인경우 3.영문자,숫자,특수문자포함8자리미만인경우"
-GUIDELINE_REMEDIATION="Ÿ SNMP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ SNMP 서비스 사용 시 SNMP Community String 기본값인 'public', 'private'이 아닌 영문자, 숫자포함10자리이상또는영문자,숫자,특수문자포함8자리이상으로설정"
+GUIDELINE_PURPOSE="안전한 SNMP 버전 사용으로 전송되는 데이터를 보호하기 위함"
+GUIDELINE_THREAT="SNMP 버전이 기준보다 낮을 경우, 응답 패킷이 평 문으로 전송되어 스니 핑 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP 서비스를 v3 이상으로 사용하는 경우"
+GUIDELINE_CRITERIA_BAD="SNMP 서비스를 v2 이하로 사용하는 경우"
+GUIDELINE_REMEDIATION="SNMP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 SNMP 서비스 사용 시 SNMP 버전을 v3 이상으로 적용하도록 설정"
 
 # ============================================================================
 # 진단 함수

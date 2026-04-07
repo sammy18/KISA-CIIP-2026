@@ -35,11 +35,11 @@ ITEM_NAME="/etc/passwd 파일 소유자 및 권한 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="/etc/passwd 파일을 관리자만 제어할 수 있게 하여 비인가자의 임의적인 파일 변조 방지"
-GUIDELINE_THREAT="/etc/passwd 파일의 소유권 및 권한 설정이 미흡할 경우 비인가자가 계정 정보 변경 등을 통해 시스템 침입 위험"
-GUIDELINE_CRITERIA_GOOD="/etc/passwd 파일 소유자가 root이고 권한이 644 이하인 경우"
-GUIDELINE_CRITERIA_BAD=" 소유자가 root가 아니거나 권한이 645 이상인 경우"
-GUIDELINE_REMEDIATION="chown root:root /etc/passwd && chmod 644 /etc/passwd 실행"
+GUIDELINE_PURPOSE="/etc/passwd 파일을 관리자만 제어할 수 있게하여 비인가자들의 임의적인 파일 변조를 방지하기 위함"
+GUIDELINE_THREAT="비인가자가 /etc/passwd 파일의 사용자 정보를 변조하여 Shell 변경, 사용자 추가/ 제거 등 root 계정을 포함한 사용자 권한 획득 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/passwd 파일의 소유자가 root이고, 권한이 644 이하인 경우"
+GUIDELINE_CRITERIA_BAD="/etc/passwd 파일의 소유자가 root가 아니거나, 권한이 644 이하가 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/passwd 파일 소유자 및 권한 변경 설정"
 
 # ============================================================================
 # 진단 함수

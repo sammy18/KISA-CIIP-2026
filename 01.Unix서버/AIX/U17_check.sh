@@ -35,11 +35,11 @@ ITEM_NAME="시스템 시작 스크립트 및 SUID/SGID 파일 권한 설정 (AIX
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="시스템 시작 스크립트와 SUID/SGID 파일을 관리자만 제어할 수 있게 하여 비인가자의 임의적인 파일 변조 방지"
-GUIDELINE_THREAT="시스템 시작 스크립트 및 SUID/SGID 파일의 소유권 및 권한 설정이 미흡할 경우 비인가자가 권한 상승 등 시스템 침입 악용 위험"
-GUIDELINE_CRITERIA_GOOD="시스템 시작 스크립트 소유자가 root이고 일반 사용자 쓰기 권한 제거된 경우, SUID/SGID 파일이 시스템 바이너리로만 구성된 경우"
-GUIDELINE_CRITERIA_BAD=" 시작 스크립트 소유자가 root가 아니거나 일반 사용자 쓰기 권한 부여된 경우, 취약한 SUID/SGID 파일 존재하는 경우"
-GUIDELINE_REMEDIATION="chown root:system /etc/rc.d/* && chmod 755 /etc/rc.d/*; 취약한 SUID/SGID 파일 제거"
+GUIDELINE_PURPOSE="시스템 시작 스크립트 파일을 관리자만 제어할 수 있게하여 비인가자들의 임의적인 파일 변조를 방지하기 위함"
+GUIDELINE_THREAT="시스템 시작 스크립트 파일의 소유권 및 권한 설정이 미흡할 경우, 비인가자가 스크립트의 내용 변경 등을 통해 시스템 침입 등 악용할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="시스템 시작 스크립트 파일의 소유자가 root이고, 일반 사용자의 쓰기 권한이 제거된 경우"
+GUIDELINE_CRITERIA_BAD="시스템 시작 스크립트 파일의 소유자가 root가 아니거나, 일반 사용자의 쓰기 권한이 부여된 경우"
+GUIDELINE_REMEDIATION="시스템 시작 스크립트 파일 소유자 및 권한 변경 설정"
 
 # ============================================================================
 # 진단 함수

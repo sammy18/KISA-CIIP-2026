@@ -35,11 +35,11 @@ ITEM_NAME="로그온 시도 횟수 제한"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="비인가자의 무차별 대입 공격 방지를 위한 로그온 시도 횟수 제한"
-GUIDELINE_THREAT="로그온 시도 횟수 제한이 없을 경우 비인가자의 무차별 대입 공격으로 계정 탈취 위험"
-GUIDELINE_CRITERIA_GOOD="loginretries가 5회 이하로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="loginretries가 5회 초과이거나 설정되지 않은 경우"
-GUIDELINE_REMEDIATION="/etc/security/user에서 loginretries = 5 설정"
+GUIDELINE_PURPOSE="Finger 서비스를 통해 네트워크 외부에서 해당 시스템에 등록된 사용자 정보를 확인할 수 있어 비인가자에게 사용자 정보가 조회되는 것을 방지하기 위함"
+GUIDELINE_THREAT="Finger 서비스가 활성화되어 있을 경우, 비인가자가 Finger 서비스를 사용하여 사용자 정보를 조회한 후 비밀번호 공격을 통해 계정을 탈취할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="Finger 서비스가 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="Finger 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="Finger 서비스 비활성화 설정"
 
 # ============================================================================
 # 진단 함수

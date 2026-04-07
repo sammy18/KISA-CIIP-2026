@@ -35,11 +35,11 @@ ITEM_NAME="암호화되지 않은 FTP 서비스 비활성화"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="암호화되지 않은 FTP 서비스를 비활성화하여 계정 및 중요정보 유출 방지"
-GUIDELINE_THREAT="암호화되지 않은 FTP 서비스 사용 시 데이터가 평문으로 전송되어 스니핑 공격으로 인한 계정 및 중요정보 유출 위험"
+GUIDELINE_PURPOSE="암호화되지 않은 FTP 서비스를 비활성화함으로써 계정 및 중요 정보 유출 방지하기 위함"
+GUIDELINE_THREAT="암호화되지 않은 FTP 서비스를 사용할 경우, 데이터가 평 문으로 전송되어 비인가자가 스니핑을 통해 계정 및 중요 정보를 외부로 유출할 위험이 존재함"
 GUIDELINE_CRITERIA_GOOD="암호화되지 않은 FTP 서비스가 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD=" 암호화되지 않은 FTP 서비스가 활성화된 경우 / N/A: FTP 서비스 미설치"
-GUIDELINE_REMEDIATION="암호화되지 않은 FTP 서비스 중지 및 비활성화 설정: systemctl stop ftpd && systemctl disable ftpd"
+GUIDELINE_CRITERIA_BAD="암호화되지 않은 FTP 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="암호화되지 않은 FTP 서비스 중지 및 비활성화 설정"
 
 # ============================================================================
 # 진단 함수

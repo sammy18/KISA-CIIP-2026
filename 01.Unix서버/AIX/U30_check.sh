@@ -35,11 +35,11 @@ ITEM_NAME="UMASK 설정 관리"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="적절한 UMASK 설정을 통해 신규 파일 및 디렉터리 생성 시 과도한 권한 부여 방지"
-GUIDELINE_THREAT="UMASK 설정 미흡 시 신규 파일 생성 시 타인이 읽기/쓰기 가능한 권한으로 생성되어 정보 유출 및 무단 액세스 위험"
-GUIDELINE_CRITERIA_GOOD="UMASK가 022 또는 그 이하(027, 077 등)로 설정된 경우"
-GUIDELINE_CRITERIA_BAD=" UMASK가 000~020으로 설정된 경우"
-GUIDELINE_REMEDIATION="/etc/profile, /etc/bash.bashrc에 umask 022 또는 umask 027 설정 추가"
+GUIDELINE_PURPOSE="잘못 설정된 UMASK 값으로 인해 신규 파일에 대한 권한이 과도하게 부여되는 것을 방지하기 위함"
+GUIDELINE_THREAT="잘못 설정된 UMASK로 인해 파일 및 디렉터리 생성 시 과도한 권한이 부여되어 무단 액세스 및 데이터 유출의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="UMASK 값이 022 이상으로 설정된 경우"
+GUIDELINE_CRITERIA_BAD="UMASK 값이 022 미만으로 설정된 경우"
+GUIDELINE_REMEDIATION="설정 파일에 UMASK 값을 022로 설정"
 
 # ============================================================================
 # 진단 함수
