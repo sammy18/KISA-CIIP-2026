@@ -32,11 +32,11 @@ ITEM_NAME="UMASK 설정 관리"
 SEVERITY="(중)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="잘못설정된UMASK값으로인해신규파일에대한권한이과도하게부여되는것을방지하기위함"
-GUIDELINE_THREAT="잘못설정된UMASK로인해파일및디렉터리생성시과도한권한이부여되어무단액세스및데이터 유출의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="UMASK값이022이상으로설정된경우"
-GUIDELINE_CRITERIA_BAD="UMASK값이022미만으로설정된경우"
-GUIDELINE_REMEDIATION="설정파일에UMASK값을022로설정"
+GUIDELINE_PURPOSE="잘못 설정된 UMASK 값으로 인해 신규 파일에 대한 권한이 과도하게 부여되는 것을 방지하기 위함"
+GUIDELINE_THREAT="잘못 설정된 UMASK로 인해 파일 및 디렉터리 생성 시 과도한 권한이 부여되어 무단 액세스 및 데이터 유출의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="UMASK 값이 022 이상으로 설정된 경우"
+GUIDELINE_CRITERIA_BAD="UMASK 값이 022 미만으로 설정된 경우"
+GUIDELINE_REMEDIATION="설정 파일에 UMASK 값을 022로 설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지

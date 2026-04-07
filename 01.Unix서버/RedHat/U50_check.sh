@@ -29,11 +29,11 @@ ITEM_ID="U-50"
 ITEM_NAME="DNS Zone Transfer 설정"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="DNSZoneTransfer설정을통해비인가자에대한무단접근을방지하기위함"
-GUIDELINE_THREAT="ZoneTransfer를모든사용자에게허용할경우,비인가자에게호스트정보,시스템정보등중요정보가 유출될위험이존재함"
-GUIDELINE_CRITERIA_GOOD="ZoneTransfer를허가된사용자에게만허용한경우"
-GUIDELINE_CRITERIA_BAD="Zone Transfer를모든사용자에게허용한경우"
-GUIDELINE_REMEDIATION="Ÿ DNS서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ DNS서비스사용시DNSZoneTransfer를허가된사용자에게만전송허용하도록설정"
+GUIDELINE_PURPOSE="DNSZoneTransfer 설정을 통해 비인가자에 대한 무단 접근을 방지하기 위함"
+GUIDELINE_THREAT="ZoneTransfer를 모든 사용자에게 허용할 경우, 비인가자에게 호스트 정보, 시스템 정보 등 중요 정보가 유출될 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="ZoneTransfer를 허가된 사용자에게만 허용한 경우"
+GUIDELINE_CRITERIA_BAD="Zone Transfer를 모든 사용자에게 허용한 경우"
+GUIDELINE_REMEDIATION="DNS 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 DNS 서비스 사용 시 DNSZoneTransfer를 허가된 사용자에게만 전송 허용하도록 설정"
 
 diagnose() {
     local status="양호"

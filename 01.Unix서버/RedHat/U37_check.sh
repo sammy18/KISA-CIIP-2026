@@ -29,11 +29,11 @@ ITEM_ID="U-37"
 ITEM_NAME="crontab 설정파일 권한 설정 미흡"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="관리자외에는서비스를사용할수없도록설정하고있는지점검하기위함"
-GUIDELINE_THREAT="일반 사용자가 crontab 및 at 서비스를 사용할 수 있을 경우, 고의 또는 실수로 불법적인 예약 파일 실행으로시스템피해를일으킬수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="crontab및at명령어에일반사용자실행권한이제거되어있으며,cron및at관련파일권한이 640이하인경우"
-GUIDELINE_CRITERIA_BAD="crontab및at명령어에일반사용자실행권한이부여되어있으며,cron및at관련파일권한이 640이상인경우"
-GUIDELINE_REMEDIATION="crontab및at명령어파일권한750이하,cron및at관련파일소유자및파일권한640이하설정"
+GUIDELINE_PURPOSE="관리자 외에는 서비스를 사용할 수 없도록 설정하고 있는지 점검하기 위함"
+GUIDELINE_THREAT="일반 사용자가 crontab 및 at 서비스를 사용할 수 있을 경우, 고의 또는 실수로 불법적인 예약 파일 실행으로 시스템 피해를 일으킬 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="crontab 및 at 명령어에 일반 사용자 실행 권한이 제거되어 있으며,cron 및 at 관련 파일 권한이 640 이하인 경우"
+GUIDELINE_CRITERIA_BAD="crontab 및 at 명령어에 일반 사용자 실행 권한이 부여되어 있으며,cron 및 at 관련 파일 권한이 640 이상인 경우"
+GUIDELINE_REMEDIATION="crontab 및 at 명령어 파일 권한 750 이하,cron 및 at 관련 파일 소유자 및 파일 권한 640 이하 설정"
 
 diagnose() {
     local status="양호"

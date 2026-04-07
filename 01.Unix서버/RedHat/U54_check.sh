@@ -30,11 +30,11 @@ ITEM_NAME="Apache 불필요한 파일 제거"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="암호화되지않은FTP서비스를비활성화함으로써계정및중요정보유출방지하기위함"
-GUIDELINE_THREAT="암호화되지 않은 FTP 서비스를 사용할 경우, 데이터가 평문으로 전송되어 비인가자가 스니핑을 통해 계정및중요정보를외부로유출할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="암호화되지않은FTP서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD="암호화되지않은FTP서비스가활성화된경우"
-GUIDELINE_REMEDIATION="암호화되지않은FTP서비스중지및비활성화설정"
+GUIDELINE_PURPOSE="암호화되지 않은 FTP 서비스를 비활성화함으로써 계정 및 중요 정보 유출 방지하기 위함"
+GUIDELINE_THREAT="암호화되지 않은 FTP 서비스를 사용할 경우, 데이터가 평 문으로 전송되어 비인가자가 스니핑을 통해 계정 및 중요 정보를 외부로 유출할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="암호화되지 않은 FTP 서비스가 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="암호화되지 않은 FTP 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="암호화되지 않은 FTP 서비스 중지 및 비활성화 설정"
 
 diagnose() {
     local status="양호"

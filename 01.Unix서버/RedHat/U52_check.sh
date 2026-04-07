@@ -29,11 +29,11 @@ ITEM_ID="U-52"
 ITEM_NAME="Apache HTTPD 버전 정보 숨김"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="취약한Telnet프로토콜을비활성화함으로써계정및중요정보유출방지하기위함"
-GUIDELINE_THREAT="원격접속시Telnet 프로토콜을 사용할 경우, 데이터가 평문으로 전송되어 비인가자가 스니핑을 통해 계정및중요정보를외부로유출할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="원격접속시Telnet프로토콜을비활성화하고있는경우"
-GUIDELINE_CRITERIA_BAD="원격접속시Telnet프로토콜을사용하는경우"
-GUIDELINE_REMEDIATION="Telnet,FTP등안전하지않은서비스사용을중지하고SSH설치및사용하도록설정"
+GUIDELINE_PURPOSE="취약한 Telnet 프로토콜을 비활성화함으로써 계정 및 중요 정보 유출 방지하기 위함"
+GUIDELINE_THREAT="원격 접속 시 Telnet 프로토콜을 사용할 경우, 데이터가 평 문으로 전송되어 비인가자가 스니핑을 통해 계정 및 중요 정보를 외부로 유출할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="원격 접속 시 Telnet 프로토콜을 비활성화하고 있는 경우"
+GUIDELINE_CRITERIA_BAD="원격 접속 시 Telnet 프로토콜을 사용하는 경우"
+GUIDELINE_REMEDIATION="Telnet,FTP 등 안전하지 않은 서비스 사용을 중지하고 SSH 설치 및 사용하도록 설정"
 
 diagnose() {
     local status="양호"

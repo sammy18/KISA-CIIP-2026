@@ -30,11 +30,11 @@ ITEM_NAME="파일 및 디렉터리 소유자 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="소유자가 존재하지 않는 파일 및 디렉터리를 제거 또는 관리하여 임의의 사용자가 해당 파일을 열람, 수정하는행위를사전에차단하기위함"
-GUIDELINE_THREAT="소유자가 존재하지 않는 파일의 UID와 동일한 값으로 특정 계정의 UID를 변경하면 해당 파일의 소유자가되어모든작업이가능한위험이존재함"
-GUIDELINE_CRITERIA_GOOD="소유자가존재하지않는파일및디렉터리가존재하지않는경우"
-GUIDELINE_CRITERIA_BAD="소유자가존재하지않는파일및디렉터리가존재하는경우"
-GUIDELINE_REMEDIATION="소유자가존재하지않는파일및디렉터리제거또는소유자변경설정"
+GUIDELINE_PURPOSE="소유자가 존재하지 않는 파일 및 디렉터리를 제거 또는 관리하여 임의의 사용자가 해당 파일을 열람, 수정하는 행위를 사전에 차단하기 위함"
+GUIDELINE_THREAT="소유자가 존재하지 않는 파일의 UID와 동일한 값으로 특정 계정의 UID를 변경하면 해당 파일의 소유자가 되어 모든 작업이 가능한 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="소유자가 존재하지 않는 파일 및 디렉터리가 존재하지 않는 경우"
+GUIDELINE_CRITERIA_BAD="소유자가 존재하지 않는 파일 및 디렉터리가 존재하는 경우"
+GUIDELINE_REMEDIATION="소유자가 존재하지 않는 파일 및 디렉터리 제거 또는 소유자 변경 설정"
 
 diagnose() {
     local status="양호"

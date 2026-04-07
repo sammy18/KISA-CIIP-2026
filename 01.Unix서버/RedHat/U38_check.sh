@@ -29,11 +29,11 @@ ITEM_ID="U-38"
 ITEM_NAME="DoS 공격에 취약한 서비스 비활성화"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="많은 취약점을 가진 echo, discard, daytime, chargen, ntp, snmp 등의 서비스를 중지하여 시스템의보안성을높이기위함"
-GUIDELINE_THREAT="해당서비스가활성화된경우,시스템정보유출및DoS공격의대상이될수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="DoS공격에취약한서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD="DoS공격에취약한서비스가활성화된경우"
-GUIDELINE_REMEDIATION="echo, discard, daytime, chargen, ntp, dns,snmp등의서비스비활성화설정"
+GUIDELINE_PURPOSE="많은 취약점을 가진 echo, discard, daytime, chargen, ntp, snmp 등의 서비스를 중지하여 시스템의 보안성을 높이기 위함"
+GUIDELINE_THREAT="해당 서비스가 활성화된 경우, 시스템 정보 유출 및 DoS 공격의 대상이 될 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="DoS 공격에"
+GUIDELINE_CRITERIA_BAD="DoS 공격에 취약한 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="echo, discard, daytime, chargen, ntp, dns,snmp 등의 서비스 비활성화 설정"
 
 diagnose() {
     local status="양호"

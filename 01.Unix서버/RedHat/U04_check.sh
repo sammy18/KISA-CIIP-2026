@@ -30,11 +30,11 @@ ITEM_NAME="패스워드 파일 보호"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="일부 오래된 시스템의 경우 /etc/passwd 파일에 비밀번호가 평문으로 저장되므로 사용자 계정 비밀번호가 암호화되어 저장되어 있는지 점검하여 비인가자의 비밀번호 파일 접근 시에도 사용자 계정 비밀번호가안전하게관리되고있는지확인하기위함"
-GUIDELINE_THREAT="사용자계정비밀번호가저장된파일이유출또는탈취시평문으로저장된비밀번호정보가노출위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="쉐도우비밀번호를사용하거나,비밀번호를암호화하여저장하는경우"
-GUIDELINE_CRITERIA_BAD="쉐도우비밀번호를사용하지않고,비밀번호를암호화하여저장하지않는경우"
-GUIDELINE_REMEDIATION="비밀번호암호화저장·관리설정"
+GUIDELINE_PURPOSE="일부 오래된 시스템의 경우 /etc/passwd 파일에 비밀번호가 평 문으로 저장되므로 사용자 계정 비밀번호가 암호화되어 저장되어 있는지 점검하여 비인가자의 비밀번호 파일 접근 시에도 사용자 계정 비밀번호가 안전하게 관리되고 있는지 확인하기 위함"
+GUIDELINE_THREAT="사용자 계정 비밀번호가 저장된 파일이 유출 또는 탈취 시 평 문으로 저장된 비밀번호 정보가 노출 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="쉐도우 비밀번호를 사용하거나, 비밀번호를 암호화하여 저장하는 경우"
+GUIDELINE_CRITERIA_BAD="쉐도우 비밀번호를 사용하지 않고, 비밀번호를 암호화하여 저장하지 않는 경우"
+GUIDELINE_REMEDIATION="비밀번호 암호화 저장· 관리 설정"
 
 diagnose() {
     local status="양호"

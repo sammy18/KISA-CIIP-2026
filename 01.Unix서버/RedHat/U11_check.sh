@@ -30,11 +30,11 @@ ITEM_NAME="사용자 Shell 점검"
 SEVERITY="(하)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="로그인이불필요한계정에부여된쉘을제거하여,로그인이필요하지않은계정을통한시스템명령어를 실행하지못하게하기위함"
-GUIDELINE_THREAT="로그인이불필요한계정에쉘이부여될경우,비인가자가해당기본계정으로시스템에접근위험이존재함"
-GUIDELINE_CRITERIA_GOOD="로그인이필요하지않은계정에/bin/false(/sbin/nologin)쉘이부여된경우"
-GUIDELINE_CRITERIA_BAD="로그인이필요하지않은계정에/bin/false(/sbin/nologin)쉘이부여되지않은경우"
-GUIDELINE_REMEDIATION="로그인이필요하지않은계정에대해/bin/false(/sbin/nologin)쉘부여설정"
+GUIDELINE_PURPOSE="로그인이 불필요한 계정에 부여된 쉘을 제거하여, 로그인이 필요하지 않은 계정을 통한 시스템 명령어를 실행하지 못하게하기 위함"
+GUIDELINE_THREAT="로그인이 불필요한 계정에 쉘이 부여될 경우, 비인가자가 해당 기본 계정으로 시스템에 접근 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="로그인이 필요하지 않은 계정에/bin/false(/sbin/nologin)쉘이 부여된 경우"
+GUIDELINE_CRITERIA_BAD="로그인이 필요하지 않은 계정에/bin/false(/sbin/nologin)쉘이 부여되지 않은 경우"
+GUIDELINE_REMEDIATION="로그인이 필요하지 않은 계정에 대해/bin/false(/sbin/nologin)쉘부여 설정"
 
 diagnose() {
     local status="양호"

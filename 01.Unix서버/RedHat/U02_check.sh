@@ -30,11 +30,11 @@ ITEM_NAME="비밀번호 관리 정책 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="사용자의비밀번호복잡성과주기적변경을통해시스템보안을강화하기위함"
-GUIDELINE_THREAT="비밀번호 관련 정책이 설정되지 않을 경우, 비인가자의 각종 공격(무차별 대입 공격, 사전 대입 공격 등)에의해비밀번호가노출될위험이존재함"
-GUIDELINE_CRITERIA_GOOD="비밀번호관리정책이설정된경우"
-GUIDELINE_CRITERIA_BAD="비밀번호관리정책이설정되지않은경우"
-GUIDELINE_REMEDIATION="root 계정을 포함한 사용자 계정의 비밀번호를 영문, 숫자, 특수문자를 포함하여 최소 8자리 이상 및 최소사용기간1일,최대사용기간90일,최근비밀번호기억4회이상으로설정"
+GUIDELINE_PURPOSE="사용자의 비밀번호 복잡성과 주기적 변경을 통해 시스템 보안을 강화하기 위함"
+GUIDELINE_THREAT="비밀번호 관련 정책이 설정되지 않을 경우, 비인가자의 각종 공격(무차별 대입 공격, 사전 대입 공격 등)에 의해 비밀번호가 노출될 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="비밀번호 관리 정책이 설정된 경우"
+GUIDELINE_CRITERIA_BAD="비밀번호 관리 정책이 설정되지 않은 경우"
+GUIDELINE_REMEDIATION="root 계정을 포함한 사용자 계정의 비밀번호를 영문, 숫자, 특수 문자를 포함하여 최소 8 자리 이상 및 최소 사용 기간 1일, 최대 사용 기간 90일, 최근 비밀번호 기억 4회 이상으로 설정"
 
 diagnose() {
     local status="양호"

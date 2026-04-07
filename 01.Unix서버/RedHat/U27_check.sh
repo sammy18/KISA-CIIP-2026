@@ -20,11 +20,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DI
 source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"
 
 ITEM_ID="U-27"; ITEM_NAME="\$HOME/.rhosts, hosts.equiv 사용 금지"; SEVERITY="(상)"
-GUIDELINE_PURPOSE="r-command를통한별도의인증없는관리자권한원격접속을차단하기위함"
-GUIDELINE_THREAT="Ÿ r-command(rlogin, rsh 등)에 보안 설정이 적용되지 않을 경우, 원격지의 공격자가 관리자 권한으로 목표 시스템상 임의의 명령을 수행시킬 수 있으며, 명령어 원격실행을 통해 중요 정보유출 및시스템장애를유발또는공격자의백도어등으로도활용될수있는위험이존재함 Ÿ 해당 파일은 r-command 서비스의 접근통제에 관련된 파일이며, 권한 설정이 부적절한 경우 r-command서비스사용권한을임의로등록하여무단사용위험이존재함"
-GUIDELINE_CRITERIA_GOOD="rlogin,rsh,rexec서비스를사용하지않거나,사용시아래와같은설정이적용된경우 1. /etc/hosts.equiv 및$HOME/.rhosts파일소유자가root또는해당계정인경우 2. /etc/hosts.equiv 및$HOME/.rhosts파일권한이600이하인경우 3. /etc/hosts.equiv 및$HOME/.rhosts파일설정에'+'설정이없는경우 취약: rlogin,rsh,rexec서비스를사용하며아래와같은설정이적용되지않은경우 1. /etc/hosts.equiv및$HOME/.rhosts파일소유자가root또는해당계정이아닌경우"
-GUIDELINE_CRITERIA_BAD="해당 서비스를 사용하며 소유자/권한이 부적절하거나 '+' 설정이 존재하는 경우"
-GUIDELINE_REMEDIATION="/etc/hosts.equiv,$HOME/.rhosts파일소유자및권한변경,허용호스트및계정등록설정"
+GUIDELINE_PURPOSE="r-command를 통한 별도의 인증 없는 관리자 권한 원격 접속을 차단하기 위함"
+GUIDELINE_THREAT="r-command(rlogin, rsh 등)에 보안 설정이 적용되지 않을 경우, 원격지의 공격자가 관리자 권한으로 목표 시스템상 임의의 명령을 수행시킬 수 있으며, 명령어 원격 실행을 통해 중요 정보 유출 및 시스템 장애를 유발 또는 공격자의 백 도어 등으로도 활용될 수 있는 위험이 존재함 해당 파일은 r-command 서비스의 접근 통제에 관련된 파일이며, 권한 설정이 부적절한 경우 r-command 서비스 사용 권한을 임의로 등록하여 무단 사용 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="rlogin,rsh,rexec 서비스를 사용하지 않거나, 사용 시 아래와 같은 설정이 적용된 경우 1. /etc/hosts.equiv 및 $HOME/.rhosts 파일 소유자가 root 또는 해당 계정인 경우 2. /etc/hosts.equiv 및 $HOME/.rhosts 파일 권한이 600 이하인 경우 3. /etc/hosts.equiv 및 $HOME/.rhosts 파일 설정에'+'설정이 없는 경우"
+GUIDELINE_CRITERIA_BAD="rlogin,rsh,rexec 서비스를 사용하며 아래와 같은 설정이 적용되지 않은 경우 1. /etc/hosts.equiv 및 $HOME/.rhosts 파일 소유자가 root 또는 해당 계정이 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/hosts.equiv, $HOME/.rhosts 파일 소유자 및 권한 변경, 허용 호스트 및 계정 등록 설정"
 
 diagnose() {
     local status="양호"; local diagnosis_result="GOOD"

@@ -29,11 +29,11 @@ ITEM_ID="U-36"
 ITEM_NAME="r 계열 서비스 비활성화"
 SEVERITY="(상)"
 
-GUIDELINE_PURPOSE="r-command 사용을 통한 원격 접속은 NET Backup 또는 클러스터링 등 용도로 사용되기도 하나, 인증없이관리자원격접속이가능하여이에대한보안위협을방지하기위함"
-GUIDELINE_THREAT="rlogin, rsh, rexec 등의r-command를이용하여원격에서인증절차없이터미널접속, 쉘명령어를 실행이가능한위험이존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한r계열서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD="불필요한r계열서비스가활성화된경우"
-GUIDELINE_REMEDIATION="불필요한r계열서비스중지및비활성화설정 ※ NET Backup 등특별한용도로사용하지않는다면shell(514), login(513), exec(512)서비스중 지 ※ rlogin, rsh, rexec 서비스는backup,클러스터링등의용도로종종사용되고있으므로해당서비 스사용유무를확인하여미사용시서비스중지 ※ /etc/hosts.equiv 또는 $HOME/.rhosts 파일을 통해 해당 서비스 사용 여부 확인 (파일이 존재 하지않거나해당파일내에설정이없다면사용하지않는것으로간주)"
+GUIDELINE_PURPOSE="r-command 사용을 통한 원격 접속은 NET Backup 또는 클러스터 링 등 용도로 사용되기도하나, 인증 없이 관리자 원격 접속이 가능하여 이에 대한 보안 위협을 방지하기 위함"
+GUIDELINE_THREAT="rlogin, rsh, rexec 등의 r-command를 이용하여 원격에서 인증 절차 없이 터미널 접속, 쉘 명령어를 실행이 가능한 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한 r 계열 서비스가 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 r 계열 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="불필요한 r 계열 서비스 중지 및 비활성화 설정 ※ NET Backup 등 특별한 용도로 사용하지 않는다면 shell(514), login(513), exec(512)서비스 중 지 ※ rlogin, rsh, rexec 서비스는 backup, 클러스터 링 등의 용도로 종종 사용되고 있으므로 해당 서 비 스 사용 유무를 확인하여 미사용 시 서비스 중지 ※ /etc/hosts.equiv 또는 $HOME/.rhosts 파일을 통해 해당 서비스 사용 여부 확인 (파일이 존재하지 않거나 해당 파일 내에 설정이 없다면 사용하지 않는 것으로 간주)"
 
 diagnose() {
     local status="양호"

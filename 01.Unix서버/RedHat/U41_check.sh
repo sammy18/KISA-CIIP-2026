@@ -32,11 +32,11 @@ ITEM_NAME="불필요한 automountd 제거"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="로컬 공격자가 automountd 데몬에 RPC(Remote Procedure Call)를 보낼 수 있는 취약점이 존재하기때문에해당서비스를중지시키기위함"
-GUIDELINE_THREAT="파일 시스템의 마운트 옵션을 변경하여 root 권한을 획득할 수 있으며, 로컬 공격자가 automountd 프로세스권한으로임의의명령을실행할수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="automountd서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD="automountd서비스가활성화된경우"
-GUIDELINE_REMEDIATION="automountd서비스비활성화설정"
+GUIDELINE_PURPOSE="로컬 공격자가 automountd 데몬에 RPC(Remote Procedure Call)를 보낼 수 있는 취약점이 존재하기 때문에 해당 서비스를 중지시키기 위함"
+GUIDELINE_THREAT="파일 시스템의 마운트 옵션을 변경하여 root 권한을 획득할 수 있으며, 로컬 공격자가 automountd 프로세스 권한으로 임의의 명령을 실행할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="automountd 서비스가 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="automountd 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="automountd 서비스 비활성화 설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 초기값 설정

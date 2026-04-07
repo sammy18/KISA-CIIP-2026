@@ -30,11 +30,11 @@ ITEM_NAME="/etc/hosts 파일 소유자 및 권한 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 44페이지 내용 반영)
-GUIDELINE_PURPOSE="/etc/hosts파일을관리자만제어할수있게하여비인가자들의임의적인파일변조를방지하기위함"
-GUIDELINE_THREAT="Ÿ /etc/hosts 파일에 비인가자가 쓰기 권한이 부여된 경우, 공격자는 /etc/hosts 파일에 악의적인 시스템을 등록하여, 이를 통해 정상적인 DNS를 우회하여 악성 사이트로의 접속을 유도하는 파밍(Pharming)공격등에악용될수있는위험이존재함 Ÿ /etc/hosts 파일에 소유자의 쓰기 권한이 부여된 경우, 일반 사용자 권한으로 /etc/hosts 파일에 변조된 IP주소를 등록하여 정상적인 DNS를 방해하고 악성 사이트로의 접속을 유도하는 파밍(Pharming)공격등에악용될수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/hosts파일의소유자가root이고,권한이644이하인경우"
-GUIDELINE_CRITERIA_BAD="/etc/hosts파일의소유자가root가아니거나,권한이644이하가아닌경우"
-GUIDELINE_REMEDIATION="/etc/hosts파일소유자및권한변경설정"
+GUIDELINE_PURPOSE="/etc/hosts 파일을 관리자만 제어할 수 있게하여 비인가자들의 임의적인 파일 변조를 방지하기 위함"
+GUIDELINE_THREAT="/etc/hosts 파일에 비인가자가 쓰기 권한이 부여된 경우, 공격자는 /etc/hosts 파일에 악의적인 시스템을 등록하여, 이를 통해 정상적인 DNS를 우회하여 악성 사이트로의 접속을 유도하는 파밍(Pharming)공격 등에 악용될 수 있는 위험이 존재함 /etc/hosts 파일에 소유자의 쓰기 권한이 부여된 경우, 일반 사용자 권한으로 /etc/hosts 파일에 변조된 IP 주소를 등록하여 정상적인 DNS를 방해하고 악성 사이트로의 접속을 유도하는 파밍(Pharming)공격 등에 악용될 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/hosts 파일의 소유자가 root이고, 권한이 644 이하인 경우"
+GUIDELINE_CRITERIA_BAD="/etc/hosts 파일의 소유자가 root가 아니거나, 권한이 644 이하가 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/hosts 파일 소유자 및 권한 변경 설정"
 
 diagnose() {
     local status="양호"

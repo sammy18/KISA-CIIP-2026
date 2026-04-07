@@ -32,11 +32,11 @@ ITEM_NAME="공유 서비스에 대한 익명 접근 제한 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (제시된 리스트 기준 반영)
-GUIDELINE_PURPOSE="공유서비스의익명접근을제한하여중요정보의노출을방지하기위함"
-GUIDELINE_THREAT="공유 서비스의 익명 접근을 허용할 경우, 비인가자의 무단 접근으로 인한 중요 정보 탈취 또는 변조, 악성코드유포등의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="공유서비스에대해익명접근을제한한경우"
-GUIDELINE_CRITERIA_BAD="공유서비스에대해익명접근을허용한경우"
-GUIDELINE_REMEDIATION="공유서비스의익명접근제한설정"
+GUIDELINE_PURPOSE="공유 서비스의 익명 접근을 제한하여 중요 정보의 노출을 방지하기 위함"
+GUIDELINE_THREAT="공유 서비스의 익명 접근을 허용할 경우, 비인가자의 무단 접근으로 인한 중요 정보 탈취 또는 변조, 악성 코드 유포 등의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="공유 서비스에 대해 익명 접근을 제한한 경우"
+GUIDELINE_CRITERIA_BAD="공유 서비스에 대해 익명 접근을 허용한 경우"
+GUIDELINE_REMEDIATION="공유 서비스의 익명 접근 제한 설정"
 
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지

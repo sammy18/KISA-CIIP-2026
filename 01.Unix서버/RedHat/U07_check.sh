@@ -30,11 +30,11 @@ ITEM_NAME="불필요한 계정 제거"
 SEVERITY="(하)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="불필요한계정이존재하는지점검하여관리되지않은계정에의한침입에대비하는지확인하기위함"
-GUIDELINE_THREAT="로그인이 가능하고 현재 사용하지 않는 불필요한 계정은 사용 중인 계정보다 상대적으로 관리가 취약하여공격자의목표가되어계정이탈취될수있는위험이존재함(퇴직, 전직, 휴직 등의 사유 발생 시즉시권한을회수하는것을권고함)"
-GUIDELINE_CRITERIA_GOOD="불필요한계정이존재하지않는경우"
-GUIDELINE_CRITERIA_BAD="불필요한계정이존재하는경우"
-GUIDELINE_REMEDIATION="시스템에존재하는계정확인후불필요한계정제거하도록설정"
+GUIDELINE_PURPOSE="불필요한 계정이 존재하는지 점검하여 관리되지 않은 계정에 의한 침입에 대비하는지 확인하기 위함"
+GUIDELINE_THREAT="로그인이 가능하고 현재 사용하지 않는 불필요한 계정은 사용 중인 계정보다 상대적으로 관리가 취약하여 공격자의 목표가 되어 계정이 탈취될 수 있는 위험이 존재함(퇴직, 전직, 휴직 등의 사유 발생 시 즉시 권한을 회수하는 것을 권고함)"
+GUIDELINE_CRITERIA_GOOD="불필요한 계정이 존재하지 않는 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 계정이 존재하는 경우"
+GUIDELINE_REMEDIATION="시스템에 존재하는 계정 확인 후 불필요한 계정 제거하도록 설정"
 
 diagnose() {
     local status="양호"

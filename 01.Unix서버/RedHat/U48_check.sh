@@ -29,11 +29,11 @@ ITEM_ID="U-48"
 ITEM_NAME="expn, vrfy 명령어 제한"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="SMTP서비스의expn,vrfy명령을통한정보유출을방지하기위함"
-GUIDELINE_THREAT="expn, vrfy 명령어를 통하여 특정 사용자 계정의 존재 여부를 알 수 있고, 사용자의 정보를 외부로 유출할수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="noexpn, novrfy옵션이설정된경우"
-GUIDELINE_CRITERIA_BAD="noexpn, novrfy옵션이설정되어있지않은경우"
-GUIDELINE_REMEDIATION="Ÿ 메일서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ 메일서비스사용시메일서비스설정파일에noexpn,novrfy또는goaway옵션추가설정"
+GUIDELINE_PURPOSE="SMTP 서비스의 expn,vrfy 명령을 통한 정보 유출을 방지하기 위함"
+GUIDELINE_THREAT="expn, vrfy 명령어를 통하여 특정 사용자 계정의 존재 여부를 알 수 있고, 사용자의 정보를 외부로 유출할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="noexpn, novrfy 옵션이 설정된 경우"
+GUIDELINE_CRITERIA_BAD="noexpn, novrfy 옵션이 설정되어 있지 않은 경우"
+GUIDELINE_REMEDIATION="메일 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 메일 서비스 사용 시 메일 서비스 설정 파일에 noexpn,novrfy 또는 goaway 옵션 추가 설정"
 
 diagnose() {
     local status="양호"

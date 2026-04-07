@@ -29,11 +29,11 @@ ITEM_ID="U-59"
 ITEM_NAME="안전한 SNMP 버전 사용"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="안전한SNMP버전사용으로전송되는데이터를보호하기위함"
-GUIDELINE_THREAT="SNMP버전이기준보다낮을경우,응답패킷이평문으로전송되어스니핑위험이존재함"
-GUIDELINE_CRITERIA_GOOD="SNMP서비스를v3이상으로사용하는경우"
-GUIDELINE_CRITERIA_BAD="SNMP서비스를v2이하로사용하는경우"
-GUIDELINE_REMEDIATION="Ÿ SNMP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ SNMP서비스사용시SNMP버전을v3이상으로적용하도록설정"
+GUIDELINE_PURPOSE="안전한 SNMP 버전 사용으로 전송되는 데이터를 보호하기 위함"
+GUIDELINE_THREAT="SNMP 버전이 기준보다 낮을 경우, 응답 패킷이 평 문으로 전송되어 스니 핑 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP 서비스를 v3 이상으로 사용하는 경우"
+GUIDELINE_CRITERIA_BAD="SNMP 서비스를 v2 이하로 사용하는 경우"
+GUIDELINE_REMEDIATION="SNMP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 SNMP 서비스 사용 시 SNMP 버전을 v3 이상으로 적용하도록 설정"
 
 diagnose() {
     local status="양호"

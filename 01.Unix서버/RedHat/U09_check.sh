@@ -30,11 +30,11 @@ ITEM_NAME="계정이 존재하지 않는 GID 금지"
 SEVERITY="(하)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="시스템에불필요한그룹이존재하는지점검하여불필요한그룹의소유권으로설정된파일의노출로인해 발생할수있는위험에대해대비를하기위함"
-GUIDELINE_THREAT="계정이 존재하지 않거나 불필요한 그룹이 존재하는 경우, 해당 그룹의 소유로 설정된 파일을 통한 권한 남용또는의도치않은권한부여,보안감사및관리의어려움등의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="시스템관리나운용에불필요한그룹이제거된경우"
-GUIDELINE_CRITERIA_BAD="시스템관리나운용에불필요한그룹이존재하는경우"
-GUIDELINE_REMEDIATION="불필요한그룹이존재하는경우관리자와검토하여제거하도록설정 ※ /etc/group파일과/etc/passwd파일을비교하여점검하기를권고함"
+GUIDELINE_PURPOSE="시스템에 불필요한 그룹이 존재하는지 점검하여 불필요한 그룹의 소유권으로 설정된 파일의 노출로 인해 발생할 수 있는 위험에 대해 대비를 하기 위함"
+GUIDELINE_THREAT="계정이 존재하지 않거나 불필요한 그룹이 존재하는 경우, 해당 그룹의 소유로 설정된 파일을 통한 권한 남용 또는 의도치 않은 권한 부여, 보안 감사 및 관리의 어려움 등의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="시스템 관리나 운용에 불필요한 그룹이 제거된 경우"
+GUIDELINE_CRITERIA_BAD="시스템 관리나 운용에 불필요한 그룹이 존재하는 경우"
+GUIDELINE_REMEDIATION="불필요한 그룹이 존재하는 경우 관리자와 검토하여 제거하도록 설정 ※ /etc/group 파일과/etc/passwd 파일을 비교하여 점검하기를 권고함"
 
 diagnose() {
     local status="양호"

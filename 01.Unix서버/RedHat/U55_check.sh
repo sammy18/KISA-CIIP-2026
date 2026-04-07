@@ -30,11 +30,11 @@ ITEM_NAME="Apache 링크 사용 금지"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="FTP계정의쉘을통한시스템접근을차단하기위함"
-GUIDELINE_THREAT="FTP기본계정에쉘이부여될경우,비인가자가해당기본계정으로시스템에접근할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="FTP 계정에/bin/false(/sbin/nologin)쉘이부여된경우"
-GUIDELINE_CRITERIA_BAD="FTP 계정에/bin/false(/sbin/nologin)쉘이부여되어있지않은경우"
-GUIDELINE_REMEDIATION="Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP 서비스사용시FTP계정에/bin/false쉘부여설정"
+GUIDELINE_PURPOSE="FTP 계정의 쉘을 통한 시스템 접근을 차단하기 위함"
+GUIDELINE_THREAT="FTP 기본 계정에 쉘이 부여될 경우, 비인가자가 해당 기본 계정으로 시스템에 접근할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="FTP 계정에/bin/false(/sbin/nologin)쉘이 부여된 경우"
+GUIDELINE_CRITERIA_BAD="FTP 계정에/bin/false(/sbin/nologin)쉘이 부여되어 있지 않은 경우"
+GUIDELINE_REMEDIATION="FTP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 FTP 서비스 사용 시 FTP 계정에/bin/false 쉘부여 설정"
 
 diagnose() {
     local status="양호"

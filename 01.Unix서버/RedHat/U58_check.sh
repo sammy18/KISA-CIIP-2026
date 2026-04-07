@@ -29,11 +29,11 @@ ITEM_ID="U-58"
 ITEM_NAME="홈 디렉토리로 지정되지 않은 계정 금지"
 SEVERITY="(중)"
 
-GUIDELINE_PURPOSE="불필요한SNMP서비스를비활성화하여필요이상의정보가노출되는것을방지하기위함"
-GUIDELINE_THREAT="SNMP 서비스가 활성화되어 있을 경우, 비인가자가 시스템의 중요 정보를 유출하거나 불법적으로 수정할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="SNMP서비스를사용하지않는경우"
-GUIDELINE_CRITERIA_BAD="SNMP서비스를사용하는경우"
-GUIDELINE_REMEDIATION="SNMP서비스를사용하지않는경우서비스중지및비활성화설정"
+GUIDELINE_PURPOSE="불필요한 SNMP 서비스를 비활성화하여 필요 이상의 정보가 노출되는 것을 방지하기 위함"
+GUIDELINE_THREAT="SNMP 서비스가 활성화되어 있을 경우, 비인가자가 시스템의 중요 정보를 유출하거나 불법적으로 수정할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP 서비스를 사용하지 않는 경우"
+GUIDELINE_CRITERIA_BAD="SNMP 서비스를 사용하는 경우"
+GUIDELINE_REMEDIATION="SNMP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정"
 
 diagnose() {
     local status="양호"

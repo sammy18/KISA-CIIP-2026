@@ -30,11 +30,11 @@ ITEM_NAME="Apache 파일 업로드 및 다운로드 제한"
 SEVERITY="(중)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="접근권한이없는비인가자의접근을통제하기위함"
-GUIDELINE_THREAT="FTP 서비스의 접근제한 설정이 적절하지 않을 경우, 인증 절차 없이 비인가자가 디렉터리나 파일에 접근할수있어중요파일변조및유출을시도할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="특정IP주소또는호스트에서만FTP서버에접속할수있도록접근제어설정을적용한경우 취약:FTP서버에접근제어설정을적용하지않은경우"
-GUIDELINE_CRITERIA_BAD="업로드 용량 제한 설정이 되어 있지 않거나 너무 크게 설정된 경우"
-GUIDELINE_REMEDIATION="Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP서비스사용시접근제어설정"
+GUIDELINE_PURPOSE="접근 권한이 없는 비인가자의 접근을 통제하기 위함"
+GUIDELINE_THREAT="FTP 서비스의 접근 제한 설정이 적절하지 않을 경우, 인증 절차 없이 비인가자가 디렉터리나 파일에 접근할 수 있어 중요 파일 변조 및 유출을 시도할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="특정 IP 주소 또는 호스트에서만 FTP 서버에 접속할 수 있도록 접근 제어 설정을 적용한 경우"
+GUIDELINE_CRITERIA_BAD="FTP 서버에 접근 제어 설정을 적용하지 않은 경우"
+GUIDELINE_REMEDIATION="FTP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 FTP 서비스 사용 시 접근 제어 설정"
 
 diagnose() {
     local status="양호"

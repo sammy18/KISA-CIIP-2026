@@ -30,11 +30,11 @@ ITEM_NAME="Apache 웹 서비스 웹 프로세스 권한 제한"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="root계정의FTP직접접속을제한하여root비밀번호정보노출을방지하기위함"
-GUIDELINE_THREAT="FTP 서비스에 root 계정으로 접근할 경우, 데이터가 평문으로 전송되어 비인가자가 스니핑을 통해 관리자계정및중요정보를외부로유출할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="root계정접속을차단한경우"
-GUIDELINE_CRITERIA_BAD="root계정접속을허용한경우"
-GUIDELINE_REMEDIATION="Ÿ FTP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ FTP서비스사용시root계정으로직접접속할수없도록설정"
+GUIDELINE_PURPOSE="root 계정의 FTP 직접 접속을 제한하여 root 비밀번호 정보 노출을 방지하기 위함"
+GUIDELINE_THREAT="FTP 서비스에 root 계정으로 접근할 경우, 데이터가 평 문으로 전송되어 비인가자가 스니핑을 통해 관리자 계정 및 중요 정보를 외부로 유출할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="root 계정 접속을 차단한 경우"
+GUIDELINE_CRITERIA_BAD="root 계정 접속을 허용한 경우"
+GUIDELINE_REMEDIATION="FTP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 FTP 서비스 사용 시 root 계정으로 직접 접속할 수 없도록 설정"
 
 diagnose() {
     local status="양호"

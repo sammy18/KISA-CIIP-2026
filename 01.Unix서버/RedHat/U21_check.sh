@@ -30,11 +30,11 @@ ITEM_NAME="/etc/syslog.conf 파일 소유자 및 권한 설정"
 SEVERITY="(상)"
 
 # 가이드라인 정보 (PDF 가이드 내용 반영)
-GUIDELINE_PURPOSE="/etc/(r)syslog.conf 파일의 권한 적절성을 점검하여, 비인가자의 임의적인 /etc/(r)syslog.conf 파일 변조를방지하기위함"
-GUIDELINE_THREAT="/etc/(r)syslog.conf 파일의 설정 내용을 참조하여 로그의 저장 위치가 노출되며 로그를 기록하지 않도록설정하거나대량의로그를기록하게하여시스템과부하를유도할수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="/etc/(r)syslog.conf 파일의소유자가root(또는bin, sys)이고,권한이640이하인경우"
-GUIDELINE_CRITERIA_BAD="/etc/(r)syslog.conf 파일의소유자가root(또는 bin, sys)가아니거나,권한이640이하가아닌 경우"
-GUIDELINE_REMEDIATION="/etc/(r)syslog.conf파일소유자및권한변경설정"
+GUIDELINE_PURPOSE="/etc/(r)syslog.conf 파일의 권한 적절성을 점검하여, 비인가자의 임의적인 /etc/(r)syslog.conf 파일 변조를 방지하기 위함"
+GUIDELINE_THREAT="/etc/(r)syslog.conf 파일의 설정 내용을 참조하여 로그의 저장 위치가 노출되며 로그를 기록하지 않도록 설정하거나 대량의 로그를 기록하게하여 시스템과 부하를 유도할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="/etc/(r)syslog.conf 파일의 소유자가 root(또는 bin, sys)이고, 권한이 640 이하인 경우"
+GUIDELINE_CRITERIA_BAD="/etc/(r)syslog.conf 파일의 소유자가 root(또는 bin, sys)가 아니거나, 권한이 640 이하가 아닌 경우"
+GUIDELINE_REMEDIATION="/etc/(r)syslog.conf 파일 소유자 및 권한 변경 설정"
 
 diagnose() {
     local status="양호"

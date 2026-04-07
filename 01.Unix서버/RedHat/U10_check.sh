@@ -30,11 +30,11 @@ ITEM_NAME="동일한 UID 금지"
 SEVERITY="(중)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="UID가 동일한 사용자 계정을 점검함으로써 타 사용자 계정 소유의 파일 및 디렉터리로의 악의적 접근 예방및침해사고시명확한감사추적을하기위함"
-GUIDELINE_THREAT="중복된 UID가 존재할 경우, 시스템은 동일한 사용자로 인식하여 소유자의 권한이 중복되어 불필요한 권한이부여되며시스템로그를이용한감사추적시사용자가구분되지않는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="동일한UID로설정된사용자계정이존재하지않는경우"
-GUIDELINE_CRITERIA_BAD="동일한UID로설정된사용자계정이존재하는경우"
-GUIDELINE_REMEDIATION="동일한UID를가진사용자계정의UID를중복되지않도록변경하도록설정"
+GUIDELINE_PURPOSE="UID가 동일한 사용자 계정을 점검함으로써 타 사용자 계정 소유의 파일 및 디렉터리로의 악의적 접근 예방 및 침해 사고 시 명확한 감사 추적을 하기 위함"
+GUIDELINE_THREAT="중복된 UID가 존재할 경우, 시스템은 동일한 사용자로 인식하여 소유자의 권한이 중복되어 불필요한 권한이 부여되며 시스템 로그를 이용한 감사 추적 시 사용자가 구분되지 않는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="동일한 UID로 설정된 사용자 계정이 존재하지 않는 경우"
+GUIDELINE_CRITERIA_BAD="동일한 UID로 설정된 사용자 계정이 존재하는 경우"
+GUIDELINE_REMEDIATION="동일한 UID를 가진 사용자 계정의 UID 를 중복되지 않도록 변경하도록 설정"
 
 diagnose() {
     local status="양호"

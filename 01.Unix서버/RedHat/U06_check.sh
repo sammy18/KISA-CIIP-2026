@@ -30,11 +30,11 @@ ITEM_NAME="사용자 계정 su 기능 제한"
 SEVERITY="(상)"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="su 관련 그룹만 su 명령어 사용 권한이 부여되어 있는지 점검하여 su 그룹에 포함되지 않은 일반 사용자의su명령사용을원천적으로차단하는지확인하기위함"
-GUIDELINE_THREAT="무분별한 사용자 변경으로 타 사용자 소유의 파일을 변경할 수 있으며 root 계정으로 변경하는 경우 관리자권한을획득할수있는위험이존재함"
-GUIDELINE_CRITERIA_GOOD="su명령어를특정그룹에속한사용자만사용하도록제한된경우 ※일반사용자계정없이root계정만사용하는경우su명령어사용제한불필요"
-GUIDELINE_CRITERIA_BAD="su명령어를모든사용자가사용하도록설정된경우"
-GUIDELINE_REMEDIATION="PAM모듈설정또는su명령어허용그룹생성후su명령어일반사용자권한제거하도록설정"
+GUIDELINE_PURPOSE="su 관련 그룹만 su 명령어 사용 권한이 부여되어 있는지 점검하여 su 그룹에 포함되지 않은 일반 사용자의 su 명령 사용을 원천적으로 차단하는지 확인하기 위함"
+GUIDELINE_THREAT="무분별한 사용자 변경으로 타 사용자 소유의 파일을 변경할 수 있으며 root 계정으로 변경하는 경우 관리자 권한을 획득할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="su 명령어를 특정 그룹에 속한 사용자만 사용하도록 제한된 경우 ※일반 사용자 계정 없이 root 계정만 사용하는 경우 su 명령어 사용 제한 불필요"
+GUIDELINE_CRITERIA_BAD="su 명령어를 모든 사용자가 사용하도록 설정된 경우"
+GUIDELINE_REMEDIATION="PAM 모듈 설정 또는 su 명령어 허용 그룹 생성 후 su 명령어 일반 사용자 권한 제거하도록 설정"
 
 diagnose() {
     local status="양호"
