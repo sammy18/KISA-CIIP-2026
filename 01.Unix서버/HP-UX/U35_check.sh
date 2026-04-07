@@ -35,11 +35,11 @@ ITEM_NAME="공유 서비스에 대한 익명 접근 제한 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="FTP 등 공유 서비스의 익명 접속을 제한하여 무단 액세스 및 데이터 유출 방지"
-GUIDELINE_THREAT="익명 FTP 접속 허용 시 비인가자가 시스템 자원 무단 사용 및 정보 유출 위험"
-GUIDELINE_CRITERIA_GOOD="익명 접속이 차단된 경우"
-GUIDELINE_CRITERIA_BAD=" 익명 접속(anonymous/ftp 계정)이 가능한 경우 / N/A: FTP 서비스 미사용"
-GUIDELINE_REMEDIATION="FTP 설정 파일에서 anonymous 접속 차단 및 ftp 계정 사용 중지"
+GUIDELINE_PURPOSE="공유 서비스의 익명 접근을 제한하여 중요 정보의 노출을 방지하기 위함"
+GUIDELINE_THREAT="공유 서비스의 익명 접근을 허용할 경우, 비인가자의 무단 접근으로 인한 중요 정보 탈취 또는 변조, 악성 코드 유포 등의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="공유 서비스에 대해 익명 접근을 제한한 경우"
+GUIDELINE_CRITERIA_BAD="공유 서비스에 대해 익명 접근을 허용한 경우"
+GUIDELINE_REMEDIATION="공유 서비스의 익명 접근 제한 설정"
 
 # ============================================================================
 # 진단 함수

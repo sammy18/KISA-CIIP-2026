@@ -35,11 +35,11 @@ ITEM_NAME="SNMP Access Control 설정"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="SNMP접근제어설정을통해비인가자의접근을차단하기위함"
-GUIDELINE_THREAT="SNMP 서비스에 접근 제어가 설정되어 있지 않을 경우, 비인가자의 접근, 네트워크 정보 유출, 시스템 및네트워크설정변경,DoS공격등의위험이존재함"
-GUIDELINE_CRITERIA_GOOD="SNMP서비스에접근제어설정이되어있는경우"
-GUIDELINE_CRITERIA_BAD="SNMP서비스에접근제어설정이되어있지않은경우"
-GUIDELINE_REMEDIATION="Ÿ SNMP서비스를사용하지않는경우서비스중지및비활성화설정 Ÿ SNMP서비스사용시SNMP접근제어설정하도록설정"
+GUIDELINE_PURPOSE="SNMP 접근 제어 설정을 통해 비인가자의 접근을 차단하기 위함"
+GUIDELINE_THREAT="SNMP 서비스에 접근 제어가 설정되어 있지 않을 경우, 비인가자의 접근, 네트워크 정보 유출, 시스템 및 네트워크 설정 변경,DoS 공격 등의 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="SNMP 서비스에 접근 제어 설정이 되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="SNMP 서비스에 접근 제어 설정이 되어 있지 않은 경우"
+GUIDELINE_REMEDIATION="SNMP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 SNMP 서비스 사용 시 SNMP 접근 제어 설정하도록 설정"
 
 # ============================================================================
 # 진단 함수

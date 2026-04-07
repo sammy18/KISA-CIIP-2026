@@ -35,11 +35,11 @@ ITEM_NAME="Finger 서비스 비활성화"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="무차별 대입 공격(Brute-force)을 방지하여 계정 잠금 및 서비스 거부(DoS) 상태를 방지하기 위함"
-GUIDELINE_THREAT="로그온 시도 횟수 제한이 미흡할 경우, 공격자가 무차별 대입 공격을 통해 계정을 잠금시키거나, 서비스 거부 상태로 만들어 시스템 가용성을 저해할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="로그온 시도 횟수 제한(deny)이 5회 이하로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="로그온 시도 횟수 제한이 설정되어 있지 않거나, deny 값이 5회를 초과하는 경우"
-GUIDELINE_REMEDIATION="/etc/security/faillock.conf 파일 또는 PAM 설정 파일(/etc/pam.d/common-auth 등)에서 deny 값을 5 이하로 설정"
+GUIDELINE_PURPOSE="Finger 서비스를 통해 네트워크 외부에서 해당 시스템에 등록된 사용자 정보를 확인할 수 있어 비인가자에게 사용자 정보가 조회되는 것을 방지하기 위함"
+GUIDELINE_THREAT="Finger 서비스가 활성화되어 있을 경우, 비인가자가 Finger 서비스를 사용하여 사용자 정보를 조회한 후 비밀번호 공격을 통해 계정을 탈취할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="Finger 서비스가 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="Finger 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="Finger 서비스 비활성화 설정"
 
 # ============================================================================
 # 진단 함수

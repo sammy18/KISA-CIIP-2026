@@ -35,11 +35,11 @@ ITEM_NAME="불필요한 automountd 제거"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="많은 취약점(버퍼 오버플로우, DoS, 원격 실행 등)이 존재하는 RPC 서비스를 비활성화하여 시스템의 보안성을높이기위함"
-GUIDELINE_THREAT="RPC서비스의취약점을통해비인가자가root권한획득및각종공격을시도할위험이존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한RPC서비스가비활성화된경우"
-GUIDELINE_CRITERIA_BAD="불필요한RPC서비스가활성화된경우"
-GUIDELINE_REMEDIATION="불필요한RPC서비스중지및비활성화설정"
+GUIDELINE_PURPOSE="로컬 공격자가 automountd 데몬에 RPC(Remote Procedure Call)를 보낼 수 있는 취약점이 존재하기 때문에 해당 서비스를 중지시키기 위함"
+GUIDELINE_THREAT="파일 시스템의 마운트 옵션을 변경하여 root 권한을 획득할 수 있으며, 로컬 공격자가 automountd 프로세스 권한으로 임의의 명령을 실행할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="automountd 서비스가 비활성화된 경우"
+GUIDELINE_CRITERIA_BAD="automountd 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="automountd 서비스 비활성화 설정"
 
 # ============================================================================
 # 진단 함수

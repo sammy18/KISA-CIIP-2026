@@ -35,11 +35,11 @@ ITEM_NAME="r 계열 서비스 비활성화"
 SEVERITY="상"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="인증 없는 원격 접속을 방지하여 시스템 보안을 강화하기 위함"
-GUIDELINE_THREAT="rsh, rlogin, rexec 등의 r 계열 서비스가 활성화된 경우, 패스워드 없이 원격 접속이 가능하여 공격자가 시스템에 무단 접근하고 악의적인 명령을 실행할 수 있는 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="r 계열 서비스(rsh, rlogin, rexec)가 모두 비활성화된 경우"
-GUIDELINE_CRITERIA_BAD="r 계열 서비스 중 하나라도 활성화되어 있는 경우"
-GUIDELINE_REMEDIATION="r 계열 서비스 중지 및 패키지 제거, /etc/inetd.conf 및 /etc/xinetd.d 설정 파일에서 해당 서비스 비활성화"
+GUIDELINE_PURPOSE="안전하지 않은 NIS 서비스를 비활성화하고 안전한 NIS + 서비스를 활성화하여 시스템의 보안성을 높이기 위함"
+GUIDELINE_THREAT="NIS 서비스가 활성화된 경우, 비인가자가 타 시스템의 root 권한까지 탈취할 수 있는 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="NIS 서비스가 비활성화되어 있거나, 불가피하게 사용 시 NIS +서비스를 사용하는 경우"
+GUIDELINE_CRITERIA_BAD="NIS 서비스가 활성화된 경우"
+GUIDELINE_REMEDIATION="NIS 관련 서비스 비활성화 설정"
 
 # ============================================================================
 # 진단 함수

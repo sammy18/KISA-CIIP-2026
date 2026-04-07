@@ -35,11 +35,11 @@ ITEM_NAME="세션 종료시간 설정"
 SEVERITY="하"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="일정시간동 nail론작업이없을경우자동으로세션을종료하여무단접근을방지하기위함"
-GUIDELINE_THREAT="사용자인증후자동로그아웃기능이비활성화된경우부재중시비인가자가시스템에접근하여정보유출및파괴위험이존재함"
-GUIDELINE_CRITERIA_GOOD="TMOUT값이600초(10분)이하로설정된경우"
-GUIDELINE_CRITERIA_BAD=" TMOUT값이설정되어있지않거나600초(10분)초과로설정된경우"
-GUIDELINE_REMEDIATION="/etc/profile또는/etc/bash.bashrc파일에TMOUT=600설정추가"
+GUIDELINE_PURPOSE="사용자의 고의 또는 실수로 시스템에 계정이 접속된 상태로 방치됨을 차단하기 위함"
+GUIDELINE_THREAT="Sessiontimeout 값이 설정되지 않을 경우, 유휴 시간 내 비인가자가 시스템에 접근하여 불필요한 내부 정보를 노출할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="Session Timeout이 600초(10분)이하로 설정된 경우"
+GUIDELINE_CRITERIA_BAD="Session Timeout이 600초(10분)이하로 설정되지 않은 경우"
+GUIDELINE_REMEDIATION="600초(10분)동안 입력이 없는 경우 접속된 Session을 끊도록 설정"
 
 # ============================================================================
 # 진단 함수

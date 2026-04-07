@@ -35,11 +35,11 @@ ITEM_NAME="FTP 계정 Shell 제한"
 SEVERITY="중"
 
 # 가이드라인 정보
-GUIDELINE_PURPOSE="FTP 계정에 대해 Shell 접속을 제한하여 시스템 보안 강화"
-GUIDELINE_THREAT="FTP 계정이 일반 사용자 Shell을 사용할 경우 Shell 접속을 통해 시스템 명령어 실행 및 권한 상승 위험"
-GUIDELINE_CRITERIA_GOOD="FTP 계정의 Shell이 /bin/false, /sbin/nologin 등으로 제한된 경우"
-GUIDELINE_CRITERIA_BAD=" FTP 계정이 /bin/bash, /bin/sh 등 일반 Shell을 사용하는 경우 / N/A: FTP 서비스 미설치"
-GUIDELINE_REMEDIATION="FTP 계정의 Shell을 /bin/false 또는 /usr/sbin/nologin으로 변경: usermod -s /bin/false ftp_username"
+GUIDELINE_PURPOSE="FTP 계정의 쉘을 통한 시스템 접근을 차단하기 위함"
+GUIDELINE_THREAT="FTP 기본 계정에 쉘이 부여될 경우, 비인가자가 해당 기본 계정으로 시스템에 접근할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="FTP 계정에/bin/false(/sbin/nologin)쉘이 부여된 경우"
+GUIDELINE_CRITERIA_BAD="FTP 계정에/bin/false(/sbin/nologin)쉘이 부여되어 있지 않은 경우"
+GUIDELINE_REMEDIATION="FTP 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 FTP 서비스 사용 시 FTP 계정에/bin/false 쉘부여 설정"
 
 # ============================================================================
 # 진단 함수
