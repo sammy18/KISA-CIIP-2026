@@ -33,11 +33,11 @@ ITEM_ID="WEB-15"
 ITEM_NAME="불필요한스크립트매핑제거"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="웹서비스에서사용하지않는불필요스크립트매핑이존재하는지점검하여잠재적보안위협을방지하기위함"
-GUIDELINE_THREAT="웹서비스에서불필요한스크립트매핑을제거하지않은경우,버퍼오버플로우(Buffer Overflow),서비스 거부공격(Denial of Service), 크로스사이트스크립팅(CrossSiteScripting)등의공격위험이존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한스크립트매핑이존재하지않는경우"
-GUIDELINE_CRITERIA_BAD="불필요한스크립트매핑이존재하는경우"
-GUIDELINE_REMEDIATION="불필요한스크립트매핑존재여부점검및제거설정"
+GUIDELINE_PURPOSE="웹 서비스에서 사용하지 않는 불필요 스크립트 매핑이 존재하는지 점검하여 잠재적 보안 위협을 방지하기 위함"
+GUIDELINE_THREAT="웹 서비스에서 불필요한 스크립트 매핑을 제거하지 않은 경우, 버퍼오버플로우(Buffer Overflow), 서비스 거부 공격(Denial of Service), 크로스 사이트 스크립 팅(CrossSiteScripting)등의 공격 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="불필요한 스크립트 매핑이 존재하지 않는 경우"
+GUIDELINE_CRITERIA_BAD="불필요한 스크립트 매핑이 존재하는 경우"
+GUIDELINE_REMEDIATION="불필요한 스크립트 매핑 존재 여부 점검 및 제거 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -33,11 +33,11 @@ ITEM_ID="WEB-25"
 ITEM_NAME="주기적보안패치및벤더권고사항적용"
 SEVERITY="상"
 
-GUIDELINE_PURPOSE="주기적인최신보안패치를통해보안성및시스템안정성을확보하기위함"
-GUIDELINE_THREAT="주기적으로 최신 보안 패치를 적용하지 않을 경우, 알려진 취약점을 이용한 공격 또는 새로운 공격에 대한침해사고발생위험이존재함"
-GUIDELINE_CRITERIA_GOOD="최신보안패치가적용되어있으며,패치적용정책을수립하여주기적인패치관리를하는경우 취약 : 최신 보안 패치가 적용되어 있지 않거나 패치 적용 정책을 수립 및 주기적인 패치 관리를 하지"
-GUIDELINE_CRITERIA_BAD="오래된 버전 사용"
-GUIDELINE_REMEDIATION="패치적용에따른서비스영향정도를정확히파악하여주기적인패치적용정책수립및적용하도록설정"
+GUIDELINE_PURPOSE="주기적인 최신 보안 패치를 통해 보안성 및 시스템 안정성을 확보하기 위함"
+GUIDELINE_THREAT="주기적으로 최신 보안 패치를 적용하지 않을 경우, 알려진 취약점을 이용한 공격 또는 새로운 공격에 대한 침해 사고 발생 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="최신 보안 패치가 적용되어 있으며, 패치 적용 정책을 수립하여 주기적인 패치 관리를 하는 경우"
+GUIDELINE_CRITERIA_BAD="최신 보안 패치가 적용되어 있지 않거나 패치 적용 정책을 수립 및 주기적인 패치 관리를 하지"
+GUIDELINE_REMEDIATION="패치 적용에 따른 서비스 영향 정도를 정확히 파악하여 주기적인 패치 적용 정책 수립 및 적용하도록 설정"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"
