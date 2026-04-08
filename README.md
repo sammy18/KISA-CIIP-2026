@@ -398,6 +398,6 @@ GNU Affero General Public License v3.0 (AGPL-3.0)
 
 ---
 
-**버전**: 2.0.0
+**버전**: 1.0.0
 **최종 수정**: 2026-04-07
 **호환성**: KISA CIIP 2026 가이드라인 준수
