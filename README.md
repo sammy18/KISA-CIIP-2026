@@ -1,6 +1,6 @@
 # KISA CIIP 2026 - 진단 스크립트 공개 저장소
 
-**버전**: 2.0.0
+**버전**: 1.0.0
 **최종 수정**: 2026-04-07
 **Repository**: https://github.com/rebugui/KISA-CIIP-2026
 
