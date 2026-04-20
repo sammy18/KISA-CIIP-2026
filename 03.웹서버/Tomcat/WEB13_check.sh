@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -97,7 +97,7 @@ diagnose() {
                 local found_auth=$(grep -E "auth-constraint|security-constraint" "${xml_file}" 2>/dev/null | grep -v "^\s*<!--" || true)
                 if [ -n "${found_auth}" ]; then
                     auth_constraints="${auth_constraints}"$'\n'"${found_auth}"
-                    ((constraint_count++))
+                    constraint_count=$((constraint_count + 1))
                     has_auth_constraint=true
                 fi
                 break 2

@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
@@ -14,8 +14,8 @@
 # @Description : 인증 절차가 없는 tftp와 보안에 취약한 talk 서비스 비활성화 점검
 # ==============================================================================
 
-set -uo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../lib"
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../../lib"
 source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${LIB_DIR}/output_mode.sh"; source "${LIB_DIR}/metadata_parser.sh"
 
 ITEM_ID="U-44"; ITEM_NAME="tftp, talk 서비스 비활성화"; SEVERITY="(상)"
@@ -27,7 +27,7 @@ GUIDELINE_CRITERIA_BAD="tftp, talk, ntalk 서비스가 활성화된 경우"
 GUIDELINE_REMEDIATION="불필요한 tftp, talk, ntalk 서비스 비활성화 설정"
 
 diagnose() {
-    local status="양호"; local diagnosis_result="GOOD"
+    local status="양호"; diagnosis_result="GOOD"
     local inspection_summary="tftp 및 talk 서비스가 비활성화되어 있습니다."
     local command_result=""
     

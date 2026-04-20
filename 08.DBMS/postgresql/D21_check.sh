@@ -3,7 +3,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -121,7 +121,7 @@ diagnose() {
     # PostgreSQL에서는 기본적으로 superuser만 파일 접근 가능
     diagnosis_result="GOOD"
     status="양호"
-    inspection_summary="양호: COPY 파일 접근이 superuser로 제한됨 (PostgreSQL 기본설정)"
+    inspection_summary=" COPY 파일 접근이 superuser로 제한됨 (PostgreSQL 기본설정)"
     command_executed="psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_ADMIN_USER} -d postgres -t -c \"SELECT rolname FROM pg_roles WHERE rolcanlogin=true AND rolname!='postgres' LIMIT 20;\""
 
     # Try Unix socket connection first (peer authentication in Docker)

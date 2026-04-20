@@ -1,8 +1,8 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
@@ -15,10 +15,10 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 source "${LIB_DIR}/common.sh"
 source "${LIB_DIR}/result_manager.sh"
@@ -37,18 +37,22 @@ GUIDELINE_REMEDIATION="NTP 설정 및 동기화 주기 설정"
 
 diagnose() {
     local status="양호"
-    local diagnosis_result="GOOD"
+    diagnosis_result="GOOD"
     local inspection_summary="NTP 서비스가 정상적으로 동작 중입니다."
     local command_executed="chronyc sources || ntpq -p"
     
     # 1. 실행 결과 저장
     local cmd_out
-    cmd_out=$(chronyc sources 2>&1 || ntpq -p 2>&1)
+    cmd_out=$(chronyc sources 2>&1 || ntpq -p 2>&1 || echo "NTP_SERVICE_NOT_FOUND")
 
     # 2. 판정 로직 
     # - 에러 메시지(Cannot talk to daemon, Connection refused 등)가 포함된 경우
     # - 혹은 동기화 서버 리스트가 아예 없는 경우
-    if [[ "$cmd_out" =~ "Cannot talk to daemon" ]] || [[ "$cmd_out" =~ "Connection refused" ]]; then
+    if [[ "$cmd_out" == "NTP_SERVICE_NOT_FOUND" ]]; then
+        status="취약"
+        diagnosis_result="VULNERABLE"
+        inspection_summary="NTP 서비스가 설치되어 있지 않습니다."
+    elif [[ "$cmd_out" =~ "Cannot talk to daemon" ]] || [[ "$cmd_out" =~ "Connection refused" ]]; then
         status="취약"
         diagnosis_result="VULNERABLE"
         inspection_summary="NTP 데몬이 응답하지 않습니다. 서비스 상태를 확인하십시오."

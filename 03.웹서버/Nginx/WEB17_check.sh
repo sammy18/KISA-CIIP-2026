@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -95,7 +95,7 @@ diagnose() {
                 local found_alias=$(grep -E "^\s*alias" "${conf_file}" 2>/dev/null | grep -v "^\s*#" || true)
                 if [ -n "${found_alias}" ]; then
                     alias_settings="${alias_settings}"$'\n'"${found_alias}"
-                    ((alias_count++))
+                    alias_count=$((alias_count + 1))
                 fi
             fi
         done

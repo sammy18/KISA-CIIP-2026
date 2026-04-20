@@ -1,8 +1,8 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
@@ -15,10 +15,10 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 source "${LIB_DIR}/common.sh"
 source "${LIB_DIR}/result_manager.sh"
@@ -37,7 +37,7 @@ GUIDELINE_REMEDIATION="메일 서비스를 사용하지 않는 경우 서비스 
 
 diagnose() {
     local status="양호"
-    local diagnosis_result="GOOD"
+    diagnosis_result="GOOD"
     local inspection_summary="EXPN, VRFY 명령어 제한 설정이 적절합니다."
     local command_result=""
     local command_executed="grep 'PrivacyOptions' /etc/mail/sendmail.cf"

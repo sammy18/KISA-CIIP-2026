@@ -1,8 +1,8 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
@@ -15,10 +15,10 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 source "${LIB_DIR}/common.sh"
 source "${LIB_DIR}/result_manager.sh"
@@ -69,7 +69,7 @@ diagnose() {
         inspection_summary="${bad_count}개의 홈 디렉터리 설정이 부적절합니다."
         command_result=$(echo -e "점검 결과 상세:\n${checked_list}")
     else
-        command_result=$(echo -e "모든 계정 양호:\n${checked_list}")
+        command_result=$(echo -e "모든 계정 \n${checked_list}")
     fi
 
     # 이 함수가 반드시 호출되어야 결과 파일이 생성됨

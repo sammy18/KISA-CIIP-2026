@@ -4,8 +4,8 @@
 # @Title       : 사용자, 시스템 환경변수 파일 소유자 및 권한 설정
 # ============================================================================
 
-set -uo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../lib"
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../../lib"
 source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${LIB_DIR}/output_mode.sh"; source "${LIB_DIR}/metadata_parser.sh"
 
 ITEM_ID="U-24"; ITEM_NAME="사용자, 시스템 환경변수 파일 소유자 및 권한 설정"; SEVERITY="(상)"
@@ -16,7 +16,7 @@ GUIDELINE_CRITERIA_BAD="소유자불일치또는others쓰기권한있음"
 GUIDELINE_REMEDIATION="환경 변수 파일의 일반 사용자 쓰기 권한 제거하도록 설정"
 
 diagnose() {
-    local status="양호"; local diagnosis_result="GOOD"
+    local status="양호"; diagnosis_result="GOOD"
     local inspection_summary="환경변수 파일의 소유자 및 권한 설정이 적절합니다."
     local command_result=""
     local check_files=("/etc/profile" "/etc/bashrc" "$HOME/.bash_profile" "$HOME/.bashrc" "$HOME/.profile")

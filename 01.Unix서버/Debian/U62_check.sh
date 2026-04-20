@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -104,7 +104,7 @@ diagnose() {
     # 3) SSH Banner 설정 확인 (SSH를 통한 로그인 시)
     local ssh_banner=""
     if [ -f /etc/ssh/sshd_config ]; then
-        ssh_banner=$(grep -E "^[\s]*Banner" /etc/ssh/sshd_config 2>/dev/null | grep -v "^#" | awk '{print $2}')
+        ssh_banner=$(grep -E "^[\s]*Banner" /etc/ssh/sshd_config 2>/dev/null | grep -v "^#" | awk '{print $2}' || true)
         if [ -n "$ssh_banner" ]; then
             if [ -f "$ssh_banner" ]; then
                 has_warning=true
@@ -138,12 +138,6 @@ diagnose() {
         command_result="${raw_output}"
         command_executed="cat /etc/issue /etc/issue.net 2>/dev/null; grep '^Banner' /etc/ssh/sshd_config 2>/dev/null"
     fi
-
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
 
     # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
     # Run-all 모드 확인

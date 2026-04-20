@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-17
 # ============================================================================
 # [점검 항목 상세]
@@ -68,7 +68,7 @@ run_single_check() {
         echo "[WARN] 스크립트 파일 없음: ${script_file}" >&2
         FAILED_ITEMS+=("$item_id")
         rm -f "$tmp_output"
-        return 1
+        return 0
     fi
 
     # 진단 스크립트 실행 (출력 캡처)

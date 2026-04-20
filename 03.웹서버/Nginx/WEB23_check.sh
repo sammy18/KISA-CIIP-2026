@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -121,7 +121,7 @@ diagnose() {
                 local found=$(find "${web_root}" -type f -iname "${pattern}" 2>/dev/null | head -3 || true)
                 if [ -n "${found}" ]; then
                     suspicious_files="${suspicious_files}"$'\n'"${found}"
-                    ((suspicious_count++))
+                    suspicious_count=$((suspicious_count + 1))
                 fi
             done
         fi

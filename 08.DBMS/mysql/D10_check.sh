@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -105,7 +105,7 @@ diagnose() {
             bind_vulnerable=1
             inspection_summary+="취약: bind_address가 ${bind_value}로 설정되어 모든 IP에서 접속 가능\n"
         else
-            inspection_summary+="양호: bind_address가 ${bind_value}로 제한됨\n"
+            inspection_summary+=" bind_address가 ${bind_value}로 제한됨\n"
         fi
     fi
 
@@ -123,7 +123,7 @@ diagnose() {
             local remote_users=$(echo "$remote_result" | tail -n +2 | grep -v "^$" | head -5 | tr '\n' ', ')
             inspection_summary+="취약: ${remote_count}개 계정이 모든 원격 호스트(%)에서 접속 가능: ${remote_users}\n"
         else
-            inspection_summary+="양호: 모든 원격 호스트 접속 허용(%) 사용자 없음\n"
+            inspection_summary+=" 모든 원격 호스트 접속 허용(%) 사용자 없음\n"
         fi
     fi
 

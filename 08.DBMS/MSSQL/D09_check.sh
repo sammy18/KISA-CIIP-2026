@@ -3,7 +3,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -88,7 +88,7 @@ diagnose() {
     inspection_summary+="   - secpol.msc 실행\n"
     inspection_summary+="   - 보안 설정 > 계정 정책 > 계정 잠금 정책\n\n"
     inspection_summary+="2. 계정 잠금 임계값(Account Lockout Threshold) 확인:\n"
-    inspection_summary+="   - 양호: 3~5회 이하로 설정 (예: 3 = 3회 실패 시 잠금)\n"
+    inspection_summary+="   -  3~5회 이하로 설정 (예: 3 = 3회 실패 시 잠금)\n"
     inspection_summary+="   - 취약: 0으로 설정 (잠금 정책 없음)\n\n"
     inspection_summary+="3. 계정 잠금 기간(Account Lockout Duration) 확인:\n"
     inspection_summary+="   - 권장: 15분~30분 (예: 30 = 30분 동안 잠금)\n\n"

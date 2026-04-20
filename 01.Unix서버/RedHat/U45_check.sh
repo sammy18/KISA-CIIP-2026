@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
@@ -15,8 +15,8 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../lib"
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../../lib"
 source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${LIB_DIR}/output_mode.sh"; source "${LIB_DIR}/metadata_parser.sh"
 
 ITEM_ID="U-45"; ITEM_NAME="메일 서비스 버전 점검"; SEVERITY="(상)"
@@ -29,7 +29,7 @@ GUIDELINE_REMEDIATION="메일 서비스를 사용하지 않는 경우 서비스 
 
 diagnose() {
     local status="미진단"
-    local diagnosis_result="unknown"
+    diagnosis_result="unknown"
     local inspection_summary=""
     local command_result=""
     local command_executed=""

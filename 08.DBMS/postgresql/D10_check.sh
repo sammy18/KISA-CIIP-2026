@@ -3,7 +3,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -115,7 +115,7 @@ diagnose() {
                 ((vulnerabilities_found++)) || true
                 inspection_summary="취약: 모든 원격 호스트 접속 허용됨"
             else
-                inspection_summary="양호: 원격 접속 제한됨"
+                inspection_summary=" 원격 접속 제한됨"
             fi
         else
             inspection_summary="수동진단: pg_hba.conf 파일 위치 확인 필요"

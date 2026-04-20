@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -100,7 +100,7 @@ diagnose() {
 
                     # 예제 Context 확인 (examples, docs, manager, host-manager)
                     if echo "${found_context}" | grep -iqE "examples|docs|sample|test"; then
-                        ((example_contexts++))
+                        example_contexts=$((example_contexts + 1))
                     fi
                 fi
                 break 2

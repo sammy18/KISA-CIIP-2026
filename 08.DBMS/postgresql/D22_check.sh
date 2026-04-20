@@ -3,7 +3,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -140,7 +140,7 @@ diagnose() {
         else
             diagnosis_result="GOOD"
             status="양호"
-            inspection_summary="양호: 데이터 디렉터리 권한 및 소유자 적절히 설정됨 (${dir_perms}, ${dir_owner})"
+            inspection_summary=" 데이터 디렉터리 권한 및 소유자 적절히 설정됨 (${dir_perms}, ${dir_owner})"
         fi
     else
         inspection_summary="수동진단: 데이터 디렉터리 위치 확인 필요"

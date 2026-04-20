@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -131,7 +131,7 @@ diagnose() {
         inspection_summary+="1. 객체 소유자를 root 또는 관리자 계정으로 변경: ALTER TABLE db.table OWNER TO 'root';\n"
         inspection_summary+="2. 루틴 DEFINER 변경: ALTER ROUTINE db.proc SQL SECURITY DEFINER;"
     else
-        inspection_summary="양호: 모든 객체가 관리자 계정(root 또는 SUPER 권한 있는 계정)이 소유\n"
+        inspection_summary=" 모든 객체가 관리자 계정(root 또는 SUPER 권한 있는 계정)이 소유\n"
         inspection_summary+="확인된 데이터베이스: $(echo "$command_result" | tail -n +2 | grep -v "^$" | wc -l)개"
     fi
 

@@ -3,7 +3,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -72,7 +72,7 @@ diagnose() {
         inspection_summary+="1. sqlcmd 실행:\n"
         inspection_summary+="   sqlcmd -Q \"SELECT schema_name(schema_id) AS schema_name, name AS object_name, type_desc, USER_NAME(principal_id) AS owner FROM sys.objects WHERE is_ms_shipped = 0 AND USER_NAME(principal_id) NOT IN ('dbo', 'sys', 'INFORMATION_SCHEMA') ORDER BY schema_name, object_name;\"\n\n"
         inspection_summary+="2. 결과 분석:\n"
-        inspection_summary+="   - 양호: 결과 없음 (모든 객체가 dbo, sys, INFORMATION_SCHEMA가 소유)\n"
+        inspection_summary+="   -  결과 없음 (모든 객체가 dbo, sys, INFORMATION_SCHEMA가 소유)\n"
         inspection_summary+="   - 취약: 비-dbo 소유자의 객체 발견\n\n"
         inspection_summary+="조치 방법:\n"
         inspection_summary+="1. 객체 소유자를 dbo로 변경:\n"
@@ -88,7 +88,7 @@ diagnose() {
         inspection_summary+="1. SSMS 실행 및 서버 연결\n"
         inspection_summary+="2. 데이터베이스 > Tables(또는 Views, Programmability) 확장\n"
         inspection_summary+="3. 객체 우클릭 > Properties > 소유자 확인\n"
-        inspection_summary+="4. 양호: 소유자가 'dbo', 취약: 소유자가 다른 사용자\n\n"
+        inspection_summary+="4.  소유자가 'dbo', 취약: 소유자가 다른 사용자\n\n"
         inspection_summary+="조치 방법:\n"
         inspection_summary+="- T-SQL: ALTER AUTHORIZATION ON OBJECT::schema.table TO dbo;\n"
         inspection_summary+="- SSMS: 객체 우클릭 > Properties > 소유자 변경 > 'dbo' 선택\n\n"

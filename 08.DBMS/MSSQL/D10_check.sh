@@ -3,7 +3,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -102,7 +102,7 @@ diagnose() {
     inspection_summary+="   - IPAll > TCP Port: 특정 포트 지정\n\n"
     inspection_summary+="2. Windows 방화벽 규칙 확인:\n"
     inspection_summary+="   - PowerShell: Get-NetFirewallRule | Where-Object {\$_.DisplayName -like '*SQL*'}\n"
-    inspection_summary+="   - 양호: 특정 IP 주소에서만 허용하는 규칙 존재\n"
+    inspection_summary+="   -  특정 IP 주소에서만 허용하는 규칙 존재\n"
     inspection_summary+="   - 취약: 모든 IP(0.0.0.0/0)에서 접속 허용\n\n"
     inspection_summary+="조치 방법:\n"
     inspection_summary+="1. SQL Server Configuration Manager에서 IP 제한 설정\n"

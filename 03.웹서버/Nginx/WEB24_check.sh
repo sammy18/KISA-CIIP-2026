@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -100,12 +100,12 @@ diagnose() {
                     local found_admin=$(grep -E "^\s*location\s+[~]?\s*/[^/]*/?${admin_path}" "${conf_file}" 2>/dev/null | grep -v "^\s*#" || true)
                     if [ -n "${found_admin}" ]; then
                         all_admin_blocks="${all_admin_blocks}"$'\n'"File: ${conf_file}"$'\n'"${found_admin}"
-                        ((admin_locations_found++))
+                        admin_locations_found=$((admin_locations_found + 1))
 
                         # Check if this location has protection (allow/deny or auth_basic)
                         local has_protection=$(grep -A 10 "location.*${admin_path}" "${conf_file}" 2>/dev/null | grep -E "(allow\s+|deny\s+|auth_basic)" | head -1 || true)
                         if [ -n "${has_protection}" ]; then
-                            ((protected_locations++))
+                            protected_locations=$((protected_locations + 1))
                             all_protected_blocks="${all_protected_blocks}"$'\n'"File: ${conf_file}"$'\n'"${has_protection}"
                         fi
                     fi

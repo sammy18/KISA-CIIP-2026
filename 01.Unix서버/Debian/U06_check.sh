@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-18
 # ============================================================================
 # [점검 항목 상세]
@@ -68,7 +68,7 @@ diagnose() {
 
     # 1. PAM 설정 확인 (Primary Check)
     if [ -f "$pam_file" ]; then
-        pam_output=$(grep -vE '^#' "$pam_file" | grep "pam_wheel.so")
+        pam_output=$(grep -vE '^#' "$pam_file" | grep "pam_wheel.so" || true)
         
         if [ -n "$pam_output" ]; then
             if echo "$pam_output" | grep -qE "use_uid|group="; then

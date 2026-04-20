@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -95,7 +95,7 @@ diagnose() {
                 local found_logs=$(find "${log_dir}" -type f -name "*.log*" -perm /002 2>/dev/null || true)
                 if [ -n "${found_logs}" ]; then
                     log_info="${log_info}"$'\n'"${found_logs}"
-                    ((insecure_logs++))
+                    insecure_logs=$((insecure_logs + 1))
                 fi
 
                 # 디렉토리 권한 확인

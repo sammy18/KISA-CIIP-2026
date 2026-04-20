@@ -1,8 +1,8 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
@@ -15,11 +15,11 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
@@ -41,7 +41,7 @@ GUIDELINE_REMEDIATION="automountd 서비스 비활성화 설정"
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 초기값 설정
     local status="양호"
-    local diagnosis_result="GOOD"
+    diagnosis_result="GOOD"
     local inspection_summary="automountd 서비스가 비활성화되어 있습니다."
     local command_result=""
     local command_executed="ps -ef | grep -Ei 'automount|autofs'"

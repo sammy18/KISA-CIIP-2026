@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -105,7 +105,7 @@ diagnose() {
         ((vulnerabilities_found++)) || true
         inspection_summary+="취약: validate_password 플러그인 미설치; "
     else
-        inspection_summary+="양호: validate_password 플러그인 설치됨; "
+        inspection_summary+=" validate_password 플러그인 설치됨; "
     fi
 
     # 비밀번호 정책 변수 확인

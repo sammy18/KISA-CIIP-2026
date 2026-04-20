@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -122,27 +122,21 @@ diagnose() {
         diagnosis_result="VULNERABLE"
         status="취약"
         inspection_summary="부적절한 UMASK 설정 존재: ${all_umask_values%, } (022 또는 027 권장)"
-        command_result="${raw_output}"
+        command_result="${umask_grep}"
         command_executed="grep -h '^umask' /etc/profile /etc/bash.bashrc /root/.bashrc 2>/dev/null"
     elif [ "$secure_found" = true ]; then
         diagnosis_result="GOOD"
         status="양호"
         inspection_summary="적절한 UMASK 설정됨: ${all_umask_values%, } (022 또는 027)"
-        command_result="${raw_output}"
+        command_result="${umask_grep}"
         command_executed="grep -h '^umask' /etc/profile /etc/bash.bashrc /root/.bashrc 2>/dev/null"
     else
         diagnosis_result="MANUAL"
         status="수동진단"
         inspection_summary="UMASK 설정 없음 (기본값 확인 필요: 보통 022)"
-        command_result="${raw_output}"
+        command_result="${umask_grep}"
         command_executed="grep -h 'umask' /etc/profile /etc/bash.bashrc /root/.bashrc 2>/dev/null"
     fi
-
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
 
     # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
     # Run-all 모드 확인

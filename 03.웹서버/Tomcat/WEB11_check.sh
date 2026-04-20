@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -37,7 +37,7 @@ GUIDELINE_PURPOSE="웹 서비스 영역 내 불필요한 경로를 분리해 웹
 GUIDELINE_THREAT="웹 서비스 경로를 기타 업무와 영역이 분리되지 않은 경로로 설정하거나, 불필요한 경로가 존재할 경우 외부에서 시스템 중요 파일이나 기능에 비인가 접근이 발생할 위험이 존재함"
 GUIDELINE_CRITERIA_GOOD="웹 서버 경로를 기타 업무와 영역이 분리된 경로로 설정 및 불필요한 경로가 존재하지 않는 경우"
 GUIDELINE_CRITERIA_BAD="웹 서버 경로를 기타 업무와 영역이 분리되지 않은 경로로 설정하거나 불필요한 경로가 있는 경우"
-GUIDELINE_REMEDIATION="웹 서버의 경로를 별도의 경로로 변경 및 불필요한 경로 제거 설정"false\" 설정"
+GUIDELINE_REMEDIATION="웹 서버의 경로를 별도의 경로로 변경 및 불필요한 경로 제거 설정 (allowLinking false 설정)"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"
@@ -133,6 +133,6 @@ main() {
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
 }
 
-if true; then
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     main "$@"
 fi

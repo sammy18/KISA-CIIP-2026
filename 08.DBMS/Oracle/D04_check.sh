@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -158,7 +158,7 @@ diagnose() {
             ((vulnerabilities_found++)) || true
             inspection_summary+=" 취약: sqlnet.ora에 노드 검증 미설정"
         else
-            inspection_summary+=" 양호: sqlnet.ora에 노드 검증 설정됨"
+            inspection_summary+="  sqlnet.ora에 노드 검증 설정됨"
         fi
     else
         inspection_summary+=" 정보: sqlnet.ora 파일 없음"

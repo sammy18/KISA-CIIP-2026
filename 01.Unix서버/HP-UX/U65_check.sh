@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -74,7 +74,7 @@ diagnose() {
         diagnosis_result="VULNERABLE"
         status="취약"
         inspection_summary="NTP 서비스가 설치되지 않음 (시간 동기화 불가)"
-        local ntp_not_installed=$(which ntpd chronyd 2>/dev/null; ls /etc/ntp.conf /etc/chrony.conf 2>/dev/null || echo "NTP not installed")
+        local ntp_not_installed=$(which ntpd chronyd 2>/dev/null || ls /etc/ntp.conf /etc/chrony.conf 2>/dev/null || echo "NTP not installed")
         command_result="${ntp_not_installed}"
         command_executed="which ntpd chronyd; ls /etc/{ntp.conf,chrony.conf} 2>/dev/null"
     else
@@ -147,7 +147,7 @@ diagnose() {
             status="취약"
             if [ -z "$ntp_details" ]; then
                 inspection_summary="NTP가 설치되어 있으나 서버 설정 안됨"
-                local ntp_no_config=$(ls /etc/ntp.conf /etc/chrony.conf 2>/dev/null; cat /etc/ntp.conf 2>/dev/null | grep '^server' | head -3 || echo "NTP installed but not configured")
+                local ntp_no_config=$(ls /etc/ntp.conf /etc/chrony.conf 2>/dev/null || cat /etc/ntp.conf 2>/dev/null | grep '^server' | head -3 || echo "NTP installed but not configured")
                 command_result="${ntp_no_config}"
             else
                 inspection_summary="NTP 설정 또는 서비스 실행 문제: ${ntp_details}"

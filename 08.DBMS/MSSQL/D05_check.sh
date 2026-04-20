@@ -3,7 +3,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -87,7 +87,7 @@ diagnose() {
     inspection_summary+="   - secpol.msc 실행\n"
     inspection_summary+="   - 보안 설정 > 계정 정책 > 비밀번호 정책\n\n"
     inspection_summary+="2. '비밀번호 기억(Enforce Password History)' 설정 확인:\n"
-    inspection_summary+="   - 양호: 0 이상의 값으로 설정 (예: 24 = 최근 24개 비밀번호 재사용 금지)\n"
+    inspection_summary+="   -  0 이상의 값으로 설정 (예: 24 = 최근 24개 비밀번호 재사용 금지)\n"
     inspection_summary+="   - 취약: 0으로 설정 (비밀번호 재사용 제한 없음)\n\n"
     inspection_summary+="조치 방법:\n"
     inspection_summary+="'비밀번호 기억' 값을 24 이상으로 설정\n"

@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -96,7 +96,7 @@ diagnose() {
                 local found_mapping=$(grep -E "<servlet>|<servlet-mapping>" "${xml_file}" 2>/dev/null | grep -v "^\s*<!--" || true)
                 if [ -n "${found_mapping}" ]; then
                     servlet_mappings="${servlet_mappings}"$'\n'"${found_mapping}"
-                    ((servlet_count++))
+                    servlet_count=$((servlet_count + 1))
                 fi
                 break 2
             fi
@@ -135,6 +135,6 @@ main() {
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
 }
 
-if true; then
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     main "$@"
 fi

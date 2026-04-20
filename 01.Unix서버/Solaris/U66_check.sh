@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -79,15 +79,15 @@ diagnose() {
             service_active=true
             config_file="/etc/rsyslog.conf"
         fi
-    elif systemctl is-active rsyslog >/dev/null 2>&1; then
+    elif command -v systemctl >/dev/null 2>&1 && systemctl is-active rsyslog >/dev/null 2>&1; then
         syslog_service="rsyslog"
         service_active=true
         config_file="/etc/rsyslog.conf"
-    elif systemctl is-active syslog-ng >/dev/null 2>&1; then
+    elif command -v systemctl >/dev/null 2>&1 && systemctl is-active syslog-ng >/dev/null 2>&1; then
         syslog_service="syslog-ng"
         service_active=true
         config_file="/etc/syslog-ng/syslog-ng.conf"
-    elif systemctl is-active sysklogd >/dev/null 2>&1; then
+    elif command -v systemctl >/dev/null 2>&1 && systemctl is-active sysklogd >/dev/null 2>&1; then
         syslog_service="sysklogd"
         service_active=true
         config_file="/etc/syslog.conf"

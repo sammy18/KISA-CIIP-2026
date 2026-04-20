@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -98,14 +98,14 @@ diagnose() {
                 local found_cgi=$(grep -i "CGIServlet|cgi" "${xml_file}" 2>/dev/null | grep -E "servlet|servlet-mapping" | grep -v "^\s*<!--" || true)
                 if [ -n "${found_cgi}" ]; then
                     script_mappings="${script_mappings}"$'\n'"CGI: ${found_cgi}"
-                    ((cgi_count++))
+                    cgi_count=$((cgi_count + 1))
                 fi
 
                 # JSP Servlet 확인 (Jasper)
                 local found_jsp=$(grep -i "JspServlet|jsp" "${xml_file}" 2>/dev/null | grep -E "servlet|servlet-mapping" | grep -v "^\s*<!--" || true)
                 if [ -n "${found_jsp}" ]; then
                     script_mappings="${script_mappings}"$'\n'"JSP: ${found_jsp}"
-                    ((jsp_count++))
+                    jsp_count=$((jsp_count + 1))
                 fi
 
                 break 2

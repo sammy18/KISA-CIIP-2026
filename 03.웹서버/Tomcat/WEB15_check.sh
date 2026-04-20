@@ -2,7 +2,7 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-16
 # ============================================================================
 # [점검 항목 상세]
@@ -101,7 +101,7 @@ diagnose() {
 
                     # 불필요한 servlet 매핑 확인 (invoker, CGI, default)
                     if echo "${found_mappings}" | grep -iqE "invoker|cgiservlet|defaultservlet|jsp"; then
-                        ((unnecessary_mappings++))
+                        unnecessary_mappings=$((unnecessary_mappings + 1))
                     fi
                 fi
                 break 2
@@ -145,6 +145,6 @@ main() {
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
 }
 
-if true; then
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     main "$@"
 fi

@@ -1,8 +1,8 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
+# @Version: 1.0.1
 # @Last Updated: 2026-01-28
 # ============================================================================
 # [점검 항목 상세]
@@ -15,11 +15,11 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
@@ -41,7 +41,7 @@ GUIDELINE_REMEDIATION="OS에 기본으로 제공하는 방화벽 애플리케이
 diagnose() {
     # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지
     local status="양호"
-    local diagnosis_result="GOOD"
+    diagnosis_result="GOOD"
     local inspection_summary="접속 IP 및 포트 제한 설정이 적절합니다."
     local command_result=""
     local command_executed="cat /etc/hosts.allow /etc/hosts.deny"

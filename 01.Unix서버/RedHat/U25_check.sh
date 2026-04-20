@@ -1,11 +1,11 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @ID          : U-25
 # @Title       : world writable 파일 점검
 # ============================================================================
 
-set -uo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../lib"
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../../lib"
 source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"
 
 ITEM_ID="U-25"; ITEM_NAME="world writable 파일 점검"; SEVERITY="(상)"
@@ -16,7 +16,7 @@ GUIDELINE_CRITERIA_BAD="worldwritable 파일이 존재하나 설정 이유를 �
 GUIDELINE_REMEDIATION="worldwritable 파일 존재 여부를 확인하고 불필요한 경우 제거하도록 설정"
 
 diagnose() {
-    local status="양호"; local diagnosis_result="GOOD"
+    local status="양호"; diagnosis_result="GOOD"
     local command_result=""; local command_executed="find / -type f -perm -2 -xdev"
 
     # 시스템 내 world writable 파일 탐색 (최대 5개)
