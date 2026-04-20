@@ -3,8 +3,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-15
@@ -37,23 +37,58 @@ if (-not (Test-RunallMode)) {
 
 # 1. Run diagnostic
 try {
-    $profiles = Get-NetFirewallProfile -ErrorAction Stop
+    # Windows 방화벽 확인
+    $profiles = Get-NetFirewallProfile -ErrorAction SilentlyContinue
 
-    $allEnabled = $true
-    foreach ($profile in $profiles) {
-        if ($profile.Enabled -eq $false) {
-            $allEnabled = $false
-            break
+    $windowsFirewallEnabled = $false
+    if ($null -ne $profiles) {
+        $allEnabled = $true
+        foreach ($profile in $profiles) {
+            if ($profile.Enabled -eq $false) {
+                $allEnabled = $false
+                break
+            }
+        }
+        if ($allEnabled) {
+            $windowsFirewallEnabled = $true
         }
     }
 
-    if ($allEnabled) {
+    # 제3자 방화벽 확인
+    $thirdPartyFirewall = Get-WmiObject -Namespace "root\SecurityCenter2" -Class "FirewallProduct" -ErrorAction SilentlyContinue
+    $thirdPartyFirewallActive = $false
+    $thirdPartyDetails = ""
+
+    if ($null -ne $thirdPartyFirewall) {
+        foreach ($fw in $thirdPartyFirewall) {
+            $fwName = $fw.displayName
+            $stateVal = $fw.productState
+            if ($null -ne $stateVal -and ($stateVal -band 0x10) -ne 0) {
+                $thirdPartyFirewallActive = $true
+                $thirdPartyDetails = "$fwName 활성화"
+            } elseif ($null -ne $fwName) {
+                # productState 체크가 불확실하면 설치 여부만 확인
+                $thirdPartyFirewallActive = $true
+                $thirdPartyDetails = "$fwName 설치됨"
+            }
+        }
+    }
+
+    if ($windowsFirewallEnabled) {
         $finalResult = "GOOD"
         $summary = "Windows 방화벽 활성화됨 (모든 프로필)"
         $status = "양호"
+    } elseif ($thirdPartyFirewallActive) {
+        $finalResult = "GOOD"
+        $summary = "제3자 방화벽 활성화됨: $thirdPartyDetails"
+        $status = "양호"
     } else {
         $finalResult = "VULNERABLE"
-        $summary = "Windows 방화벽 비활성화됨 (하나 이상 프로필)"
+        if ($null -ne $thirdPartyFirewall) {
+            $summary = "제3자 방화벽 설치되었으나 활성화 상태 불명확"
+        } else {
+            $summary = "방화벽이 비활성화됨 (Windows 및 제3자 방화벽 모두)"
+        }
         $status = "취약"
     }
 

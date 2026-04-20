@@ -1,9 +1,9 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-28
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-01
@@ -15,11 +15,11 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
@@ -39,33 +39,127 @@ GUIDELINE_CRITERIA_BAD="원격 터미널 서비스 사용 시 root 직접 접속
 GUIDELINE_REMEDIATION="원격 접속 시 root 계정으로 접속할 수 없도록 파일 내용 설정"
 
 diagnose() {
-    # [중요] 파싱 에러 방지를 위한 기존 변수 초기값 유지
     local status="양호"
-    local diagnosis_result="GOOD"
+    diagnosis_result="GOOD"
     local inspection_summary="root 계정 원격 접속 제한 설정이 적절합니다."
     local command_result=""
-    local command_executed="grep -i '^PermitRootLogin' /etc/ssh/sshd_config"
+    local command_executed="systemctl is-active sshd; grep -i 'PermitRootLogin' /etc/ssh/sshd_config"
 
-    # 1. 실제 데이터 추출
-    local ssh_val=$(grep -i "^PermitRootLogin" /etc/ssh/sshd_config | awk '{print $2}' || echo "no-setting")
-    local securetty_pts=$(grep -E "^pts/" /etc/securetty || echo "no-pts")
+    local newline=$'\n'
 
-    # 2. 판정 로직
-    if [[ "$ssh_val" =~ ^[Yy]es ]] || [ "$ssh_val" = "no-setting" ] || [ "$securetty_pts" != "no-pts" ]; then
-        status="취약"
-        diagnosis_result="VULNERABLE"
-        inspection_summary="root 계정 원격 접속 제한 설정이 미설정 또는 부적절합니다."
+    # ==========================================================================
+    # 1. 서비스 실행 상태 확인
+    # ==========================================================================
+    local ssh_active=false
+    local telnet_active=false
+
+    # SSH 서비스 확인
+    if systemctl is-active --quiet sshd 2>/dev/null; then
+        ssh_active=true
+    elif ps aux 2>/dev/null | grep -E "sshd.*-D|sshd$" | grep -v grep >/dev/null 2>&1; then
+        ssh_active=true
     fi
 
-    # 3. command_result에 실제 설정값 기록 (증적 데이터)
-    command_result="[SSH] PermitRootLogin=${ssh_val} | [Telnet] /etc/securetty PTS=${securetty_pts}"
+    # Telnet 서비스 확인
+    if systemctl is-active --quiet telnetd 2>/dev/null || systemctl is-active --quiet xinetd 2>/dev/null; then
+        telnet_active=true
+    elif ps aux 2>/dev/null | grep -E "in\.telnetd|telnetd" | grep -v grep >/dev/null 2>&1; then
+        telnet_active=true
+    fi
+
+    # ==========================================================================
+    # 2. 서비스 미사용 시 양호 판정
+    # ==========================================================================
+    if [ "$ssh_active" = false ] && [ "$telnet_active" = false ]; then
+        command_result="[SSH] 서비스 미실행${newline}[Telnet] 서비스 미실행"
+        save_dual_result \
+            "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+            "${inspection_summary}" "${command_result}" "${command_executed}" \
+            "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+            "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+        verify_result_saved "${ITEM_ID}"
+        return 0
+    fi
+
+    # ==========================================================================
+    # 3. 서비스 실행 중인 경우 상세 진단
+    # ==========================================================================
+    local ssh_secure=true
+    local telnet_secure=true
+    local details=""
+
+    # --- SSH 진단 ---
+    if [ "$ssh_active" = true ]; then
+        local sshd_config="/etc/ssh/sshd_config"
+        if [ -f "$sshd_config" ]; then
+            local ssh_val=$(grep -i "^PermitRootLogin" "$sshd_config" 2>/dev/null | awk '{print $2}' | head -1 || true)
+            if [ -z "$ssh_val" ]; then
+                # 설정 라인이 없으면 주석이나 미설정 → 기본값 확인 필요
+                ssh_secure=false
+                details="${details}[SSH] PermitRootLogin 미설정 (기본값). "
+            else
+                case "$ssh_val" in
+                    no|prohibit-password|without-password)
+                        details="${details}[SSH] PermitRootLogin=${ssh_val} (양호). "
+                        ;;
+                    yes)
+                        ssh_secure=false
+                        details="${details}[SSH] PermitRootLogin=yes (취약). "
+                        ;;
+                    *)
+                        ssh_secure=false
+                        details="${details}[SSH] PermitRootLogin=${ssh_val} (확인필요). "
+                        ;;
+                esac
+            fi
+        else
+            # sshd_config 파일 자체가 없음 → MANUAL 처리
+            diagnosis_result="MANUAL"
+            status="수동진단"
+            inspection_summary="SSH 설정 파일(${sshd_config})이 없습니다."
+            command_result="[SSH] 설정 파일 없음"
+            save_dual_result \
+                "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+                "${inspection_summary}" "${command_result}" "${command_executed}" \
+                "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+                "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+            verify_result_saved "${ITEM_ID}"
+            return 0
+        fi
+    fi
+
+    # --- Telnet 진단 ---
+    if [ "$telnet_active" = true ]; then
+        local securetty_pts=$(grep -E "^pts/" /etc/securetty 2>/dev/null || true)
+        if [ -n "$securetty_pts" ]; then
+            telnet_secure=false
+            details="${details}[Telnet] /etc/securetty에 pts 설정 존재 (취약). "
+        else
+            details="${details}[Telnet] /etc/securetty에 pts 설정 없음 (양호). "
+        fi
+    fi
+
+    # ==========================================================================
+    # 4. 종합 판정
+    # ==========================================================================
+    if [ "$ssh_secure" = true ] && [ "$telnet_secure" = true ]; then
+        status="양호"
+        diagnosis_result="GOOD"
+        inspection_summary="root 계정 원격 접속 제한 적절 (${details})"
+    else
+        status="취약"
+        diagnosis_result="VULNERABLE"
+        inspection_summary="root 계정 원격 접속 제한 미설정 또는 부적절 (${details})"
+    fi
+
+    command_result="${details}"
 
     save_dual_result \
         "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
         "${inspection_summary}" "${command_result}" "${command_executed}" \
         "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
         "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
-    
+
     verify_result_saved "${ITEM_ID}"
     return 0
 }

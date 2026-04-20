@@ -2,8 +2,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : D-04
@@ -97,29 +97,65 @@ diagnose() {
         fi
     fi
 
-    # root 계정 원격 접속 확인
-    local root_remote_query="SELECT host FROM mysql.user WHERE user='root' AND host NOT IN ('localhost', '127.0.0.1', '::1');"
-    command_executed="mysql -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} -p*** -e \"${root_remote_query}\""
-    command_result=$(mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${DB_USER}" -p"${DB_PASSWORD}" -e "${root_remote_query}" 2>/dev/null || echo "")
+    # ==========================================================================
+    # 1. 관리자 권한(SUPER)을 가진 계정 확인
+    # ==========================================================================
+    local admin_query="SELECT user, host FROM mysql.user WHERE Super_priv = 'Y';"
+    command_executed="mysql -e \"SELECT user,host FROM mysql.user WHERE Super_priv='Y'; SELECT user,host FROM mysql.user WHERE Grant_priv='Y';\""
+    local admin_users=$(mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${DB_USER}" -p"${DB_PASSWORD}" -e "${admin_query}" 2>/dev/null | tail -n +2 || echo "")
 
-    # 결과 분석
-    if [ -n "$command_result" ]; then
-        local remote_hosts=$(echo "$command_result" | tail -n +2 | grep -v "^$" | wc -l)
-        if [ "$remote_hosts" -gt 0 ]; then
-            ((vulnerabilities_found++)) || true
-            diagnosis_result="VULNERABLE"
-            status="취약"
-            inspection_summary="취약: root 계정의 원격 접속 허용 (${remote_hosts}개 호스트): $(echo "$command_result" | tail -n +2 | head -5 | tr '\n' ', ')"
-        fi
+    # ==========================================================================
+    # 2. GRANT OPTION 권한을 가진 계정 확인
+    # ==========================================================================
+    local grant_query="SELECT user, host FROM mysql.user WHERE Grant_priv = 'Y';"
+    local grant_users=$(mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${DB_USER}" -p"${DB_PASSWORD}" -e "${grant_query}" 2>/dev/null | tail -n +2 || echo "")
+
+    # ==========================================================================
+    # 3. root 계정 원격 접속 확인 (보조 검사)
+    # ==========================================================================
+    local root_remote_query="SELECT host FROM mysql.user WHERE user='root' AND host NOT IN ('localhost', '127.0.0.1', '::1');"
+    local root_remote=$(mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${DB_USER}" -p"${DB_PASSWORD}" -e "${root_remote_query}" 2>/dev/null | tail -n +2 || echo "")
+
+    local details=""
+    local admin_count=0
+    local non_root_admin=""
+
+    # 관리자 계정 분석
+    if [ -n "$admin_users" ]; then
+        admin_count=$(echo "$admin_users" | grep -v "^$" | wc -l)
+        non_root_admin=$(echo "$admin_users" | grep -v "^root" | grep -v "^$" || true)
+        details="SUPER 권한 계정: ${admin_count}개"
     fi
 
-    if [ $vulnerabilities_found -gt 0 ]; then
+    if [ -n "$grant_users" ]; then
+        local grant_count=$(echo "$grant_users" | grep -v "^$" | wc -l)
+        details="${details}, GRANT 권한 계정: ${grant_count}개"
+    fi
+
+    if [ -n "$root_remote" ]; then
+        local remote_count=$(echo "$root_remote" | grep -v "^$" | wc -l)
+        details="${details}, root 원격 허용: ${remote_count}개 호스트"
+    fi
+
+    # ==========================================================================
+    # 4. 판정
+    # ==========================================================================
+    if [ -n "$non_root_admin" ]; then
+        # root 외의 계정이 관리자 권한을 가진 경우
         diagnosis_result="VULNERABLE"
         status="취약"
+        inspection_summary="root 외 계정에 관리자 권한 부여됨: ${non_root_admin}"
+        command_result="${details}"
+    elif [ -n "$root_remote" ]; then
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        inspection_summary="root 계정 원격 접속 허용: ${root_remote}"
+        command_result="${details}"
     else
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="root 계정의 원격 접속 제한됨"
+        inspection_summary="관리자 권한이 적절히 제한됨: ${details:-root만 관리자 권한 보유}"
+        command_result="${details:-root만 관리자 권한 보유}"
     fi
 
     # Save results (only if library function exists)

@@ -1,8 +1,8 @@
 ﻿# ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : W-48
@@ -35,7 +35,7 @@ if (-not (Test-RunallMode)) {
 
 # 1. Check shutdown without logon setting
 try {
-    $winlogon = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -ErrorAction Stop
+    $winlogon = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -ErrorAction SilentlyContinue
     $shutdownWithoutLogon = if ($winlogon) { $winlogon.ShutdownWithoutLogon } else { 1 }
 
     $output = "ShutdownWithoutLogon: $shutdownWithoutLogon"

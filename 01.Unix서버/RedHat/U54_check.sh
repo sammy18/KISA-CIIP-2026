@@ -1,24 +1,24 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-28
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-54
 # @Category    : UNIX > 4. 웹 서비스 관리
-# @Platform    : RedHat (Apache)
+# @Platform    : RedHat
 # @Severity    : (상)
-# @Title       : Apache 불필요한 파일 제거
-# @Description : 웹 서버 설치 시 기본적으로 생성되는 불필요한 파일(매뉴얼, 샘플 등) 제거 여부 점검
+# @Title       : 암호화되지 않은 FTP 서비스 비활성화
+# @Description : 암호화되지 않은 FTP 서비스 실행 여부 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 source "${LIB_DIR}/common.sh"
 source "${LIB_DIR}/result_manager.sh"
@@ -26,7 +26,7 @@ source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
 ITEM_ID="U-54"
-ITEM_NAME="Apache 불필요한 파일 제거"
+ITEM_NAME="암호화되지 않은 FTP 서비스 비활성화"
 SEVERITY="(상)"
 
 # 가이드라인 정보
@@ -38,29 +38,43 @@ GUIDELINE_REMEDIATION="암호화되지 않은 FTP 서비스 중지 및 비활성
 
 diagnose() {
     local status="양호"
-    local diagnosis_result="GOOD"
-    local inspection_summary="Apache 불필요한 파일 및 디렉토리가 존재하지 않습니다."
+    diagnosis_result="GOOD"
+    local inspection_summary="암호화되지 않은 FTP 서비스가 비활성화 되어 있습니다."
     local command_result=""
-    local command_executed="ls -d /var/www/html/manual /var/www/error"
+    local command_executed="systemctl is-active vsftpd proftpd pure-ftpd; cat /etc/xinetd.d/ftp; ss -tlnp | grep ':21'"
 
-    # 1. 실제 데이터 추출 (기본 경로 점검)
-    local check_paths=("/var/www/html/manual" "/var/www/error" "/var/www/icons")
-    local found_paths=""
+    local ftp_evidence=""
 
-    for path in "${check_paths[@]}"; do
-        if [ -d "$path" ]; then
-            found_paths+="${path} "
+    # 1. vsftpd, proftpd, pure-ftpd 서비스 활성 상태 점검
+    local ftp_daemons=("vsftpd" "proftpd" "pure-ftpd")
+    for daemon in "${ftp_daemons[@]}"; do
+        if systemctl is-active "${daemon}" >/dev/null 2>&1; then
+            ftp_evidence+="[활성 데몬] ${daemon}, "
         fi
     done
 
-    # 2. 판정 로직
-    if [ -n "$found_paths" ]; then
+    # 2. xinetd 기반 FTP 서비스 점검
+    if [ -f "/etc/xinetd.d/ftp" ]; then
+        local xinetd_disable=$(grep -v '^#' /etc/xinetd.d/ftp | grep -i 'disable' | head -n 1 || echo "")
+        if echo "$xinetd_disable" | grep -qi 'disable.*=.*no'; then
+            ftp_evidence+="[xinetd FTP 활성] /etc/xinetd.d/ftp disable=no, "
+        fi
+    fi
+
+    # 3. 포트 21 리스닝 확인 (ss 명령)
+    local port21_listening=$(ss -tlnp 2>/dev/null | grep ':21 ' || echo "")
+    if [ -n "$port21_listening" ]; then
+        ftp_evidence+="[포트 21 리스닝] ${port21_listening}, "
+    fi
+
+    # 4. 판정 로직
+    if [ -n "$ftp_evidence" ]; then
         status="취약"
         diagnosis_result="VULNERABLE"
-        inspection_summary="Apache 기본 매뉴얼 또는 에러 페이지 디렉토리가 존재합니다."
-        command_result="발견된 경로: [ ${found_paths} ]"
+        inspection_summary="암호화되지 않은 FTP 서비스가 활성화 되어 있습니다."
+        command_result="발견된 FTP 서비스: [ ${ftp_evidence} ]"
     else
-        command_result="불필요한 기본 파일이 발견되지 않았습니다."
+        command_result="FTP 서비스가 비활성화 되어 있습니다."
     fi
 
     # [보정] JSON 파싱 에러 방지
@@ -71,7 +85,7 @@ diagnose() {
         "${inspection_summary}" "${command_result}" "${command_executed}" \
         "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
         "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
-    
+
     verify_result_saved "${ITEM_ID}"
     return 0
 }

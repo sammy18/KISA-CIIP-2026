@@ -1,7 +1,7 @@
 # KISA CIIP 2026 - 진단 스크립트 공개 저장소
 
-**버전**: 1.0.0
-**최종 수정**: 2026-04-07
+**버전**: 1.0.1
+**최종 수정**: 2026-04-20
 **Repository**: https://github.com/rebugui/KISA-CIIP-2026
 
 ---
@@ -398,6 +398,44 @@ GNU Affero General Public License v3.0 (AGPL-3.0)
 
 ---
 
-**버전**: 1.0.0
-**최종 수정**: 2026-04-07
+**버전**: 1.0.1
+**최종 수정**: 2026-04-20
 **호환성**: KISA CIIP 2026 가이드라인 준수
+
+---
+
+## 📝 Changelog
+
+### v1.0.1 (2026-04-20)
+
+**통합 리뷰 보고서 기반 점검 로직 수정** (CRITICAL 15건, HIGH 3건, MEDIUM 23건)
+
+#### Unix 서버 (RedHat)
+- **U-01**: no-setting 로직 수정 (sshd_config 파일 부재와 실제 설정값 구분)
+- **U-03**: 임계값 수정 (`-gt 5` → `-gt 10`)
+- **U-19**: 권한 임계값 수정 (`-gt 600` → `-gt 644`)
+- **U-01~U-23**: `set -euo pipefail` 적용 (22개 스크립트)
+- **U-27**: `.rhosts` 파일 점검 로직 추가 (전체 사용자 대상)
+- **U-37**: crontab 권한 검사 보완 (cron.allow/deny, at.allow/deny 추가)
+- **U-52~U-58, U-64, U-66**: 9개 스크립트 가이드라인에 맞게 재작성
+  - U-52: Telnet 서비스, U-53: FTP 배너, U-54: 암호화 FTP, U-55: FTP shell 제한
+  - U-56: FTP 접근 제어, U-57: ftpusers, U-58: SNMP 서비스
+  - U-60: SNMP Community String 복잡성 검증 추가
+  - U-63: sudoers 권한 기준 640으로 수정
+  - U-64: 주기적 보안 패치, U-66: 시스템 로깅 설정
+
+#### Unix 서버 (Debian, Solaris, HP-UX, AIX)
+- **Debian U-19**: 권한 비교 로직 수정 (`= "644"` → `-le 644`)
+- **U-48**: 4개 플랫폼 SMTP expn/vrfy 점검 로직으로 재작성
+
+#### Windows 서버
+- **W-47, W-48**: 예외 처리 수정 (`-ErrorAction Stop` → `SilentlyContinue`)
+
+#### PC
+- **PC-13**: 제3자 백신 업데이트 날짜 확인 로직 추가
+- **PC-14**: 제3자 백신 실시간 감시 확인 로직 추가
+- **PC-15**: 제3자 방화벽 확인 로직 추가
+
+#### DBMS (MySQL)
+- **D-04**: 관리자 권한 점검 로직으로 재작성 (Super_priv, Grant_priv)
+- **D-08**: 해시 알고리즘 검증 로직으로 수정 (SHA-256+ 확인)

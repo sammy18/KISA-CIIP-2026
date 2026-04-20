@@ -1,8 +1,8 @@
 ﻿# ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : W-47
@@ -35,7 +35,7 @@ if (-not (Test-RunallMode)) {
 
 # 1. Check screen saver settings
 try {
-    $screenSaver = Get-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -ErrorAction Stop
+    $screenSaver = Get-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -ErrorAction SilentlyContinue
     $scrnsaveexe = if ($screenSaver) { $screenSaver.SCRNSAVE.EXE } else { '' }
     $screenSaveTimeOut = if ($screenSaver) { $screenSaver.ScreenSaveTimeOut } else { 0 }
     $screenSaveIsSecure = if ($screenSaver) { $screenSaver.ScreenSaverIsSecure } else { 0 }

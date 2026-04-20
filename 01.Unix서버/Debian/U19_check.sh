@@ -2,8 +2,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-19
@@ -80,7 +80,7 @@ diagnose() {
         local file_owner=$(stat -c "%U:%G" "$target_file" 2>/dev/null)
 
         # 소유자 및 권한 확인
-        if [ "$file_owner" = "root:root" ] && [ "$file_perms" = "644" ]; then
+        if [ "$file_owner" = "root:root" ] && [ "$file_perms" -le 644 ]; then
             is_secure=true
             details="권한: $file_perms, 소유자: $file_owner"
         else

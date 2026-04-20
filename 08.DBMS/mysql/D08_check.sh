@@ -2,8 +2,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : D-08
@@ -96,26 +96,60 @@ diagnose() {
         fi
     fi
 
-    # SSL/TLS 암호화 알고리즘 확인
-    local ssl_cipher_query="SHOW VARIABLES LIKE 'tls_version';"
-    command_executed="mysql -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} -p*** -e \"${ssl_cipher_query}\""
-    command_result=$(mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${DB_USER}" -p"${DB_PASSWORD}" -e "${ssl_cipher_query}" 2>/dev/null | tail -n +2 | awk '{print $2}' || echo "")
+    # ==========================================================================
+    # 1. 기본 인증 플러그인 확인 (SHA-256 이상)
+    # ==========================================================================
+    local auth_plugin_query="SHOW VARIABLES LIKE 'default_authentication_plugin';"
+    command_executed="mysql -e \"${auth_plugin_query}; SELECT user,host,plugin FROM mysql.user WHERE plugin IN ('mysql_native_password') AND user NOT IN ('mysql.sys','mysql.session','mysql.infoschema');\""
+    local default_plugin=$(mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${DB_USER}" -p"${DB_PASSWORD}" -e "${auth_plugin_query}" 2>/dev/null | tail -n +2 | awk '{print $2}' || echo "")
 
-    if [ -n "$command_result" ]; then
-        # TLS v1.2 또는 v1.3 사용 확인
-        if echo "$command_result" | grep -qE "TLSv1.2|TLSv1.3"; then
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="안전한 TLS 버전 사용: ${command_result}"
-        else
+    # ==========================================================================
+    # 2. 기존 사용자 인증 방식 확인
+    # ==========================================================================
+    local weak_auth_query="SELECT user, host, plugin FROM mysql.user WHERE plugin = 'mysql_native_password' AND user NOT IN ('mysql.sys', 'mysql.session', 'mysql.infoschema', 'debian-sys-maint');"
+    local weak_users=$(mysql -h "${DB_HOST}" -P "${DB_PORT}" -u "${DB_USER}" -p"${DB_PASSWORD}" -e "${weak_auth_query}" 2>/dev/null | tail -n +2 || echo "")
+
+    local details="기본 플러그인: ${default_plugin:-확인불가}"
+
+    if [ -n "$weak_users" ]; then
+        local weak_count=$(echo "$weak_users" | grep -v "^$" | wc -l)
+        details="${details}, SHA-1 인증 사용자: ${weak_count}개"
+    fi
+
+    # ==========================================================================
+    # 3. 판정
+    # ==========================================================================
+    if [ "$default_plugin" = "caching_sha2_password" ] || [ "$default_plugin" = "sha256_password" ]; then
+        # 기본 플러그인이 SHA-256 이상인 경우
+        if [ -n "$weak_users" ]; then
             diagnosis_result="VULNERABLE"
             status="취약"
-            inspection_summary="취약한 TLS 버전 사용: ${command_result}"
+            inspection_summary="기본 인증은 SHA-256이나 일부 계정이 SHA-1(mysql_native_password) 사용 중: ${details}"
+            command_result="${details}${newline}취약 계정:${newline}${weak_users}"
+        else
+            diagnosis_result="GOOD"
+            status="양호"
+            inspection_summary="모든 계정이 SHA-256 이상 해시 알고리즘 사용 중: ${details}"
+            command_result="${details}"
         fi
+    elif [ "$default_plugin" = "mysql_native_password" ]; then
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        inspection_summary="기본 인증 플러그인이 SHA-1(mysql_native_password)입니다. SHA-256 이상 권장: ${details}"
+        command_result="${details}"
     else
-        diagnosis_result="MANUAL"
-        status="수동진단"
-        inspection_summary="TLS 버전 확인 불가 - 수동 확인 필요"
+        # 플러그인 확인 불가 또는 알 수 없는 플러그인
+        if [ -n "$weak_users" ]; then
+            diagnosis_result="VULNERABLE"
+            status="취약"
+            inspection_summary="SHA-1(mysql_native_password) 사용 계정 존재: ${details}"
+            command_result="${details}${newline}취약 계정:${newline}${weak_users}"
+        else
+            diagnosis_result="GOOD"
+            status="양호"
+            inspection_summary="SHA-1 미사용: ${details}"
+            command_result="${details}"
+        fi
     fi
 
     # Save results (only if library function exists)

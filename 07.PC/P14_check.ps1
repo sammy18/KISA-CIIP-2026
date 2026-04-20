@@ -3,8 +3,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-14
@@ -37,6 +37,7 @@ if (-not (Test-RunallMode)) {
 
 # 1. Run diagnostic
 try {
+    # Windows Defender 실시간 감시 확인
     $defender = Get-MpComputerStatus -ErrorAction SilentlyContinue
 
     $realTimeEnabled = $false
@@ -44,13 +45,42 @@ try {
         $realTimeEnabled = $true
     }
 
+    # 제3자 백신 실시간 감시 확인
+    $thirdParty = Get-WmiObject -Namespace "root\SecurityCenter2" -Class "AntiVirusProduct" -ErrorAction SilentlyContinue
+    $thirdPartyRealTime = $false
+    $thirdPartyDetails = ""
+
+    if ($null -ne $thirdParty) {
+        foreach ($av in $thirdParty) {
+            $avName = $av.displayName
+            # productState 비트 플래그 확인
+            # 0x10 (16) = 실시간 보호 활성화, 0x1000 (4096) = 업데이트 됨
+            $stateVal = $av.productState
+            if ($null -ne $stateVal) {
+                $realTimeBit = ($stateVal -band 0x10) -ne 0
+                if ($realTimeBit) {
+                    $thirdPartyRealTime = $true
+                    $thirdPartyDetails = "$avName 실시간 감시 활성화"
+                }
+            }
+        }
+    }
+
     if ($realTimeEnabled) {
         $finalResult = "GOOD"
-        $summary = "백신 실시간 감시 기능 활성화됨"
+        $summary = "Windows Defender 백신 실시간 감시 기능 활성화됨"
+        $status = "양호"
+    } elseif ($thirdPartyRealTime) {
+        $finalResult = "GOOD"
+        $summary = "제3자 백신 실시간 감시 기능 활성화됨: $thirdPartyDetails"
         $status = "양호"
     } else {
         $finalResult = "VULNERABLE"
-        $summary = "백신 실시간 감시 기능 비활성화됨"
+        if ($null -ne $thirdParty -and !$thirdPartyRealTime) {
+            $summary = "제3자 백신 설치되었으나 실시간 감시 비활성화됨"
+        } else {
+            $summary = "백신 실시간 감시 기능 비활성화됨"
+        }
         $status = "취약"
     }
 

@@ -2,26 +2,24 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-48
-# @Category    : Unix Server
+# @Category    : UNIX > 3. 서비스 관리
 # @Platform    : HP-UX
 # @Severity    : 중
-# @Title       : FTP 서비스 버전 확인
-# @Description : FTP 서비스 버전 및 보안 취약점 확인
+# @Title       : expn, vrfy 명령어 제한
+# @Description : SMTP 서버의 EXPN 및 VRFY 명령어 비활성화 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
 set -euo pipefail
 
-# 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="${SCRIPT_DIR}/../../lib"
 
-# 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
 source "${LIB_DIR}/command_validator.sh"
 source "${LIB_DIR}/timeout_handler.sh"
@@ -29,9 +27,8 @@ source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
 
-
 ITEM_ID="U-48"
-ITEM_NAME="FTP 서비스 버전 확인"
+ITEM_NAME="expn, vrfy 명령어 제한"
 SEVERITY="중"
 
 # 가이드라인 정보
@@ -41,14 +38,7 @@ GUIDELINE_CRITERIA_GOOD="noexpn, novrfy 옵션이 설정된 경우"
 GUIDELINE_CRITERIA_BAD="noexpn, novrfy 옵션이 설정되어 있지 않은 경우"
 GUIDELINE_REMEDIATION="메일 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 메일 서비스 사용 시 메일 서비스 설정 파일에 noexpn,novrfy 또는 goaway 옵션 추가 설정"
 
-# ============================================================================
-# 진단 함수
-# ============================================================================
-
-# 진단 수행
 diagnose() {
-
-
     diagnosis_result="unknown"
     local status="미진단"
     local inspection_summary=""
@@ -56,124 +46,105 @@ diagnose() {
     local command_executed=""
     local newline=$'\n'
 
-    # 진단 로직 구현
-    # FTP 서비스 상태 및 버전 확인
+    # ==========================================================================
+    # 1. SMTP 서비스 실행 여부 확인 (HP-UX init.d)
+    # ==========================================================================
+    local smtp_running=false
+    local smtp_service=""
 
-    local ftp_running=false
-    local ftp_version=""
-    local ftp_details=""
-
-    # 1) vsftpd 확인
-    if /sbin/init.d/vsftpd status 2>/dev/null | grep -q "running" &>/dev/null || /sbin/init.d/pure-ftpd status 2>/dev/null | grep -q "running" &>/dev/null || /sbin/init.d/proftpd status 2>/dev/null | grep -q "running" &>/dev/null; then
-        ftp_running=true
-
-        # vsftpd 버전 확인
-        if command -v vsftpd &>/dev/null; then
-            ftp_version=$(vsftpd -version 2>&1 || echo "unknown")
-            ftp_details="vsftpd: ${ftp_version}"
-        # proftpd 버전 확인
-        elif command -v proftpd &>/dev/null; then
-            ftp_version=$(proftpd -v 2>&1 | grep -oP "ProFTPD \K[0-9.]+" || echo "unknown")
-            ftp_details="proftpd: ${ftp_version}"
-        # pure-ftpd 버전 확인
-        elif command -v pure-ftpd &>/dev/null; then
-            ftp_version=$(pure-ftpd -v 2>&1 | grep -oP "Pure-FTPd \K[0-9.]+" || echo "unknown")
-            ftp_details="pure-ftpd: ${ftp_version}"
-        fi
-
-        # 패키지 버전 확인 (Debian/Ubuntu)
-        if [ -f /etc/debian_version ]; then
-            local pkg_version=$(swlist | grep -E "vsftpd|proftpd|pure-ftpd" | awk '{print $2, $3}' || echo "")
-            if [ -n "$pkg_version" ]; then
-                ftp_details="${ftp_details}\\n패키지: ${pkg_version}"
-            fi
-        fi
+    if /sbin/init.d/sendmail status 2>/dev/null | grep -q "running"; then
+        smtp_running=true
+        smtp_service="sendmail"
+    elif /sbin/init.d/postfix status 2>/dev/null | grep -q "running"; then
+        smtp_running=true
+        smtp_service="postfix"
     fi
 
-    # 2) 포트 확인 (FTP: 21)
-    if command -v ss &>/dev/null; then
-        local ftp_port=$(ss -tuln | grep ":21 " || echo "")
-        if [ -n "$ftp_port" ]; then
-            ftp_running=true
-            ftp_details="${ftp_details}\\nFTP 포트 21 활성화"
-        fi
-    fi
+    command_executed="/sbin/init.d/sendmail status 2>/dev/null; grep 'PrivacyOptions' /etc/mail/sendmail.cf 2>/dev/null"
 
-    # 최종 판정
-    if [ "$ftp_running" = false ]; then
+    # ==========================================================================
+    # 2. SMTP 미사용 시 양호
+    # ==========================================================================
+    if [ "$smtp_running" = false ]; then
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="FTP 서비스 비활성화됨"
-        local ftp_check=$(/sbin/init.d/vsftpd status 2>/dev/null | head -2; /sbin/init.d/proftpd status 2>/dev/null | head -2; /sbin/init.d/pure-ftpd status 2>/dev/null | head -2; ss -tuln 2>/dev/null | grep ':21' || echo "FTP service not running")
-        command_result="${ftp_check}"
-        command_executed="/sbin/init.d/vsftpd status 2>/dev/null | grep -q "running" pure-ftpd proftpd; ss -tuln | grep ':21 '"
-    else
-        # 버전 확인이 가능한 경우
-        if [ -n "$ftp_version" ] && [ "$ftp_version" != "unknown" ]; then
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="FTP 서비스 실행 중, 버전 확인됨: ${ftp_details}"
-            command_result="${ftp_details}"
-            command_executed="vsftpd -version 2>/dev/null; proftpd -v 2>/dev/null; swlist | grep -E 'vsftpd|proftpd'"
-        else
-            diagnosis_result="MANUAL"
-            status="수동진단"
-            inspection_summary="FTP 서비스 실행 중, 버전 확인 필요: ${ftp_details}"
-            command_result="${ftp_details}"
-            command_executed="/sbin/init.d/vsftpd status 2>/dev/null | grep -q "running" pure-ftpd proftpd; vsftpd -version 2>/dev/null"
-        fi
+        inspection_summary="SMTP 서비스가 실행 중이지 않습니다."
+        command_result="SMTP Service: [inactive]"
+
+        save_dual_result \
+            "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+            "${inspection_summary}" "${command_result}" "${command_executed}" \
+            "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+            "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+
+        verify_result_saved "${ITEM_ID}"
+        return 0
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
+    # ==========================================================================
+    # 3. SMTP 실행 중인 경우 expn/vrfy 설정 확인
+    # ==========================================================================
+    local expn_secure=false
+    local vrfy_secure=false
+    local details=""
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
+    if [ "$smtp_service" = "sendmail" ]; then
+        local cf_file="/etc/mail/sendmail.cf"
+        if [ -f "$cf_file" ]; then
+            local privacy_opts=$(grep "O PrivacyOptions" "$cf_file" 2>/dev/null | sed 's/.*=//' || echo "")
+            if echo "$privacy_opts" | grep -qi "goaway"; then
+                expn_secure=true
+                vrfy_secure=true
+                details="PrivacyOptions에 goaway 설정됨"
+            else
+                echo "$privacy_opts" | grep -qi "noexpn" && expn_secure=true
+                echo "$privacy_opts" | grep -qi "novrfy" && vrfy_secure=true
+                details="PrivacyOptions: ${privacy_opts:-미설정}"
+            fi
+        fi
+    elif [ "$smtp_service" = "postfix" ]; then
+        expn_secure=true
+        vrfy_secure=true
+        details="Postfix (기본 expn/vrfy 차단)"
+    fi
+
+    # ==========================================================================
+    # 4. 판정
+    # ==========================================================================
+    if [ "$expn_secure" = true ] && [ "$vrfy_secure" = true ]; then
+        diagnosis_result="GOOD"
+        status="양호"
+        inspection_summary="SMTP 서비스의 expn, vrfy 명령어가 제한되어 있습니다. (${details})"
+    else
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        local missing=""
+        [ "$expn_secure" = false ] && missing="noexpn "
+        [ "$vrfy_secure" = false ] && missing="${missing}novrfy "
+        inspection_summary="SMTP 서비스(${smtp_service})에서 ${missing}옵션이 설정되지 않았습니다."
+    fi
+
+    command_result="${details}"
+    command_result=$(echo "$command_result" | tr -d '\n\r')
+
     save_dual_result \
-        "${ITEM_ID}" \
-        "${ITEM_NAME}" \
-        "${status}" \
-        "${diagnosis_result}" \
-        "${inspection_summary}" \
-        "${command_result}" \
-        "${command_executed}" \
-        "${GUIDELINE_PURPOSE}" \
-        "${GUIDELINE_THREAT}" \
-        "${GUIDELINE_CRITERIA_GOOD}" \
-        "${GUIDELINE_CRITERIA_BAD}" \
-        "${GUIDELINE_REMEDIATION}"
+        "${ITEM_ID}" "${ITEM_NAME}" "${status}" "${diagnosis_result}" \
+        "${inspection_summary}" "${command_result}" "${command_executed}" \
+        "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
+        "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
 
-    # 결과 저장 확인
     verify_result_saved "${ITEM_ID}"
-
-
     return 0
 }
-
-# ============================================================================
-# 메인 실행
-# ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-
-    # 디스크 공간 확인
     check_disk_space
-
-    # 진단 수행
     diagnose
-
-    # 진단 완료 표시
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
-
     return 0
 }
 
-# 스크립트 직접 실행 시에만 진단 수행
 if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     main "$@"
 fi

@@ -1,9 +1,9 @@
-﻿#!/bin/bash
+#!/bin/bash
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-28
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-03
@@ -15,10 +15,10 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 source "${LIB_DIR}/common.sh"
 source "${LIB_DIR}/result_manager.sh"
@@ -38,7 +38,7 @@ GUIDELINE_REMEDIATION="계정 잠금 임계값을 10회 이하로 설정"
 
 diagnose() {
     local status="양호"
-    local diagnosis_result="GOOD"
+    diagnosis_result="GOOD"
     local inspection_summary="계정 잠금 임계값 설정이 적절히 적용되어 있습니다."
     local command_result=""
     local command_executed="grep -E 'pam_faillock|pam_tally2' /etc/pam.d/system-auth"
@@ -49,10 +49,10 @@ diagnose() {
     local deny_val=$(grep -E "pam_faillock.so|pam_tally2.so" $pam_file | grep "deny=" | sed 's/.*deny=\([0-9]*\).*/\1/' | head -n 1 || echo "미설정")
 
     # 2. 판정 로직 (5회 초과 또는 미설정 시 취약)
-    if [ "$deny_val" = "미설정" ] || [ "$deny_val" -gt 5 ]; then
+    if [ "$deny_val" = "미설정" ] || [ "$deny_val" -gt 10 ]; then
         status="취약"
         diagnosis_result="VULNERABLE"
-        inspection_summary="계정 잠금 임계값이 설정되지 않았거나 기준(5회)을 초과했습니다."
+        inspection_summary="계정 잠금 임계값이 설정되지 않았거나 기준(10회)을 초과했습니다."
     fi
 
     # 3. command_result에 실제 설정값 기록 (개행 제거)

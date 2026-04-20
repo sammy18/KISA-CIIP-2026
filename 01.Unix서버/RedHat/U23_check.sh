@@ -2,8 +2,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-28
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-23
@@ -15,11 +15,11 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -uo pipefail
+set -euo pipefail
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
@@ -40,7 +40,7 @@ GUIDELINE_REMEDIATION="불필요한 SUID,SGID 권한 또는 해당 파일 제거
 
 diagnose() {
     local status="미진단"
-    local diagnosis_result="unknown"
+    diagnosis_result="unknown"
     local inspection_summary=""
     local command_result=""
     local command_executed=""

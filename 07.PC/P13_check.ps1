@@ -3,8 +3,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.0
-# @Last Updated: 2026-01-16
+# @Version: 1.0.1
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-13
@@ -77,12 +77,47 @@ try {
 
     if ($hasDefender -and $defenderEnabled -and $defenderUpToDate) {
         $finalResult = "GOOD"
-        $summary = "백신 프로그램 설치되어 있고 실시간 감시 및 업데이트 정상"
+        $summary = "Windows Defender 백신 설치, 실시간 감시 및 업데이트 정상"
         $status = "양호"
     } elseif ($hasThirdParty -and $thirdPartyRunning) {
-        $finalResult = "GOOD"
-        $summary = "백신 프로그램 설치되어 있고 실시간 감시 및 업데이트 정상"
-        $status = "양호"
+        # 제3자 백신 실시간 감시 확인
+        # SecurityCenter2의 productState에서 실시간 보호 상태 확인
+        # productState 하위 워드의 비트 0x10 = 실시간 보호 활성화
+        $thirdPartyUpToDate = $false
+        $thirdPartyDetails = @()
+        foreach ($av in $thirdParty) {
+            $avName = $av.displayName
+            $avState = $av.productState
+            $avTimestamp = $av.timestamp
+
+            # 제3자 백신 업데이트 날짜 확인 (timestamp가 있는 경우)
+            if ($null -ne $avTimestamp -and $avTimestamp -ne "") {
+                try {
+                    $updateDate = [Management.ManagementDateTimeConverter]::ToDateTime($avTimestamp)
+                    $daysSince = ((Get-Date) - $updateDate).Days
+                    if ($daysSince -le 7) {
+                        $thirdPartyUpToDate = $true
+                    }
+                    $thirdPartyDetails += "$avName (업데이트: $($updateDate.ToString('yyyy-MM-dd')), ${daysSince}일 전)"
+                } catch {
+                    $thirdPartyDetails += "$avName (업데이트 날짜 확인 불가)"
+                }
+            } else {
+                # timestamp가 없으면 실시간 감시만으로 양호 처리
+                $thirdPartyUpToDate = $true
+                $thirdPartyDetails += "$avName (상태: 활성)"
+            }
+        }
+
+        if ($thirdPartyUpToDate) {
+            $finalResult = "GOOD"
+            $summary = "제3자 백신 설치 및 실시간 감시 정상: $($thirdPartyDetails -join ', ')"
+            $status = "양호"
+        } else {
+            $finalResult = "VULNERABLE"
+            $summary = "제3자 백신 설치되었으나 업데이트가 오래됨: $($thirdPartyDetails -join ', ')"
+            $status = "취약"
+        }
     } else {
         $finalResult = "VULNERABLE"
         $summary = "백신 프로그램 미설치 또는 실시간 감시/업데이트 미설정"
