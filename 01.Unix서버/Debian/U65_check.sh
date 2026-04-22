@@ -67,7 +67,7 @@ diagnose() {
     local raw_output=""
 
     # 1) NTP 서비스 설치 여부 확인
-    if command -v ntpd >/dev/null 2>&1 || [ -f /etc/ntp.conf ] || command -v chronyd >/dev/null 2>&1 || [ -f /etc/chrony.conf ]; then
+    if command -v ntpd >/dev/null 2>&1 || [ -f /etc/ntp.conf ] || command -v chronyd >/dev/null 2>&1 || [ -f /etc/chrony.conf ] || [ -f /etc/chrony/chrony.conf ]; then
         ntp_installed=true
     fi
 
@@ -76,10 +76,10 @@ diagnose() {
         status="취약"
         inspection_summary="NTP 서비스가 설치되지 않음 (시간 동기화 불가)"
         command_result="NTP: [not installed]"
-        command_executed="which ntpd chronyd; ls /etc/{ntp.conf,chrony.conf} 2>/dev/null"
+        command_executed="which ntpd chronyd; ls /etc/{ntp.conf,chrony.conf,chrony/chrony.conf} 2>/dev/null"
     else
         # Capture raw NTP config output
-        raw_output=$(cat /etc/ntp.conf 2>/dev/null || echo ""; cat /etc/chrony.conf 2>/dev/null || echo ""; cat /etc/systemd/timesyncd.conf 2>/dev/null | grep -v "^#" | grep "NTP=" || echo "")
+        raw_output=$(cat /etc/ntp.conf 2>/dev/null || echo ""; cat /etc/chrony.conf 2>/dev/null || echo ""; cat /etc/chrony/chrony.conf 2>/dev/null || echo ""; cat /etc/systemd/timesyncd.conf 2>/dev/null | grep -v "^#" | grep "NTP=" || echo "")
         raw_output=$(echo "$raw_output" | head -30)
 
         # 2) NTP 설정 파일 확인
@@ -107,6 +107,17 @@ diagnose() {
             fi
         fi
 
+        # Debian chrony 경로 (/etc/chrony/chrony.conf)
+        if [ -f /etc/chrony/chrony.conf ]; then
+            config_files="${config_files} /etc/chrony/chrony.conf"
+
+            local chrony_servers=$(grep -E "^[\s]*server|^[\s]*pool" /etc/chrony/chrony.conf 2>/dev/null | grep -v "^#" | head -5)
+            if [ -n "$chrony_servers" ]; then
+                ntp_configured=true
+                ntp_details="${ntp_details}, Chrony 서버 설정됨 (Debian)"
+            fi
+        fi
+
         # systemd-timesyncd 확인 (최신 리눅스 배포판)
         if [ -f /etc/systemd/timesyncd.conf ]; then
             config_files="${config_files} /etc/systemd/timesyncd.conf"
@@ -121,7 +132,7 @@ diagnose() {
         # 3) NTP 서비스 실행 여부 확인
         local ntp_service_running=false
         if command -v systemctl >/dev/null 2>&1; then
-            if systemctl is-active ntp >/dev/null 2>&1 || systemctl is-active chrony >/dev/null 2>&1 || systemctl is-active systemd-timesyncd >/dev/null 2>&1; then
+            if systemctl is-active ntp >/dev/null 2>&1 || systemctl is-active chrony >/dev/null 2>&1 || systemctl is-active chronyd >/dev/null 2>&1 || systemctl is-active systemd-timesyncd >/dev/null 2>&1; then
                 ntp_running=true
                 ntp_service_running=true
             fi
@@ -149,7 +160,7 @@ diagnose() {
         if [ "$ntp_running" = true ] && [ "$ntp_configured" = true ]; then
             diagnosis_result="GOOD"
             status="양호"
-            inspection_summary="NTP 서비스 실행 중且 시간 동기화 설정됨: ${ntp_details}"
+            inspection_summary="NTP 서비스 실행 중 및 시간 동기화 설정됨: ${ntp_details}"
             command_result="${raw_output}"
             command_executed="systemctl status ntp chrony systemd-timesyncd 2>/dev/null; cat ${config_files}"
         elif [ "$ntp_installed" = true ] && [ "$ntp_configured" = true ]; then
@@ -172,14 +183,7 @@ diagnose() {
         fi
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
+    # 결과 생성
     save_dual_result \
         "${ITEM_ID}" \
         "${ITEM_NAME}" \
