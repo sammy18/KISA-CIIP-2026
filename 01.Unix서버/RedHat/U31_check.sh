@@ -56,8 +56,12 @@ diagnose() {
 
             checked_list+="${user}(Owner:${owner}, Perm:${perm})\n"
 
-            # 판정 로직: 소유자 불일치 OR 타인 쓰기 권한(마지막 자리 >= 2)
-            if [ "$owner" != "$user" ] || [ "${perm: -1}" -ge 2 ]; then
+            # 판정 로직: 소유자 불일치 OR 그룹 쓰기 권한 OR 타인 쓰기 권한
+            local last_digit="${perm: -1}"
+            local mid_digit="${perm:1:1}"
+            local has_other_write=$(( last_digit & 2 ))
+            local has_group_write=$(( mid_digit & 2 ))
+            if [ "$owner" != "$user" ] || [ "$has_group_write" -ne 0 ] || [ "$has_other_write" -ne 0 ]; then
                 status="취약"
                 diagnosis_result="VULNERABLE"
                 ((bad_count++))
