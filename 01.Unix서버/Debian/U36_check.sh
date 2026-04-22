@@ -10,8 +10,8 @@
 # @Category    : Unix Server
 # @Platform    : Debian
 # @Severity    : 중
-# @Title       : 자동 로그아웃 설정
-# @Description : TMOUT <= 600 seconds 확인
+# @Title       : r 계열 서비스 비활성화
+# @Description : rlogin, rsh, rexec 서비스 비활성화 여부 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -31,7 +31,7 @@ source "${LIB_DIR}/metadata_parser.sh"
 
 
 ITEM_ID="U-36"
-ITEM_NAME="자동 로그아웃 설정"
+ITEM_NAME="r 계열 서비스 비활성화"
 SEVERITY="중"
 
 # 가이드라인 정보
@@ -57,91 +57,91 @@ diagnose() {
     local newline=$'\n'
 
     # 진단 로직 구현
-    # /etc/profile, /etc/bash.bashrc에서 TMOUT 또는 TIMEOUT 확인
+    # r 계열 서비스 (rlogin, rsh, rexec) 비활성화 여부 점검
+    # 가이드라인: 불필요한 r 계열 서비스가 비활성화된 경우 양호
 
-    local is_secure=false
-    local config_details=""
-    local tmout_value=""
-    local timeout_value=""
+    local r_services_active=false
+    local active_services=""
     local raw_output=""
 
-    # Capture raw grep output
-    raw_output=$(grep -h -E "^TMOUT=|^TIMEOUT=" /etc/profile /etc/bash.bashrc /etc/profile.d/*.sh 2>/dev/null || echo "No TMOUT/TIMEOUT settings found")
+    # r-command 서비스 목록
+    local r_services=("rlogin" "rsh" "rexec" "shell" "login" "exec")
+    local r_ports=("513" "514" "512")
 
-    # 1) /etc/profile 확인
-    if [ -f /etc/profile ]; then
-        local profile_tmout=$(grep -E "^TMOUT=" /etc/profile | awk -F= '{print $2}' | tr -d ' ')
-        if [ -n "$profile_tmout" ]; then
-            tmout_value=$profile_tmout
-        fi
-        local profile_timeout=$(grep -E "^TIMEOUT=" /etc/profile | awk -F= '{print $2}' | tr -d ' ')
-        if [ -n "$profile_timeout" ]; then
-            timeout_value=$profile_timeout
-        fi
+    # 1) systemctl 확인
+    if command -v systemctl >/dev/null 2>&1 && systemctl --version >/dev/null 2>&1; then
+        for svc in rlogin rsh rexec rsh.socket rlogin.socket; do
+            if systemctl is-active --quiet "$svc" 2>/dev/null; then
+                r_services_active=true
+                active_services="${active_services}${svc} "
+                raw_output="${raw_output}[systemctl] ${svc} 실행 중${newline}"
+            fi
+        done
     fi
 
-    # 2) /etc/bash.bashrc 확인
-    if [ -z "$tmout_value" ] && [ -f /etc/bash.bashrc ]; then
-        local bashrc_tmout=$(grep -E "^TMOUT=" /etc/bash.bashrc | awk -F= '{print $2}' | tr -d ' ')
-        if [ -n "$bashrc_tmout" ]; then
-            tmout_value=$bashrc_tmout
+    # 2) inetd/xinetd 설정 확인
+    if [ "$r_services_active" = false ]; then
+        # /etc/inetd.conf 확인
+        if [ -f /etc/inetd.conf ]; then
+            local inetd_r=$(grep -v "^#" /etc/inetd.conf 2>/dev/null | grep -iE "rlogin|rsh|rexec|shell|exec" | grep -v "bash" || echo "")
+            if [ -n "$inetd_r" ]; then
+                r_services_active=true
+                active_services="${active_services}inetd.conf "
+                raw_output="${raw_output}[/etc/inetd.conf]${inetd_r}${newline}"
+            fi
         fi
-        local bashrc_timeout=$(grep -E "^TIMEOUT=" /etc/bash.bashrc | awk -F= '{print $2}' | tr -d ' ')
-        if [ -n "$bashrc_timeout" ]; then
-            timeout_value=$bashrc_timeout
-        fi
+
+        # /etc/xinetd.d/ 확인
+        for svc_file in rlogin rsh rexec; do
+            if [ -f "/etc/xinetd.d/$svc_file" ]; then
+                local xinetd_enabled=$(grep -v "^#" "/etc/xinetd.d/$svc_file" 2>/dev/null | grep -i "disable.*=.*no" || echo "")
+                if [ -n "$xinetd_enabled" ]; then
+                    r_services_active=true
+                    active_services="${active_services}${svc_file} "
+                    raw_output="${raw_output}[/etc/xinetd.d/${svc_file}] 활성화됨${newline}"
+                fi
+            fi
+        done
     fi
 
-    # 3) /etc/profile.d/*.sh 확인
-    if [ -z "$tmout_value" ] && [ -d /etc/profile.d ]; then
-        local profile_d_tmout=$(grep -h -E "^TMOUT=" /etc/profile.d/*.sh 2>/dev/null | awk -F= '{print $2}' | tr -d ' ' | head -1)
-        if [ -n "$profile_d_tmout" ]; then
-            tmout_value=$profile_d_tmout
+    # 3) 프로세스 및 포트 확인
+    if [ "$r_services_active" = false ]; then
+        local r_ps=$(ps aux 2>/dev/null | grep -E "rlogind|rshd|rexecd|in\.rlogin|in\.rsh|in\.rexec" | grep -v grep || echo "")
+        if [ -n "$r_ps" ]; then
+            r_services_active=true
+            raw_output="${raw_output}[Process]${r_ps}${newline}"
         fi
+
+        # 포트 확인 (513=rlogin, 514=rsh/shell, 512=exec)
+        for port in "${r_ports[@]}"; do
+            local port_check=$(ss -tlnp 2>/dev/null | grep ":${port} " || netstat -tlnp 2>/dev/null | grep ":${port} " || echo "")
+            if [ -n "$port_check" ]; then
+                r_services_active=true
+                raw_output="${raw_output}[Port ${port}]${port_check}${newline}"
+            fi
+        done
     fi
 
-    # 값 검증 (TMOUT 또는 TIMEOUT)
-    local final_value=""
-    if [ -n "$tmout_value" ]; then
-        final_value=$tmout_value
-        config_details="TMOUT=${tmout_value} seconds"
-    elif [ -n "$timeout_value" ]; then
-        final_value=$timeout_value
-        config_details="TIMEOUT=${timeout_value} seconds"
+    # 4) hosts.equiv / .rhosts 확인 (정보성)
+    local hosts_equiv=""
+    if [ -f /etc/hosts.equiv ]; then
+        hosts_equiv=$(cat /etc/hosts.equiv 2>/dev/null | grep -v "^#" | grep -v "^$" || echo "")
     fi
 
-    # 최종 판정 (600초 = 10분 이하이면 양호)
-    if [ -n "$final_value" ]; then
-        if [ "$final_value" -le 600 ]; then
-            is_secure=true
-        fi
-    fi
-
-    if [ "$is_secure" = true ]; then
+    # 최종 판정
+    if [ "$r_services_active" = true ]; then
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        inspection_summary="r 계열 서비스가 활성화됨: ${active_services}"
+        command_result="${raw_output}[hosts.equiv]${hosts_equiv:-없음}"
+        command_executed="systemctl status rlogin rsh rexec 2>/dev/null; grep -iE 'rlogin|rsh|rexec' /etc/inetd.conf 2>/dev/null; ss -tlnp | grep -E ':51[234]'"
+    else
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="자동 로그아웃 설정 적절함 (${config_details} <= 600초)"
-        command_result="${raw_output}"
-        command_executed="grep -E '^TMOUT=|^TIMEOUT=' /etc/profile /etc/bash.bashrc"
-    elif [ -n "$final_value" ]; then
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="자동 로그아웃 설정됨但 시간 초과 (${config_details} > 600초)"
-        command_result="${raw_output}"
-        command_executed="grep -E '^TMOUT=|^TIMEOUT=' /etc/profile /etc/bash.bashrc"
-    else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="자동 로그아웃 미설정 (TMOUT 또는 TIMEOUT 변수 미설정)"
-        command_result="${raw_output}"
-        command_executed="grep -E '^TMOUT=|^TIMEOUT=' /etc/profile /etc/bash.bashrc"
+        inspection_summary="r 계열 서비스가 비활성화됨"
+        command_result="${raw_output}[hosts.equiv]${hosts_equiv:-없음}"
+        command_executed="systemctl status rlogin rsh rexec 2>/dev/null; grep -iE 'rlogin|rsh|rexec' /etc/inetd.conf 2>/dev/null"
     fi
-
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
 
     # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
     # Run-all 모드 확인
