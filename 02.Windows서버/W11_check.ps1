@@ -40,24 +40,24 @@ try {
     $content = Get-Content "$env:TEMP\secedit.tmp"
     Remove-Item "$env:TEMP\secedit.tmp" -ErrorAction SilentlyContinue
 
-    $allowedUsers = @()
-    $content | Where-Object { $_ -match 'SeInteractiveLogonRight.*=.*(.*)' } | ForEach-Object {
-        $values = $_.Split('=', 2)[1].Trim()
-        $allowedUsers += $values -split ',' | Where-Object { $_ -notmatch '^\*'-and $_.Trim() -ne '' }
+    $allowedSIDs = @()
+    $content | Where-Object { $_ -match 'SeInteractiveLogonRight\s*=\s*(.+)' } | ForEach-Object {
+        $values = $Matches[1].Trim()
+        $allowedSIDs += $values -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }
     }
 
-    # Builtin allowed SIDs
-    $builtinAllowed = @('S-1-5-32-544', 'S-1-5-32-545', 'S-1-5-32-551')
-    $extraUsers = $allowedUsers | Where-Object { $_ -notin $builtinAllowed -and $_ -notmatch '^S-1-5-21' }
+    # Criteria expects only Administrators (S-1-5-32-544) and IUSR/Local Service (S-1-5-19)
+    $builtinAllowed = @('*S-1-5-32-544', '*S-1-5-19')
+    $extraSIDs = $allowedSIDs | Where-Object { $_ -notin $builtinAllowed -and $_ -notmatch '^\*S-1-5-21' }
 
-    if ($extraUsers.Count -eq 0) {
+    if ($extraSIDs.Count -eq 0) {
         $finalResult = "GOOD"
-        $summary = "로컬 로그온 허용 정책에 Administrators, Users 그룹만 존재"
+        $summary = "로컬 로그온 허용 정책에 Administrators, IUSR만 존재"
         $status = "양호"
-        $commandOutput = "SeInteractiveLogonRight: Built-in groups only"
+        $commandOutput = "SeInteractiveLogonRight: Built-in groups only ($($allowedSIDs -join ', '))"
     } else {
         $finalResult = "VULNERABLE"
-        $extraUsersList = $extraUsers -join ', '
+        $extraUsersList = $extraSIDs -join ', '
         $summary = "로컬 로그온 허용 정책에 추가 계정 존재: $extraUsersList"
         $status = "취약"
         $commandOutput = "SeInteractiveLogonRight: $extraUsersList"
