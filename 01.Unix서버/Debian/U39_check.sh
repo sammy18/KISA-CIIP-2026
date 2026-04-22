@@ -10,8 +10,8 @@
 # @Category    : Unix Server
 # @Platform    : Debian
 # @Severity    : 상
-# @Title       : SSH 서비스 보안 설정
-# @Description : SSH 보안 설정 확인 - Protocol 2, PermitRootLogin no, X11Forwarding no, MaxAuthTries <= 3
+# @Title       : 불필요한 NFS 서비스 비활성화
+# @Description : NFS 서비스 비활성화 여부 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -31,7 +31,7 @@ source "${LIB_DIR}/metadata_parser.sh"
 
 
 ITEM_ID="U-39"
-ITEM_NAME="SSH 서비스 보안 설정"
+ITEM_NAME="불필요한 NFS 서비스 비활성화"
 SEVERITY="상"
 
 # 가이드라인 정보
@@ -57,88 +57,79 @@ diagnose() {
     local newline=$'\n'
 
     # 진단 로직 구현
-    # /etc/ssh/sshd_config 보안 설정 확인
+    # NFS 서비스 비활성화 여부 점검
+    # 가이드라인: 불필요한 NFS 서비스 관련 데몬이 비활성화된 경우 양호
 
-    local is_secure=true
-    local config_details=""
-    local issues=()
+    local nfs_active=false
+    local active_services=""
+    local raw_output=""
 
-    local sshd_config="/etc/ssh/sshd_config"
+    # NFS 관련 서비스 목록
+    local nfs_services=("nfs-server" "nfs-server.service" "nfs-kernel-server" "nfs" "nfsserver" "rpcbind" "rpc-statd" "rpc-mountd")
+    local nfs_daemons=("nfsd" "rpc.nfsd" "rpc.mountd" "rpc.statd" "rpcbind")
 
-    if [ ! -f "$sshd_config" ]; then
-        diagnosis_result="MANUAL"
-        status="수동진단"
-        inspection_summary="SSH 설정 파일 없음 (서비스 미설치)"
-        command_result="[FILE NOT FOUND: $sshd_config]"
-        command_executed="ls -la $sshd_config"
-    else
-        # 1) Protocol 설정 확인 (Protocol 2 또는 Protocol 2,1)
-        local protocol=$(grep -E "^Protocol" "$sshd_config" | awk '{print $2}')
-        if [ -z "$protocol" ]; then
-            # 기본값은 2 (OpenSSH 5.4+는 Protocol 2만 지원)
-            protocol="2"
-        fi
-        if [ "$protocol" != "2" ]; then
-            is_secure=false
-            issues+=("Protocol=${protocol} (2여야 함)")
-        fi
-
-        # 2) PermitRootLogin 확인
-        local root_login=$(grep -E "^PermitRootLogin" "$sshd_config" | awk '{print $2}')
-        if [ -z "$root_login" ]; then
-            root_login=$(ssh -G root 2>/dev/null | grep permitrootlogin | awk '{print $2}' || echo "yes")
-        fi
-        if [ "$root_login" != "no" ]; then
-            is_secure=false
-            issues+=("PermitRootLogin=${root_login} (no여야 함)")
-        fi
-
-        # 3) X11Forwarding 확인
-        local x11_forwarding=$(grep -E "^X11Forwarding" "$sshd_config" | awk '{print $2}')
-        if [ -z "$x11_forwarding" ]; then
-            x11_forwarding="yes"  # 기본값
-        fi
-        if [ "$x11_forwarding" != "no" ]; then
-            is_secure=false
-            issues+=("X11Forwarding=${x11_forwarding} (no여야 함)")
-        fi
-
-        # 4) MaxAuthTries 확인 (<= 3)
-        local max_auth_tries=$(grep -E "^MaxAuthTries" "$sshd_config" | awk '{print $2}')
-        if [ -n "$max_auth_tries" ]; then
-            if [ "$max_auth_tries" -gt 3 ]; then
-                is_secure=false
-                issues+=("MaxAuthTries=${max_auth_tries} (<= 3이어야 함)")
+    # 1) systemctl 확인
+    if command -v systemctl >/dev/null 2>&1 && systemctl --version >/dev/null 2>&1; then
+        for svc in nfs-server nfs-kernel-server nfs; do
+            if systemctl is-active --quiet "$svc" 2>/dev/null; then
+                nfs_active=true
+                active_services="${active_services}${svc} "
+                raw_output="${raw_output}[systemctl] ${svc} 실행 중${newline}"
             fi
-        else
-            # 기본값은 6
-            is_secure=false
-            issues+=("MaxAuthTries 미설정 (기본값 6, <= 3이어야 함)")
-        fi
-
-        config_details="Protocol=${protocol}, PermitRootLogin=${root_login}, X11Forwarding=${x11_forwarding}"
-        [ -n "$max_auth_tries" ] && config_details="${config_details}, MaxAuthTries=${max_auth_tries}"
-
-        if [ "$is_secure" = true ]; then
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="SSH 보안 설정 적절함 (${config_details})"
-            command_result="${config_details}"
-            command_executed="grep -E '^Protocol|^PermitRootLogin|^X11Forwarding|^MaxAuthTries' $sshd_config"
-        else
-            diagnosis_result="VULNERABLE"
-            status="취약"
-            inspection_summary="SSH 보안 설정 미흡: ${issues[*]}"
-            command_result="${config_details}"
-            command_executed="grep -E '^Protocol|^PermitRootLogin|^X11Forwarding|^MaxAuthTries' $sshd_config"
-        fi
+        done
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
+    # 2) service 명령어 확인
+    if [ "$nfs_active" = false ] && command -v service >/dev/null 2>&1; then
+        for svc in nfs nfs-kernel-server nfs-server; do
+            local svc_output=$(service "$svc" status 2>&1 || echo "")
+            if echo "$svc_output" | grep -qE "running|active|is running"; then
+                nfs_active=true
+                active_services="${active_services}${svc} "
+                raw_output="${raw_output}[service] ${svc}: ${svc_output}${newline}"
+            fi
+        done
+    fi
+
+    # 3) 프로세스 확인
+    if [ "$nfs_active" = false ]; then
+        for daemon in "${nfs_daemons[@]}"; do
+            local daemon_ps=$(ps aux 2>/dev/null | grep -E "$daemon" | grep -v grep || echo "")
+            if [ -n "$daemon_ps" ]; then
+                nfs_active=true
+                active_services="${active_services}${daemon} "
+                raw_output="${raw_output}[Process] ${daemon}:${newline}${daemon_ps}${newline}"
+            fi
+        done
+    fi
+
+    # 4) NFS 마운트 및 export 확인 (정보성)
+    local exports=""
+    if [ -f /etc/exports ]; then
+        exports=$(grep -v "^#" /etc/exports 2>/dev/null | grep -v "^$" || echo "")
+    fi
+    local mount_output=$(mount 2>/dev/null | grep -E "type nfs" || echo "")
+
+    # NFS 패키지 설치 확인
+    local nfs_pkg=""
+    if command -v dpkg >/dev/null 2>&1; then
+        nfs_pkg=$(dpkg -l 2>/dev/null | grep -E "nfs-kernel-server|nfs-common" | grep "^ii" || echo "")
+    fi
+
+    # 최종 판정
+    if [ "$nfs_active" = true ]; then
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        inspection_summary="NFS 서비스가 활성화됨: ${active_services}"
+        command_result="${raw_output}[Exports]${exports:-없음}${newline}[Mounts]${mount_output:-없음}${newline}[Package]${nfs_pkg:-미설치}"
+        command_executed="systemctl status nfs-server nfs-kernel-server 2>/dev/null; ps aux | grep nfsd; cat /etc/exports 2>/dev/null"
+    else
+        diagnosis_result="GOOD"
+        status="양호"
+        inspection_summary="NFS 서비스가 비활성화됨"
+        command_result="${raw_output}[Exports]${exports:-없음}${newline}[Mounts]${mount_output:-없음}${newline}[Package]${nfs_pkg:-미설치}"
+        command_executed="systemctl status nfs-server nfs-kernel-server 2>/dev/null; ps aux | grep nfsd"
+    fi
 
     # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
     # Run-all 모드 확인
