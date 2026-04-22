@@ -35,28 +35,43 @@ if (-not (Test-RunallMode)) {
 
 # 1. Run diagnostic
 try {
-    $regPath = 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp'
-    $encryptionLevel = (Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue).MinEncryptionLevel
+    # First check if RDP is actually in use
+    $rdpEnabled = $false
+    $tsEnabled = (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -ErrorAction SilentlyContinue).fDenyTSConnections
+    if ($tsEnabled -eq 0) {
+        $rdpEnabled = $true
+    }
 
-    if ($encryptionLevel) {
-        $commandOutput = "MinEncryptionLevel: $encryptionLevel"
+    if (-not $rdpEnabled) {
+        $finalResult = "GOOD"
+        $summary = "원격 데스크톱 서비스를 사용하지 않아 양호"
+        $status = "양호"
+        $commandOutput = "RDP disabled (fDenyTSConnections != 0)"
+        $commandExecuted = "Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server'"
+    } else {
+        $regPath = 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp'
+        $encryptionLevel = (Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue).MinEncryptionLevel
 
-        # 암호화 수준: 1=Low(56bit), 2=Medium(128bit), 3=High(256bit), 4=FIPS 140-1
-        if ($encryptionLevel -ge 2) {
-            $finalResult = "GOOD"
-            $summary = "RDP 암호화 수준이 Medium(Level 2) 이상으로 설정됨"
-            $status = "양호"
+        if ($encryptionLevel) {
+            $commandOutput = "MinEncryptionLevel: $encryptionLevel"
+
+            # 암호화 수준: 1=Low(56bit), 2=Medium(128bit), 3=High(256bit), 4=FIPS 140-1
+            if ($encryptionLevel -ge 2) {
+                $finalResult = "GOOD"
+                $summary = "RDP 암호화 수준이 Medium(Level 2) 이상으로 설정됨"
+                $status = "양호"
+            } else {
+                $finalResult = "VULNERABLE"
+                $encryptionLevelText = if ($encryptionLevel -eq 1) { "Low (56비트)" } elseif ($encryptionLevel -eq 2) { "Medium (128비트)" } else { "Level $encryptionLevel" }
+                $summary = "RDP 암호화 수준이 $encryptionLevelText 으로 설정되어 보안 취약"
+                $status = "취약"
+            }
         } else {
             $finalResult = "VULNERABLE"
-            $encryptionLevelText = if ($encryptionLevel -eq 1) { "Low (56비트)" } elseif ($encryptionLevel -eq 2) { "Medium (128비트)" } else { "Level $encryptionLevel" }
-            $summary = "RDP 암호화 수준이 $encryptionLevelText 으로 설정되어 보안 취약"
+            $summary = "RDP 사용 중이나 암호화 수준 설정을 찾을 수 없음"
             $status = "취약"
+            $commandOutput = "레지스트리 값 없음 (MinEncryptionLevel) - RDP 활성화 상태"
         }
-    } else {
-        $finalResult = "VULNERABLE"
-        $summary = "RDP 암호화 수준 설정을 찾을 수 없음 (기본값 Low로 취급)"
-        $status = "취약"
-        $commandOutput = "레지스트리 값 없음 (MinEncryptionLevel)"
     }
 } catch {
     $finalResult = "MANUAL"
@@ -65,7 +80,7 @@ try {
     $commandOutput = $_.Exception.Message
 }
 
-$commandExecuted = "Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name MinEncryptionLevel"
+$commandExecuted = "Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' (fDenyTSConnections); Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' (MinEncryptionLevel)"
 
 # 2. lib를 통한 결과 저장
 $purpose = "원격 데스크톱 서비스 암호화 설정으로 데이터를 암호화하여 클라이언트와 서버 간의 통신에서 전송되는 데이터를 보호하기 위함"
