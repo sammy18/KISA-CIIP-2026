@@ -11,7 +11,7 @@
 # @Platform    : Debian
 # @Severity    : 상
 # @Title       : 파일 및 디렉터리 소유자 설정
-# @Description : 소유자가 없는 파일 확인
+# @Description : 소유자가 없는 파일 및 디렉터리 확인 (find -nouser -o -nogroup)
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -57,65 +57,56 @@ diagnose() {
     local newline=$'\n'
 
     # 진단 로직 구현
-    # /etc/passwd의 사용자 홈 디렉토리 권한 확인
+    # 소유자가 /etc/passwd에 존재하지 않는 파일/디렉터리 확인
+    # 가이드라인: 소유자가 존재하지 않는 파일 및 디렉터리가 존재하지 않는 경우 양호
 
-    local vulnerable_homes=""
-    local vulnerable_count=0
-    local total_users=0
+    local orphan_files=""
+    local orphan_count=0
     local raw_output=""
 
-    # /etc/passwd에서 사용자별 홈 디렉토리 권한 확인
-    while IFS= read -r user_line; do
-        local username=$(echo "$user_line" | cut -d: -f1)
-        local uid=$(echo "$user_line" | cut -d: -f3)
-        local home_dir=$(echo "$user_line" | cut -d: -f6)
+    # find 명령으로 nouser, nogroup 파일 검색
+    # 주요 파일시스템 경로 검색 (가상 파일시스템 제외)
+    local search_paths=("/home" "/var" "/tmp" "/opt" "/srv" "/usr/local")
 
-        # 홈 디렉토리가 존재하고, UID가 1000 이상인 일반 사용자 확인
-        if [ -d "$home_dir" ] && [ "$uid" -ge 1000 ] 2>/dev/null; then
-            ((total_users++)) || true
-
-            # 디렉토리 권한 및 소유자 확인
-            local perms=$(stat -c "%a" "$home_dir" 2>/dev/null)
-            local owner=$(stat -c "%U" "$home_dir" 2>/dev/null)
-
-            # Capture raw output
-            raw_output="${raw_output}${username}:${perms}:${owner}${newline}"
-
-            if [ -n "$perms" ] && [ -n "$owner" ]; then
-                # 취약한 권한 확인: 777, 775, 755 (others에 읽기 권한) 등
-                # others에 쓰기 권한이 있거나, 소유자가 해당 사용자가 아닌 경우
-                local others_write=${perms: -1}
-
-                if [ "$owner" != "$username" ]; then
-                    ((vulnerable_count++)) || true
-                    vulnerable_homes="${vulnerable_homes}${username}: ${home_dir} (소유자: ${owner}, 권한: ${perms}), "
-                elif [ "$others_write" = "7" ] || [ "$others_write" = "6" ] || [ "$others_write" = "3" ] || [ "$others_write" = "2" ]; then
-                    ((vulnerable_count++)) || true
-                    vulnerable_homes="${vulnerable_homes}${username}: ${home_dir} (권한: ${perms}, others 쓰기 가능), "
-                fi
+    for search_path in "${search_paths[@]}"; do
+        if [ -d "$search_path" ]; then
+            local found=$(find "$search_path" -xdev \( -nouser -o -nogroup \) -print 2>/dev/null || echo "")
+            if [ -n "$found" ]; then
+                while IFS= read -r file; do
+                    local file_info=$(ls -lnd "$file" 2>/dev/null || echo "")
+                    orphan_files="${orphan_files}${file_info}${newline}"
+                    ((orphan_count++)) || true
+                    raw_output="${raw_output}${file}${newline}"
+                done <<< "$found"
             fi
         fi
-    done < /etc/passwd || true
+    done || true
 
-    if [ "$vulnerable_count" -eq 0 ]; then
+    # 루트 파일시스템 직접 검색 (깊이 3까지만)
+    local root_found=$(find / -maxdepth 3 -xdev \( -nouser -o -nogroup \) -not -path "/home/*" -not -path "/var/*" -not -path "/tmp/*" -not -path "/opt/*" -not -path "/srv/*" -not -path "/usr/local/*" -not -path "/proc/*" -not -path "/sys/*" -not -path "/dev/*" -not -path "/run/*" -print 2>/dev/null || echo "")
+    if [ -n "$root_found" ]; then
+        while IFS= read -r file; do
+            local file_info=$(ls -lnd "$file" 2>/dev/null || echo "")
+            orphan_files="${orphan_files}${file_info}${newline}"
+            ((orphan_count++)) || true
+            raw_output="${raw_output}${file}${newline}"
+        done <<< "$root_found"
+    fi
+
+    command_executed="find / -xdev \\( -nouser -o -nogroup \\) -print 2>/dev/null"
+
+    # 최종 판정
+    if [ "$orphan_count" -eq 0 ]; then
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="사용자 홈 디렉토리 권한 양호 (검사된 사용자: ${total_users}명)"
-        command_result="${raw_output}"
-        command_executed="awk -F: '\$3 >= 1000 {print \$1, \$3, \$6}' /etc/passwd | while read user uid home; do stat -c '%a:%U' \"\$home\" 2>/dev/null; done"
+        inspection_summary="소유자가 존재하지 않는 파일 및 디렉터리가 없음"
+        command_result="${raw_output:-검색 결과 없음 (모든 파일에 소유자 존재)}"
     else
         diagnosis_result="VULNERABLE"
         status="취약"
-        inspection_summary="취약한 홈 디렉토리 ${vulnerable_count}개 발견: ${vulnerable_homes%, }"
-        command_result="${raw_output}"
-        command_executed="awk -F: '\$3 >= 1000 {print \$1, \$3, \$6}' /etc/passwd | while read user uid home; do stat -c '%a:%U' \"\$home\" 2>/dev/null; done"
+        inspection_summary="소유자가 존재하지 않는 파일/디렉터리 ${orphan_count}개 발견"
+        command_result="${orphan_files}"
     fi
-
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
 
     # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
     # Run-all 모드 확인
