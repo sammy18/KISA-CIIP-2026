@@ -26,7 +26,6 @@ $LIB_DIR = Join-Path $SCRIPT_DIR "..\lib"
 # Parameters
 $ITEM_ID = "W-06"
 $ITEM_NAME = "관리자그룹에최소한의사용자포함"
-$SEVERITY = "상"
 $CATEGORY = "1.계정관리"
 
 # run_all 모드가 아닐 때만 진단 정보 출력
@@ -41,9 +40,9 @@ try {
     $count = ($members | Measure-Object).Count
     $names = ($members | ForEach-Object { $_.Name }) -join ', '
 
-    if ($count -le 2) {
+    if ($count -le 1) {
         $finalResult = "GOOD"
-        $summary = "Administrators 그룹 구성원이 최소한으로 유지됨 ($count명)"
+        $summary = "Administrators 그룹 구성원이 최소한으로 유지됨 (1명 이하)"
         $status = "양호"
         $commandOutput = "Administrators Group Members ($count): $names"
     } else {
