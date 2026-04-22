@@ -11,7 +11,7 @@
 # @Platform    : Debian
 # @Severity    : 하
 # @Title       : 세션 종료시간 설정
-# @Description : TMOUT 또는 /etc/profile 설정 확인
+# @Description : TMOUT 설정 확인 (/etc/profile, /etc/bash.bashrc, /etc/profile.d/)
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -55,46 +55,64 @@ diagnose() {
     local newline=$'\n'
 
     # 진단 로직 구현
-    # 세션 종료시간(TMODOUT) 설정 확인
+    # 세션 종료시간(TMOUT) 설정 확인
     # GOOD: TMOUT이 600초(10분) 이하로 설정된 경우
     # VULNERABLE: TMOUT이 설정되지 않았거나 600초를 초과하는 경우
 
-    local is_secure=false
-    local config_details=""
+    local tmout_value=""
+    local raw_output=""
 
-    # 현재 세션의 TMOUT 확인
-    local current_tmout="${TMOUT:-}"
-    config_details="현재 세션 TMOUT: ${current_tmout:-未설定}"
+    # 설정 파일에서 TMOUT 값 추출 (/etc/profile, /etc/bash.bashrc, /etc/profile.d/)
+    for cfg_file in /etc/profile /etc/bash.bashrc; do
+        if [ -f "$cfg_file" ]; then
+            local file_tmout=$(grep -E "^\s*(export\s+)?TMOUT=" "$cfg_file" 2>/dev/null | tail -1 | sed -E 's/.*TMOUT=([0-9]+).*/\1/' || echo "")
+            if [ -n "$file_tmout" ]; then
+                tmout_value="$file_tmout"
+                raw_output="${raw_output}[${cfg_file}] TMOUT=${file_tmout}${newline}"
+            fi
+        fi
+    done
 
-    # /etc/profile에서 TMOUT 확인
-    local profile_tmout=$(grep -h "TMOUT" /etc/profile /etc/bash.bashrc 2>/dev/null | grep -v "^#" | grep "export TMOUT" || echo "")
-    if [ -n "$profile_tmout" ]; then
-        config_details="${config_details}${newline}/etc/profile 설정:${newline}${profile_tmout}"
-    else
-        config_details="${config_details}${newline}/etc/profile: TMOUT 설정 없음"
+    # /etc/profile.d/ 스크립트 확인
+    if [ -d /etc/profile.d ]; then
+        for pfile in /etc/profile.d/*.sh; do
+            [ -f "$pfile" ] || continue
+            local file_tmout=$(grep -E "^\s*(export\s+)?TMOUT=" "$pfile" 2>/dev/null | tail -1 | sed -E 's/.*TMOUT=([0-9]+).*/\1/' || echo "")
+            if [ -n "$file_tmout" ]; then
+                tmout_value="$file_tmout"
+                raw_output="${raw_output}[${pfile}] TMOUT=${file_tmout}${newline}"
+            fi
+        done 2>/dev/null || true
     fi
 
-    command_result="${config_details}"
-    command_executed="echo \$TMOUT && grep -h TMOUT /etc/profile /etc/bash.bashrc"
+    # 현재 환경변수 TMOUT도 확인 (우선순위 높음)
+    if [ -n "${TMOUT:-}" ]; then
+        tmout_value="${TMOUT}"
+        raw_output="${raw_output}[환경변수] TMOUT=${TMOUT}${newline}"
+    fi
+
+    if [ -z "$raw_output" ]; then
+        raw_output="TMOUT 설정 없음${newline}확인경로: /etc/profile, /etc/bash.bashrc, /etc/profile.d/*.sh"
+    fi
+
+    command_result="${raw_output}"
+    command_executed="grep -rE 'TMOUT=' /etc/profile /etc/bash.bashrc /etc/profile.d/ 2>/dev/null"
 
     # 최종 판정
-    if [ -n "$current_tmout" ]; then
-        # TMOUT이 설정된 경우
-        if [ "$current_tmout" -le 600 ] 2>/dev/null; then
-            is_secure=true
+    if [ -n "$tmout_value" ]; then
+        if [ "$tmout_value" -le 600 ] 2>/dev/null; then
             diagnosis_result="GOOD"
             status="양호"
-            inspection_summary="세션 종료시간이 적절히 설정됨 (TMOUT=${current_tmout}초, 600초 이하)${newline}${config_details}"
+            inspection_summary="세션 종료시간이 적절히 설정됨 (TMOUT=${tmout_value}초, 600초 이하)"
         else
             diagnosis_result="VULNERABLE"
             status="취약"
-            inspection_summary="세션 종료시간이 너무 김 (TMOUT=${current_tmout}초, 600초 이하 권장)${newline}${config_details}"
+            inspection_summary="세션 종료시간이 너무 김 (TMOUT=${tmout_value}초, 600초 이하 권장)"
         fi
     else
-        # TMOUT이 설정되지 않은 경우
         diagnosis_result="VULNERABLE"
         status="취약"
-        inspection_summary="세션 종료시간이 설정되지 않음 (보안 위험)${newline}${config_details}"
+        inspection_summary="세션 종료시간이 설정되지 않음 (보안 위험)"
     fi
 
     # 결과 생성
