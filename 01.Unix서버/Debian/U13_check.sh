@@ -11,7 +11,7 @@
 # @Platform    : Debian
 # @Severity    : 중
 # @Title       : 안전한 비밀번호 암호화 알고리즘 사용
-# @Description : SHA512 또는更强 알고리즘 확인
+# @Description : SHA512 또는 더 강한 알고리즘 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -57,7 +57,7 @@ diagnose() {
     local newline=$'\n'
 
     # 진단 로직 구현
-    # SHA512 또는更强 알고리즘 확인
+    # SHA512 또는 더 강한 알고리즘 확인
 
     local is_secure=false
     local details=""
