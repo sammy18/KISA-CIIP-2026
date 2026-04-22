@@ -56,7 +56,7 @@ diagnose() {
     # SSH 서비스 확인
     if systemctl is-active --quiet sshd 2>/dev/null; then
         ssh_active=true
-    elif ps aux 2>/dev/null | grep -E "sshd.*-D|sshd$" | grep -v grep >/dev/null 2>&1; then
+    elif ps aux 2>/dev/null | grep -E "[s]shd" >/dev/null 2>&1; then
         ssh_active=true
     fi
 
