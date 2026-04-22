@@ -39,6 +39,7 @@ diagnose() {
     local status="양호"
     diagnosis_result="GOOD"
     local inspection_summary="NTP 서비스가 정상적으로 동작 중입니다."
+    local command_result=""
     local command_executed="chronyc sources || ntpq -p"
     
     # 1. 실행 결과 저장
@@ -56,8 +57,8 @@ diagnose() {
         status="취약"
         diagnosis_result="VULNERABLE"
         inspection_summary="NTP 데몬이 응답하지 않습니다. 서비스 상태를 확인하십시오."
-    elif [[ ! "$cmd_out" =~ ^\* ]] && [[ ! "$cmd_out" =~ ^o ]]; then
-        # 동기화 중임을 나타내는 기호(* 또는 o)가 없는 경우
+    elif ! echo "$cmd_out" | grep -qE '^\*|^o'; then
+        # 동기화 중임을 나타내는 기호(* 또는 o)가 개별 라인에 없는 경우
         status="취약"
         diagnosis_result="VULNERABLE"
         inspection_summary="NTP 서버와 동기화가 이루어지지 않고 있습니다."
@@ -70,6 +71,8 @@ diagnose() {
         "${inspection_summary}" "${command_result}" "${command_executed}" \
         "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" \
         "${GUIDELINE_CRITERIA_GOOD}" "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
+
+    verify_result_saved "${ITEM_ID}"
 }
 
 main() {
