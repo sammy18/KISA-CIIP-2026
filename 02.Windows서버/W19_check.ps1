@@ -55,10 +55,10 @@ try {
         $status = "양호"
         $commandOutput = "IIS (W3SVC) Status: $($w3svc.Status), StartType: $($w3svc.StartType)"
     } else {
-        $finalResult = "VULNERABLE"
-        $summary = "IIS 서비스가 불필요하게 구동 중임"
-        $status = "취약"
-        $commandOutput = "IIS (W3SVC) Status: $($w3svc.Status), StartType: $($w3svc.StartType)"
+        $finalResult = "MANUAL"
+        $summary = "IIS 서비스가 구동 중임 - 불필요한 사용인지 수동 확인 필요"
+        $status = "수동진단"
+        $commandOutput = "IIS (W3SVC) Status: $($w3svc.Status), StartType: $($w3svc.StartType) - 수동 판단 필요"
     }
 
     $commandExecuted = "Get-Service -Name 'W3SVC'"
