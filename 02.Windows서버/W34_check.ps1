@@ -31,8 +31,8 @@ $LIB_DIR = Join-Path $SCRIPT_DIR "..\lib"
 if (-not (Test-RunallMode)) {
     Write-Host "진단 항목: $ITEM_ID - $ITEM_NAME"
     Write-Host "카테고리: $CATEGORY"
+    Write-Host ""
 }
-Write-Host ""
 
 # Diagnostic Logic
 try {
@@ -46,22 +46,31 @@ try {
         $commandExecuted = "Get-Service -Name 'TlntSvr'"
         $commandOutput = "Telnet service not found"
     } else {
-        $regPath = 'HKLM:\SYSTEM\CurrentControlSet\services\TlntSvr'
-        $authValue = (Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue).AuthenticationType
-
-        if ($authValue -eq 1) {
+        # Check if Telnet is actually running
+        if ($service.Status -ne 'Running') {
             $finalResult = "GOOD"
             $status = "양호"
-            $summary = "Telnet 서비스가 비활성화되거나 NTLM 인증만 사용 설정됨"
-            $commandOutput = "Telnet service configured with NTLM authentication only"
+            $summary = "Telnet 서비스가 구동되어 있지 않음"
+            $commandExecuted = "Get-Service -Name 'TlntSvr'"
+            $commandOutput = "Telnet service status: $($service.Status) (not running)"
         } else {
-            $finalResult = "VULNERABLE"
-            $status = "취약"
-            $summary = "Telnet 서비스가 활성화되어 있고 NTLM 인증만 사용 설정이 아님"
-            $commandOutput = "Telnet service running without NTLM-only authentication"
-        }
+            $regPath = 'HKLM:\SYSTEM\CurrentControlSet\services\TlntSvr'
+            $authValue = (Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue).AuthenticationType
 
-        $commandExecuted = "Get-Service -Name 'TlntSvr'; Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\services\TlntSvr'"
+            if ($authValue -eq 1) {
+                $finalResult = "GOOD"
+                $status = "양호"
+                $summary = "Telnet 서비스가 NTLM 인증만 사용 설정됨"
+                $commandOutput = "Telnet service running with NTLM authentication only"
+            } else {
+                $finalResult = "VULNERABLE"
+                $status = "취약"
+                $summary = "Telnet 서비스가 활성화되어 있고 NTLM 인증만 사용 설정이 아님"
+                $commandOutput = "Telnet service running without NTLM-only authentication"
+            }
+
+            $commandExecuted = "Get-Service -Name 'TlntSvr'; Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\services\TlntSvr'"
+        }
     }
 
 } catch {
