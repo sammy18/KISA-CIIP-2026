@@ -59,7 +59,7 @@ try {
                 $lastLogonWmi = Get-WmiObject -Class Win32_NetworkLoginProfile -ErrorAction SilentlyContinue |
                     Where-Object { $_.Name -eq $user.Name } |
                     Sort-Object LastLogon -Descending |
-                    Select-Object -FirstObject -ExpandProperty LastLogon
+                    Select-Object -First 1 -ExpandProperty LastLogon
 
                 if ($lastLogonWmi) {
                     $lastLogonDate = [Management.ManagementDateTimeConverter]::ToDateTime($lastLogonWmi)
@@ -79,7 +79,7 @@ try {
         }
     }
 
-    $commandExecuted = "Get-LocalUser; Get-WmiObject -Class Win32_NetworkLoginProfile | Where-Object { $_.Name -eq $user.Name } | Select-Object -FirstObject -ExpandProperty LastLogon"
+    $commandExecuted = "Get-LocalUser; Get-WmiObject -Class Win32_NetworkLoginProfile | Where-Object { $_.Name -eq $user.Name } | Select-Object -First 1 -ExpandProperty LastLogon"
 
     if ($unnecessaryAccounts.Count -gt 0) {
         $accountList = $unnecessaryAccounts -join ', '
