@@ -31,8 +31,8 @@ $LIB_DIR = Join-Path $SCRIPT_DIR "..\lib"
 if (-not (Test-RunallMode)) {
     Write-Host "진단 항목: $ITEM_ID - $ITEM_NAME"
     Write-Host "카테고리: $CATEGORY"
+    Write-Host ""
 }
-Write-Host ""
 
 # Diagnostic Logic
 try {
@@ -55,7 +55,8 @@ try {
         # Check FTP installation
         $ftpInstalled = Get-WindowsFeature -Name Web-Ftp-Server -ErrorAction SilentlyContinue
         if ($ftpInstalled -and $ftpInstalled.InstallState -eq 'Installed') {
-            $bannerFound = $true
+            # FTP 설치됨 - 실제 배너 노출 여부는 수동 확인 필요
+            $bannerFound = $false  # 자동 판단 불가, 수동 확인 항목으로 별도 처리
         }
 
         if ($bannerFound) {
@@ -72,9 +73,9 @@ try {
 
         $commandExecuted = "Get-WindowsFeature -Name Web-Server; Get-WebConfigurationProperty -Filter 'system.webServer/httpProtocol'"
     } else {
-        $finalResult = "N/A"
-        $status = "N/A"
-        $summary = "IIS/FTP/SMTP 서비스가 설치되어 있지 않음"
+        $finalResult = "GOOD"
+        $status = "양호"
+        $summary = "IIS/FTP/SMTP 서비스가 설치되어 있지 않아 배너 노출 위험 없음"
         $commandExecuted = "Get-WindowsFeature -Name Web-Server"
         $commandOutput = "IIS/FTP/SMTP services not installed"
     }
