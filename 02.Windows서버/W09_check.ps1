@@ -76,11 +76,22 @@ try {
 
     $details = "Complexity: $complexity, MinLength: $minLength, MaxAge: $maxAge, MinAge: $minAge"
 
-    if ($complexity -and $minLength -ge 8 -and $maxAge -le 90 -and $maxAge -gt 0 -and $minAge -ge 1) {
+    # Check if parsing was successful
+    $parsingFailed = $false
+    if ($output -notmatch '암호 복잡성 요구.*:\s*(\w+)' -and $output -notmatch 'Password complexity.*:\s*(\w+)') {
+        $parsingFailed = $true
+    }
+
+    if (-not $parsingFailed -and $complexity -and $minLength -ge 8 -and $maxAge -le 90 -and $maxAge -gt 0 -and $minAge -ge 1) {
         $finalResult = "GOOD"
         $summary = "비밀번호 관리 정책이 모두 적용됨 (복잡성 사용, 최소 길이 8자 이상, 최대/최소 사용 기간 설정)"
         $status = "양호"
         $commandOutput = $details
+    } elseif ($parsingFailed) {
+        $finalResult = "MANUAL"
+        $summary = "비밀번호 정책 출력을 파싱할 수 없어 수동 확인 필요"
+        $status = "수동진단"
+        $commandOutput = "정책 파싱 실패. 원본 출력: $($output.Substring(0, [Math]::Min(500, $output.Length)))"
     } else {
         $finalResult = "VULNERABLE"
         $issues = @()
