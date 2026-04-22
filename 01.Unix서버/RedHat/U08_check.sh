@@ -48,7 +48,20 @@ diagnose() {
 
     # 2. 판정 로직: root 그룹에 root 외 계정이 있거나, wheel 그룹에 계정이 있는 경우
     # 현업 가이드에서는 관리자 외 계정 존재 시 '취약'으로 간주하고 소명을 받습니다.
-    if [[ -n "$wheel_members" ]] || [[ "$root_members" =~ [^root,] ]]; then
+    # root 그룹 멤버를 콤마로 분리하여 root 외 계정 존재 여부 확인
+    local has_extra_root_member=false
+    if [ -n "$root_members" ]; then
+        IFS=',' read -ra members <<< "$root_members"
+        for m in "${members[@]}"; do
+            m=$(echo "$m" | xargs)  # trim whitespace
+            if [ -n "$m" ] && [ "$m" != "root" ]; then
+                has_extra_root_member=true
+                break
+            fi
+        done
+    fi
+
+    if [[ -n "$wheel_members" ]] || [[ "$has_extra_root_member" == true ]]; then
         status="취약"  # 또는 "검토필요"
         diagnosis_result="VULNERABLE"
         inspection_summary="관리자 그룹에 등록된 계정이 식별되었습니다. 인가된 사용자인지 수동 점검이 필요합니다. (발견: ${root_members:-root}, ${wheel_members:-wheel없음})"
