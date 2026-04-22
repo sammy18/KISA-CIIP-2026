@@ -42,7 +42,7 @@ try {
         $writePermissions = @()
 
         foreach ($access in $acl.Access) {
-            if ($access.FileSystemRights -match 'Write' -and $access.AccessControlType -eq 'Allow') {
+            if ($access.FileSystemRights -match 'Write' -and $access.AccessControlType -eq 'Allow' -and $access.IdentityReference -match 'Everyone') {
                 $hasWrite = $true
                 $writePermissions += "$($access.IdentityReference): $($access.FileSystemRights)"
             }
@@ -50,12 +50,12 @@ try {
 
         if ($hasWrite) {
             $finalResult = "VULNERABLE"
-            $summary = "FTP 루트 디렉토리에 쓰기 권한이 존재하여 무단 업로드 가능"
+            $summary = "FTP 루트 디렉토리에 Everyone 쓰기 권한이 존재하여 무단 업로드 가능"
             $status = "취약"
             $commandOutput = $writePermissions -join '; '
         } else {
             $finalResult = "GOOD"
-            $summary = "FTP 루트 디렉토리에 쓰기 권한이 제거됨"
+            $summary = "FTP 루트 디렉토리에 Everyone 쓰기 권한이 제거됨"
             $status = "양호"
             $commandOutput = "No write permissions found on FTP root directory"
         }
@@ -79,8 +79,8 @@ try {
 # 2. lib를 통한 결과 저장
 $purpose = "FTP 서비스 디렉터리의 접근 권한을 적절하게 설정하여 의도치 않은 정보 유출을 방지하기 위함"
 $threat = "FTP 홈 디렉터리에 과도한 권한(예. Everyone Full Control)이 부여된 경우 임의의 사용자가 쓰기, 수정이 가능하여 정보 유출, 파일 위 ‧ 변조 등의 위험이 존재함"
-$criteria_good = "FTP 홈 디렉터리에 Everyone 권한이 없는 경우"
-$criteria_bad = "FTP 홈 디렉터리에 Everyone 권한이 있는 경우"
+$criteria_good = "FTP 홈 디렉터리에 Everyone 쓰기 권한이 없는 경우"
+$criteria_bad = "FTP 홈 디렉터리에 Everyone 쓰기 권한이 있는 경우"
 $remediation = "FTP 홈 디렉터리에서 Everyone 권한 삭제, 각 사용자에게 적절한 권한 부여"
 
 Save-DualResult -ItemId $ITEM_ID `
