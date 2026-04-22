@@ -87,9 +87,9 @@ diagnose() {
             inspection_summary="ftpusers 파일이 존재하지 않습니다. FTP 서비스가 실행 중이므로 ftpusers 파일을 생성하고 시스템 계정을 등록하세요."
             command_result="[FILE NOT FOUND: ftpusers] (searched paths: ${ftpusers_files[*]})"
         else
-            diagnosis_result="N/A"
-            status="N/A"
-            inspection_summary="FTP 서비스가 설치되어 있지 않습니다."
+            diagnosis_result="GOOD"
+            status="양호"
+            inspection_summary="FTP 서비스가 설치되어 있지 않음 (ftpusers 불필요)"
             command_result="FTP Service: [not installed], ftpusers: [FILE NOT FOUND]"
         fi
     elif [ -z "$file_content" ] || [ $(echo "$file_content" | grep -v "^#" | grep -v "^$" | wc -l) -eq 0 ]; then
@@ -133,14 +133,7 @@ diagnose() {
         fi
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
+    # 결과 생성
     save_dual_result \
         "${ITEM_ID}" \
         "${ITEM_NAME}" \
