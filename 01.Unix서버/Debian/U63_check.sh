@@ -88,10 +88,10 @@ diagnose() {
                 local perms=$(stat -c "%a" "$sudoers_file" 2>/dev/null)
                 local owner=$(stat -c "%U:%G" "$sudoers_file" 2>/dev/null)
 
-                # 권한이 440이거나 소유자가 root:root가 아닌 경우
-                if [ "$perms" != "440" ] && [ "$perms" != "400" ]; then
+                # 권한이 640 이하이고 소유자가 root:root인지 확인
+                if [ "$perms" -gt 640 ] 2>/dev/null; then
                     sudoers_issues=true
-                    issue_details="${issue_details}${sudoers_file} 권한 ${perms} (440 권장), "
+                    issue_details="${issue_details}${sudoers_file} 권한 ${perms} (640 이하 권장), "
                 fi
 
                 if [ "$owner" != "root:root" ]; then
@@ -126,7 +126,7 @@ diagnose() {
             if [ -n "$sudoers_d_files" ]; then
                 for file in $sudoers_d_files; do
                     local file_perms=$(stat -c "%a" "$file" 2>/dev/null)
-                    if [ "$file_perms" != "440" ] && [ "$file_perms" != "400" ]; then
+                    if [ "$file_perms" -gt 640 ] 2>/dev/null; then
                         sudoers_issues=true
                         issue_details="${issue_details}${file} 권한 ${file_perms}, "
                     fi
@@ -149,20 +149,13 @@ diagnose() {
         else
             diagnosis_result="GOOD"
             status="양호"
-            inspection_summary="sudoers 설정이 안전하게 구성됨 (권한 440, root:root)"
+            inspection_summary="sudoers 설정이 안전하게 구성됨 (권한 ${raw_output%%:*}, root:root)"
             command_result="${raw_output}"
             command_executed="stat -c '%a:%U:%G' /etc/sudoers 2>/dev/null"
         fi
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
+    # 결과 생성
     save_dual_result \
         "${ITEM_ID}" \
         "${ITEM_NAME}" \
