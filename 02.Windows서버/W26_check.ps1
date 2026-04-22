@@ -35,26 +35,37 @@ if (-not (Test-RunallMode)) {
 
 # 1. Run diagnostic
 try {
-    $rdsService = Get-Service -Name 'MSADC*' -ErrorAction SilentlyContinue
-    $commandOutput = ""
+    # Check OS version - Windows 2008+ automatically GOOD per criteria
+    $osVersion = [System.Environment]::OSVersion.Version
+    if ($osVersion.Major -ge 6) {
+        $finalResult = "GOOD"
+        $summary = "Windows 2008 이상 버전 사용 중 (RDS 취약점 해당 없음)"
+        $status = "양호"
+        $commandOutput = "OS Version: $($osVersion.ToString()) - Windows 2008+ 이상"
+        $commandExecuted = "[System.Environment]::OSVersion.Version"
+    }
+    else {
+        $rdsService = Get-Service -Name 'MSADC*' -ErrorAction SilentlyContinue
+        $commandOutput = ""
 
-    if ($rdsService) {
-        $commandOutput = ($rdsService | Format-List -Property Name, Status, StartType | Out-String).Trim()
-        $finalResult = "VULNERABLE"
-        $summary = "RDS(Remote Data Services) 서비스가 설치되어 있어 보안 위험"
-        $status = "취약"
-    } else {
-        $rdsFeature = Get-WindowsFeature -Name 'RDS-*' -ErrorAction SilentlyContinue | Where-Object { $_.Installed -eq $true }
-        if ($rdsFeature) {
-            $commandOutput = ($rdsFeature | Format-List -Property Name, DisplayName, Installed | Out-String).Trim()
+        if ($rdsService) {
+            $commandOutput = ($rdsService | Format-List -Property Name, Status, StartType | Out-String).Trim()
             $finalResult = "VULNERABLE"
-            $summary = "RDS(Remote Data Services) 기능이 설치되어 있어 보안 위험"
+            $summary = "RDS(Remote Data Services) 서비스가 설치되어 있어 보안 위험"
             $status = "취약"
         } else {
-            $commandOutput = "RDS 서비스 및 기능이 설치되지 않음"
-            $finalResult = "GOOD"
-            $summary = "RDS(Remote Data Services) 서비스/기능이 설치되지 않음"
-            $status = "양호"
+            $rdsFeature = Get-WindowsFeature -Name 'RDS-*' -ErrorAction SilentlyContinue | Where-Object { $_.Installed -eq $true }
+            if ($rdsFeature) {
+                $commandOutput = ($rdsFeature | Format-List -Property Name, DisplayName, Installed | Out-String).Trim()
+                $finalResult = "VULNERABLE"
+                $summary = "RDS(Remote Data Services) 기능이 설치되어 있어 보안 위험"
+                $status = "취약"
+            } else {
+                $commandOutput = "RDS 서비스 및 기능이 설치되지 않음"
+                $finalResult = "GOOD"
+                $summary = "RDS(Remote Data Services) 서비스/기능이 설치되지 않음"
+                $status = "양호"
+            }
         }
     }
 } catch {
