@@ -79,8 +79,8 @@ diagnose() {
         local file_perms=$(stat -c "%a" "$target_file" 2>/dev/null)
         local file_owner=$(stat -c "%U:%G" "$target_file" 2>/dev/null)
 
-        # 소유자 및 권한 확인
-        if [ "$file_owner" = "root:root" ] && [ "$file_perms" = "644" ]; then
+        # 소유자 및 권한 확인 (644 이하)
+        if [ "$file_owner" = "root:root" ] && [ "$file_perms" -le 644 ]; then
             is_secure=true
             details="권한: $file_perms, 소유자: $file_owner"
         else
