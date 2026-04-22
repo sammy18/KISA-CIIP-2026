@@ -41,10 +41,22 @@ diagnose() {
     diagnosis_result="GOOD"
     local inspection_summary="세션 종료 시간이 600초 이하로 적절히 설정되어 있습니다."
     local command_result=""
-    local command_executed="grep -i 'TMOUT' /etc/profile"
+    local command_executed="grep -iE 'TMOUT' /etc/profile /etc/bashrc /etc/profile.d/*.sh"
 
-    # 1. 실제 데이터 추출: TMOUT 변수 확인
-    local tmout_val=$(grep -i "^TMOUT=" /etc/profile | cut -d= -f2 | tr -d '[:space:]' | sed 's/export//g' || echo "미설정")
+    # 1. 실제 데이터 추출: TMOUT 변수 확인 (여러 소스 검사)
+    local tmout_val="미설정"
+    local all_sources="/etc/profile /etc/bashrc"
+    # profile.d 글로브 확장
+    for f in /etc/profile.d/*.sh; do
+        [ -f "$f" ] && all_sources="$all_sources $f"
+    done
+    for src in $all_sources; do
+        local found=$(grep -iE "^(export\s+)?TMOUT=" "$src" 2>/dev/null | head -1 | sed -E 's/^(export\s+)?TMOUT=//i' | tr -d '[:space:]' || true)
+        if [ -n "$found" ]; then
+            tmout_val="$found"
+            break
+        fi
+    done
 
     # 2. 판정 로직
     if [ "$tmout_val" = "미설정" ] || [ "$tmout_val" -gt 600 ]; then
