@@ -43,11 +43,11 @@ try {
     $noNameReleaseOnDemand = if ($tcpipParams) { $tcpipParams.NoNameReleaseOnDemand } else { 0 }
 
     # Check if all DoS protection settings are properly configured
-    $allSet = ($synAttackProtect -ge 1) -and ($enableDeadGWDetect -eq 0) -and ($keepAliveTime -le 300000) -and ($noNameReleaseOnDemand -eq 1)
+    $allSet = ($synAttackProtect -ge 1) -and ($enableDeadGWDetect -eq 0) -and ($keepAliveTime -eq 300000) -and ($noNameReleaseOnDemand -eq 1)
 
     if ($allSet) {
         $finalResult = "GOOD"
-        $summary = "DoS 방어 레지스트리 4가지 모두 설정됨"
+        $summary = "DoS 방어 레지스트리 4가지 모두 정확히 설정됨"
         $status = "양호"
     } else {
         $finalResult = "VULNERABLE"
