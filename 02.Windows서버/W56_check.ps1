@@ -44,6 +44,8 @@ try {
         $enableForcedLogoff = [int]$matches[1]
     }
 
+    # 참고: secedit에서 Autodisconnect 값은 분 단위로 보고됨
+    # 레지스트리 HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters\AutoDisconnect도 분 단위
     if ($content -match 'Autodisconnect\s*=\s*(\d+)') {
         $autoDisconnect = [int]$matches[1]
     }
