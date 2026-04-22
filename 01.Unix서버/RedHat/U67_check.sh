@@ -23,8 +23,6 @@ LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 # 필수 라이브러리 로드
 source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/command_validator.sh"
-source "${LIB_DIR}/timeout_handler.sh"
 source "${LIB_DIR}/result_manager.sh"
 source "${LIB_DIR}/output_mode.sh"
 source "${LIB_DIR}/metadata_parser.sh"
@@ -32,7 +30,7 @@ source "${LIB_DIR}/metadata_parser.sh"
 
 ITEM_ID="U-67"
 ITEM_NAME="로그 디렉터리 소유자 및 권한 설정"
-SEVERITY="중"
+SEVERITY="(중)"
 
 # 가이드라인 정보
 GUIDELINE_PURPOSE="로그 파일을 관리자만 제어할 수 있게하여 비인가자의 임의적인 파일 훼손 및 변조를 방지하기 위함"
@@ -175,8 +173,8 @@ main() {
     # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
 
-    # 디스크 공간 확인
-    check_disk_space
+    # root 권한 확인
+    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
 
     # 진단 수행
     diagnose
