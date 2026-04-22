@@ -40,11 +40,11 @@ try {
     $path = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
     $value = (Get-ItemProperty -Path $path -ErrorAction SilentlyContinue).EveryoneIncludesAnonymous
 
-    if ($value -eq 0) {
+    if ($null -eq $value -or $value -eq 0) {
         $finalResult = "GOOD"
         $summary = "'Everyone 사용 권한을 익명 사용자에게 적용' 정책이 '사용 안 함'으로 설정됨"
         $status = "양호"
-        $commandOutput = "EveryoneIncludesAnonymous = 0 (Disabled)"
+        $commandOutput = if ($null -eq $value) { "EveryoneIncludesAnonymous = (not set, defaults to 0 = Disabled)" } else { "EveryoneIncludesAnonymous = 0 (Disabled)" }
     } else {
         $finalResult = "VULNERABLE"
         $summary = "'Everyone 사용 권한을 익명 사용자에게 적용' 정책이 '사용'으로 설정됨 (보안 위협)"
