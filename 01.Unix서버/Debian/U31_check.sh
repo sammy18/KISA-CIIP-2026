@@ -95,7 +95,7 @@ diagnose() {
 
         # 타사용자 쓰기 권한 확인 (others의 write 권한)
         local has_others_write=false
-        if [[ "$perms" =~ [0-9][0-9][1357]$ ]]; then
+        if [[ "$perms" =~ [0-9][0-9][2367]$ ]]; then
             has_others_write=true
         fi
 
