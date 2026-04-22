@@ -10,8 +10,8 @@
 # @Category    : Unix Server
 # @Platform    : Debian
 # @Severity    : 상
-# @Title       : 로그온 시도 횟수 제한
-# @Description : faillock 설정 확인 deny <= 5
+# @Title       : Finger 서비스 비활성화
+# @Description : Finger 서비스 비활성화 여부 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -31,7 +31,7 @@ source "${LIB_DIR}/metadata_parser.sh"
 
 
 ITEM_ID="U-34"
-ITEM_NAME="로그온 시도 횟수 제한"
+ITEM_NAME="Finger 서비스 비활성화"
 SEVERITY="상"
 
 # 가이드라인 정보
@@ -57,92 +57,70 @@ diagnose() {
     local newline=$'\n'
 
     # 진단 로직 구현
-    # /etc/security/faillock.conf 또는 pam_faillock.so 설정 확인
+    # Finger 서비스 비활성화 여부 점검
+    # 가이드라인: Finger 서비스가 비활성화된 경우 양호
 
-    local is_secure=false
-    local config_details=""
-    local deny_value=""
+    local finger_active=false
     local raw_output=""
 
-    # Capture raw output from faillock config
-    if [ -f /etc/security/faillock.conf ]; then
-        raw_output=$(cat /etc/security/faillock.conf 2>/dev/null | grep -v "^#" | grep -v "^$" || echo "File exists but empty or no settings")
-    else
-        raw_output=$(ls -la /etc/security/faillock.conf 2>/dev/null || echo "File not found: /etc/security/faillock.conf")
-    fi
-
-    # 1) /etc/security/faillock.conf 확인 (Debian 10+)
-    if [ -f /etc/security/faillock.conf ]; then
-        local deny_setting=$(grep -E "^deny\s*=" /etc/security/faillock.conf | awk -F= '{print $2}' | tr -d ' ')
-        if [ -n "$deny_setting" ]; then
-            deny_value=$deny_setting
-            if [ "$deny_value" -le 5 ]; then
-                is_secure=true
-            fi
-            config_details="faillock.conf: deny=${deny_value}"
+    # 1) systemctl 확인
+    if command -v systemctl >/dev/null 2>&1 && systemctl --version >/dev/null 2>&1; then
+        if systemctl is-active --quiet finger 2>/dev/null || systemctl is-active --quiet fingerd 2>/dev/null; then
+            finger_active=true
+            raw_output="[systemctl] Finger 서비스 실행 중"
         fi
     fi
 
-    # 2) PAM 설정에서 pam_faillock.so 확인
-    local pam_files=(
-        "/etc/pam.d/common-auth"
-        "/etc/pam.d/system-auth"
-        "/etc/pam.d/login"
-    )
-
-    if [ -z "$deny_value" ]; then
-        for pam_file in "${pam_files[@]}"; do
-            if [ -f "$pam_file" ]; then
-                if grep -q "pam_faillock.so" "$pam_file"; then
-                    local pam_output=$(grep "pam_faillock.so" "$pam_file" 2>/dev/null || echo "")
-                    raw_output="${raw_output}${newline}[${pam_file}]${pam_output}"
-                    deny_value=$(grep "pam_faillock.so" "$pam_file" | grep -oP 'deny=\K[0-9]+' | head -1)
-                    if [ -n "$deny_value" ]; then
-                        if [ "$deny_value" -le 5 ]; then
-                            is_secure=true
-                        fi
-                        config_details="pam_faillock.so: deny=${deny_value}"
-                    fi
-                    break
-                fi
+    # 2) inetd/xinetd 설정 확인
+    if [ "$finger_active" = false ]; then
+        # /etc/inetd.conf 확인
+        if [ -f /etc/inetd.conf ]; then
+            local inetd_finger=$(grep -v "^#" /etc/inetd.conf 2>/dev/null | grep -i "finger" || echo "")
+            if [ -n "$inetd_finger" ]; then
+                finger_active=true
+                raw_output="${raw_output}[/etc/inetd.conf]${inetd_finger}"
             fi
-        done || true
+        fi
+
+        # /etc/xinetd.d/finger 확인
+        if [ -f /etc/xinetd.d/finger ]; then
+            local xinetd_finger=$(grep -v "^#" /etc/xinetd.d/finger 2>/dev/null | grep -i "disable.*=.*no" || echo "")
+            if [ -n "$xinetd_finger" ]; then
+                finger_active=true
+                raw_output="${raw_output}[/etc/xinetd.d/finger] 활성화됨"
+            fi
+        fi
     fi
 
-    # 3) faillock 명령어로 잠금 상태 확인
-    if command -v faillock &>/dev/null; then
-        local faillock_info=$(faillock 2>/dev/null || echo "")
-        if [ -n "$faillock_info" ]; then
-            config_details="${config_details}\\n상태: ${faillock_info}"
+    # 3) 프로세스 확인
+    if [ "$finger_active" = false ]; then
+        local finger_ps=$(ps aux 2>/dev/null | grep -E "in\.fingerd|fingerd" | grep -v grep || echo "")
+        if [ -n "$finger_ps" ]; then
+            finger_active=true
+            raw_output="${raw_output}[Process]${finger_ps}"
         fi
+    fi
+
+    # 4) finger 패키지 설치 확인 (정보성)
+    local finger_pkg=""
+    if command -v dpkg >/dev/null 2>&1; then
+        finger_pkg=$(dpkg -l 2>/dev/null | grep -i "finger" | grep "^ii" || echo "")
     fi
 
     # 최종 판정
-    if [ "$is_secure" = true ]; then
+    if [ "$finger_active" = true ]; then
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        inspection_summary="Finger 서비스가 활성화되어 있음"
+        command_result="${raw_output}${newline}[Package]${finger_pkg:-미설치}"
+        command_executed="systemctl status finger fingerd 2>/dev/null; grep finger /etc/inetd.conf 2>/dev/null; ps aux | grep fingerd"
+    else
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="로그온 시도 횟수 제한 적절히 설정됨 (deny=${deny_value} <= 5)"
-        command_result="${raw_output}"
-        command_executed="grep -E '^deny' /etc/security/faillock.conf; grep pam_faillock.so /etc/pam.d/common-auth"
-    elif [ -n "$deny_value" ]; then
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="로그온 시도 횟수 제한 설정됨但 임계값 초과 (deny=${deny_value} > 5)"
-        command_result="${raw_output}"
-        command_executed="grep -E '^deny' /etc/security/faillock.conf"
-    else
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="로그온 시도 횟수 제한 미설정"
-        command_result="${raw_output}"
-        command_executed="ls -la /etc/security/faillock.conf 2>/dev/null; grep pam_faillock.so /etc/pam.d/common-auth"
+        inspection_summary="Finger 서비스가 비활성화됨"
+        command_result="${raw_output}${newline}[Package]${finger_pkg:-미설치}"
+        command_executed="systemctl status finger fingerd 2>/dev/null; grep finger /etc/inetd.conf 2>/dev/null"
     fi
-
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
 
     # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
     # Run-all 모드 확인
