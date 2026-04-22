@@ -43,12 +43,21 @@ diagnose() {
     local command_executed="grep -Ei 'com2sec|sec.name' /etc/snmp/snmpd.conf"
 
     if [ -f "/etc/snmp/snmpd.conf" ]; then
-        local access_check=$(grep -Ei "com2sec|sec.name" /etc/snmp/snmpd.conf | grep "default" | grep -v "^#" || echo "")
-        if [ -n "$access_check" ]; then
+        # com2sec 기반 접근 제어 확인 (SNMPv1/v2c)
+        local com2sec_check=$(grep -Ei "com2sec|sec.name" /etc/snmp/snmpd.conf | grep "default" | grep -v "^#" || echo "")
+        # VACM 기반 접근 제어 확인 (SNMPv3 및 고급 설정)
+        local vacm_check=$(grep -v "^#" /etc/snmp/snmpd.conf | grep -Ei "^[[:space:]]*access[[:space:]]" | grep -Ei "exact\s+all\s" || echo "")
+
+        if [ -n "$com2sec_check" ]; then
             status="취약"
             diagnosis_result="VULNERABLE"
             inspection_summary="SNMP 서비스가 'default'(모든 호스트) 대역에 대해 허용되어 있습니다."
-            command_result="취약한 설정: [ ${access_check} ]"
+            command_result="취약한 설정: [ ${com2sec_check} ]"
+        elif [ -n "$vacm_check" ]; then
+            status="취약"
+            diagnosis_result="VULNERABLE"
+            inspection_summary="SNMP VACM 설정이 과도하게 허용되어 있습니다."
+            command_result="취약한 VACM 설정: [ ${vacm_check} ]"
         fi
     fi
     command_result=$(echo "${command_result:-접근 제어 양호}" | tr -d '\n\r')
