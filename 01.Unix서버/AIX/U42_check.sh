@@ -2,16 +2,16 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Version: 1.0.2
+# @Last Updated: 2026-04-23
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-42
 # @Category    : Unix Server
 # @Platform    : AIX
-# @Severity    : 중
-# @Title       : NFS 서비스 비활성화
-# @Description : nfs-server, rpcbind 서비스 비활성화 확인
+# @Severity    : 상
+# @Title       : 불필요한 RPC 서비스 비활성화
+# @Description : 취약점이 있는 불필요한 RPC 서비스(rusersd, rwalld, rstatd 등) 비활성화 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -31,8 +31,8 @@ source "${LIB_DIR}/metadata_parser.sh"
 
 
 ITEM_ID="U-42"
-ITEM_NAME="NFS 서비스 비활성화"
-SEVERITY="중"
+ITEM_NAME="불필요한 RPC 서비스 비활성화"
+SEVERITY="상"
 
 # 가이드라인 정보
 GUIDELINE_PURPOSE="많은 취약점(버퍼 오버 플로우, DoS, 원격 실행 등)이 존재하는 RPC 서비스를 비활성화하여 시스템의 보안성을 높이기 위함"
@@ -45,9 +45,7 @@ GUIDELINE_REMEDIATION="불필요한 RPC 서비스 중지 및 비활성화 설정
 # 진단 함수
 # ============================================================================
 
-# 진단 수행
 diagnose() {
-
 
     diagnosis_result="unknown"
     local status="미진단"
@@ -56,71 +54,65 @@ diagnose() {
     local command_executed=""
     local newline=$'\n'
 
-    # 진단 로직 구현
-    # nfs-server, rpcbind 서비스 상태 확인
-
     local is_secure=true
-    local service_status=""
     local active_services=()
+    local service_status=""
 
-    # 확인할 서비스 목록
-    local services=("nfs-server" "rpcbind" "nfs-client.target")
+    # 1) 취약한 RPC 프로세스 확인
+    local rpc_procs=$(ps -ef 2>/dev/null | grep -Ei "rusersd|rwalld|rstatd|rpc\.cmsd|rpc\.ttdbserverd|sprayd|walld" | grep -v grep || echo "")
+    if [ -n "$rpc_procs" ]; then
+        is_secure=false
+        local proc_names=$(echo "$rpc_procs" | awk '{print $8}' | sort -u | xargs)
+        active_services+=("RPC 프로세스: ${proc_names}")
+        service_status="${service_status}취약 RPC 프로세스 실행 중\\n"
+    fi
 
-    for service in "${services[@]}"; do
-        # AIX lssrc로 서비스 상태 확인
-        local svc_name="nfs"
-        case "$service" in
-            nfs-server) svc_name="nfs" ;;
-            rpcbind) svc_name="rpcbind" ;;
-            *) svc_name="$service" ;;
-        esac
+    # 2) AIX inetd.conf에서 RPC 서비스 확인
+    if [ -f /etc/inetd.conf ]; then
+        for rpc_svc in rusersd rwalld rstatd sprayd; do
+            local inetd_entry=$(grep "$rpc_svc" /etc/inetd.conf 2>/dev/null | grep -v "^#" || echo "")
+            if [ -n "$inetd_entry" ]; then
+                is_secure=false
+                active_services+=("${rpc_svc} (inetd enabled)")
+                service_status="${service_status}${rpc_svc}: inetd.conf에서 활성화됨\\n"
+            fi
+        done || true
+    fi
 
-        local state=$(lssrc -s "$svc_name" 2>/dev/null | grep "$svc_name" | awk '{print $2}' || echo "inoperative")
-        if [ "$state" = "active" ]; then
+    # 3) rpcinfo로 등록된 RPC 서비스 확인
+    if command -v rpcinfo >/dev/null 2>&1; then
+        local rpc_info=$(rpcinfo -p 2>/dev/null | grep -Ei "rusersd|rwalld|rstatd|sprayd|cmsd|ttdbserverd" || echo "")
+        if [ -n "$rpc_info" ]; then
             is_secure=false
-            active_services+=("${service} (active)")
+            active_services+=("rpcinfo에 취약 RPC 서비스 등록됨")
+            service_status="${service_status}rpcinfo: 취약 RPC 서비스 발견\\n"
         fi
-        service_status="${service_status}${service}: ${state}\\n"
-    done || true
+    fi
 
-    # 포트 확인 (NFS: 2049, rpcbind: 111)
-    if command -v ss &>/dev/null; then
-        local nfs_port=$(ss -tuln | grep ":2049 " || echo "")
-        local rpcbind_port=$(ss -tuln | grep ":111 " || echo "")
-
-        if [ -n "$nfs_port" ]; then
-            is_secure=false
-            service_status="${service_status}NFS 포트 2049 활성화\\n"
-        fi
-        if [ -n "$rpcbind_port" ]; then
-            is_secure=false
-            service_status="${service_status}rpcbind 포트 111 활성화\\n"
-        fi
+    # 명령어 결과 수집
+    local ps_raw=$(ps -ef 2>/dev/null | grep -Ei "rusersd|rwalld|rstatd|rpc\.cmsd|rpc\.ttdbserverd|sprayd" | grep -v grep || echo "No vulnerable RPC processes found")
+    local rpcinfo_raw=""
+    if command -v rpcinfo >/dev/null 2>&1; then
+        rpcinfo_raw=$(rpcinfo -p 2>/dev/null || echo "rpcinfo not available")
+    else
+        rpcinfo_raw="rpcinfo command not found"
     fi
 
     # 최종 판정
     if [ "$is_secure" = true ]; then
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="NFS 관련 서비스 비활성화됨"
-        command_result="${service_status}"
-        command_executed="lssrc -s nfs-server 2>/dev/null | grep -q "active" rpcbind; ss -tuln | grep -E ':2049|:111'"
+        inspection_summary="불필요한 RPC 서비스가 비활성화되어 있습니다."
+        command_result="[Command: ps -ef | grep rpc]${newline}${ps_raw}${newline}${newline}[Command: rpcinfo -p]${newline}${rpcinfo_raw}"
+        command_executed="ps -ef | grep -Ei 'rusersd|rwalld|rstatd'; rpcinfo -p"
     else
         diagnosis_result="VULNERABLE"
         status="취약"
-        inspection_summary="NFS 관련 서비스 활성화됨: ${active_services[*]}"
-        command_result="${service_status}"
-        command_executed="lssrc -s nfs-server 2>/dev/null | grep -q "active" rpcbind; ss -tuln | grep -E ':2049|:111'"
+        inspection_summary="보안에 취약한 RPC 서비스가 활성화되어 있습니다: ${active_services[*]}"
+        command_result="[Command: ps -ef | grep rpc]${newline}${ps_raw}${newline}${newline}[Command: rpcinfo -p]${newline}${rpcinfo_raw}"
+        command_executed="ps -ef | grep -Ei 'rusersd|rwalld|rstatd'; rpcinfo -p"
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
         "${ITEM_ID}" \
         "${ITEM_NAME}" \
@@ -135,9 +127,7 @@ diagnose() {
         "${GUIDELINE_CRITERIA_BAD}" \
         "${GUIDELINE_REMEDIATION}"
 
-    # 결과 저장 확인
     verify_result_saved "${ITEM_ID}"
-
 
     return 0
 }
@@ -147,16 +137,12 @@ diagnose() {
 # ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
 
-    # 디스크 공간 확인
     check_disk_space
 
-    # 진단 수행
     diagnose
 
-    # 진단 완료 표시
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
 
     return 0
