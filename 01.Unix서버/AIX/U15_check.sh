@@ -2,8 +2,8 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Version: 1.0.2
+# @Last Updated: 2026-04-23
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-15
@@ -11,7 +11,7 @@
 # @Platform    : AIX
 # @Severity    : 상
 # @Title       : 파일 및 디렉터리 소유자 설정
-# @Description : 소유자가 없는 파일 확인
+# @Description : 소유자가 존재하지 않는 파일 및 디렉터리 확인 (고아 파일 탐지)
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -45,9 +45,7 @@ GUIDELINE_REMEDIATION="소유자가 존재하지 않는 파일 및 디렉터리 
 # 진단 함수
 # ============================================================================
 
-# 진단 수행
 diagnose() {
-
 
     diagnosis_result="unknown"
     local status="미진단"
@@ -56,94 +54,54 @@ diagnose() {
     local command_executed=""
     local newline=$'\n'
 
-    # 진단 로직 구현
-    # /etc/passwd의 사용자 홈 디렉토리 권한 확인
+    local is_secure=true
+    local orphan_files=""
+    local orphan_count=0
 
-    local vulnerable_homes=""
-    local vulnerable_count=0
-    local total_users=0
+    # /etc/passwd에 존재하는 UID 목록 추출
+    local valid_uids=$(awk -F: '{print $3}' /etc/passwd 2>/dev/null | sort -u)
 
-    # /etc/passwd에서 사용자별 홈 디렉토리 권한 확인
-    while IFS= read -r user_line; do
-        local username=$(echo "$user_line" | cut -d: -f1)
-        local uid=$(echo "$user_line" | cut -d: -f3)
-        local home_dir=$(echo "$user_line" | cut -d: -f6)
+    # 고아 파일(소유자가 /etc/passwd에 없는 파일) 탐지
+    # AIX: find -nouser 사용 (GNU find 및 AIX find 모두 지원)
+    local search_dirs=("/etc" "/usr" "/var" "/opt" "/home" "/tmp" "/")
 
-        # 홈 디렉토리가 존재하고, UID가 1000 이상인 일반 사용자 확인
-        if [ -d "$home_dir" ] && [ "$uid" -ge 1000 ] 2>/dev/null; then
-            ((total_users++)) || true
-
-            # 디렉토리 권한 및 소유자 확인 (AIX)
-            local perms=""
-            local owner=""
-
-            # AIX에서 권한 확인
-            if command -v perl >/dev/null 2>&1; then
-                perms=$(perl -e 'printf "%04o\n", (stat shift)[2] & 07777' "$home_dir" 2>/dev/null)
-            else
-                local ls_output=$(ls -ld "$home_dir" 2>/dev/null)
-                perms=$(echo "$ls_output" | awk '{print $1}')
-            fi
-
-            # 소유자 확인
-            owner=$(ls -ld "$home_dir" 2>/dev/null | awk '{print $3}')
-
-            if [ -n "$perms" ] && [ -n "$owner" ]; then
-                # 취약한 권한 확인: 777, 775, 755 (others에 읽기 권한) 등
-                # others에 쓰기 권한이 있거나, 소유자가 해당 사용자가 아닌 경우
-
-                # 숫자 형식 권한인 경우 (perl 사용)
-                if echo "$perms" | grep -qE '^[0-9]+$'; then
-                    local others_write=$((perms % 10))
-
-                    if [ "$owner" != "$username" ]; then
-                        ((vulnerable_count++)) || true
-                        vulnerable_homes="${vulnerable_homes}${username}: ${home_dir} (소유자: ${owner}, 권한: ${perms}), "
-                    elif [ "$others_write" -ge 2 ] 2>/dev/null; then
-                        ((vulnerable_count++)) || true
-                        vulnerable_homes="${vulnerable_homes}${username}: ${home_dir} (권한: ${perms}, others 쓰기 가능), "
-                    fi
-                else
-                    # 문자열 형식 권한인 경우 (ls 출력)
-                    # 마지막 3字符 확인 (others 권한)
-                    local last_three=$(echo "$perms" | tail -c 4)
-
-                    if [ "$owner" != "$username" ]; then
-                        ((vulnerable_count++)) || true
-                        vulnerable_homes="${vulnerable_homes}${username}: ${home_dir} (소유자: ${owner}, 권한: ${perms}), "
-                    elif echo "$last_three" | grep -q "w"; then
-                        # others에 쓰기 권한이 있는 경우
-                        ((vulnerable_count++)) || true
-                        vulnerable_homes="${vulnerable_homes}${username}: ${home_dir} (권한: ${perms}, others 쓰기 가능), "
-                    fi
-                fi
+    for search_dir in "${search_dirs[@]}"; do
+        if [ -d "$search_dir" ]; then
+            local found=$(find "$search_dir" -nouser -type f -o -nouser -type d 2>/dev/null | head -50 || echo "")
+            if [ -n "$found" ]; then
+                while IFS= read -r file_path; do
+                    [ -z "$file_path" ] && continue
+                    local file_uid=$(perl -e 'print +(stat shift)[4]' "$file_path" 2>/dev/null || echo "unknown")
+                    orphan_files="${orphan_files}${file_path} (UID: ${file_uid}), "
+                    ((orphan_count++)) || true
+                done <<< "$found"
             fi
         fi
-    done < /etc/passwd || true
+    done || true
 
-    if [ "$vulnerable_count" -eq 0 ]; then
+    # 결과 정리
+    if [ "$orphan_count" -eq 0 ]; then
+        is_secure=true
+    else
+        is_secure=false
+    fi
+
+    # 최종 판정
+    if [ "$is_secure" = true ]; then
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="사용자 홈 디렉토리 권한 양호 (검사된 사용자: ${total_users}명)"
-        local ls_raw=$(awk -F: '$3 >= 1000 {print $1, $3, $6}' /etc/passwd 2>/dev/null | while read user uid home; do ls -ld "$home" 2>/dev/null; done | head -20)
-        command_result="[Command: ls -ld home_dirs]${newline}${ls_raw}"
-        command_executed="awk -F: '\$3 >= 1000 {print \$1, \$3, \$6}' /etc/passwd | while read user uid home; do ls -ld \"\$home\" 2>/dev/null; done"
+        inspection_summary="소유자가 존재하지 않는 파일 및 디렉터리가 없습니다."
+        local find_raw=$(find / -nouser -type f -o -nouser -type d 2>/dev/null | head -20 || echo "No orphan files found")
+        command_result="[Command: find / -nouser]${newline}${find_raw}"
+        command_executed="find / -nouser -type f -o -nouser -type d 2>/dev/null | head -50"
     else
         diagnosis_result="VULNERABLE"
         status="취약"
-        inspection_summary="취약한 홈 디렉토리 ${vulnerable_count}개 발견: ${vulnerable_homes%, }"
-        command_result="${vulnerable_homes%, }"
-        command_executed="awk -F: '\$3 >= 1000 {print \$1, \$3, \$6}' /etc/passwd | while read user uid home; do ls -ld \"\$home\" 2>/dev/null; done"
+        inspection_summary="소유자가 존재하지 않는 파일/디렉터리 ${orphan_count}개 발견: ${orphan_files%, }"
+        command_result="${orphan_files%, }"
+        command_executed="find / -nouser -type f -o -nouser -type d 2>/dev/null | head -50"
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
         "${ITEM_ID}" \
         "${ITEM_NAME}" \
@@ -158,9 +116,7 @@ diagnose() {
         "${GUIDELINE_CRITERIA_BAD}" \
         "${GUIDELINE_REMEDIATION}"
 
-    # 결과 저장 확인
     verify_result_saved "${ITEM_ID}"
-
 
     return 0
 }
@@ -170,16 +126,12 @@ diagnose() {
 # ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
 
-    # 디스크 공간 확인
     check_disk_space
 
-    # 진단 수행
     diagnose
 
-    # 진단 완료 표시
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
 
     return 0
