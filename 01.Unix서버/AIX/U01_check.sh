@@ -137,9 +137,9 @@ diagnose() {
             ssh_config_output="[FILE NOT FOUND]"
             ssh_secure=false
         else
-            # PermitRootLogin 설정 확인 (주석 포함)
-            local ssh_config_commented=$(grep -E "^[\s]*#*[\s]*PermitRootLogin" "$sshd_config_file" 2>/dev/null | head -1 || true)
-            ssh_config_output=$(grep -E "^[\s]*PermitRootLogin" "$sshd_config_file" 2>/dev/null | grep -v "^#" | head -1 || true)
+            # PermitRootLogin 설정 확인
+            local ssh_config_commented=$(grep -E "^\s*#\s*PermitRootLogin" "$sshd_config_file" 2>/dev/null | head -1 || true)
+            ssh_config_output=$(grep -E "^\s*PermitRootLogin" "$sshd_config_file" 2>/dev/null | grep -v "^\s*#" | head -1 || true)
             local permit_root_setting=$(echo "$ssh_config_output" | awk '{print $2}')
 
             if [ -z "$permit_root_setting" ]; then
