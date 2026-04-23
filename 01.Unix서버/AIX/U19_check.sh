@@ -105,8 +105,10 @@ diagnose() {
         local equiv_perms=$(perl -e 'printf "%04o", (stat)[2] & 07777' "$equiv_file" 2>/dev/null || echo "0000")
         local equiv_owner=$(echo "$equiv_info" | awk '{print $3}')
 
-        # hosts.equiv는 root 소유자이어야 하며 일반 사용자 쓰기 권한 없어야 함
-        if [ "$equiv_owner" != "root" ] || [[ "$equiv_perms" =~ [0-9][0-9][2-9][0-9] ]]; then
+        # hosts.equiv는 root 소유자이어야 하며 group/other 쓰기 권한 없어야 함
+        local equiv_group_write=$(( (perms % 100) / 10 ))
+        local equiv_other_write=$(( perms % 10 ))
+        if [ "$equiv_owner" != "root" ] || [ "$equiv_group_write" -ge 2 ] || [ "$equiv_other_write" -ge 2 ]; then
             equiv_secure=false
             equiv_details=", /etc/hosts.equiv - 권한: $equiv_perms, 소유자: $equiv_owner"
         else
