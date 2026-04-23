@@ -2,16 +2,16 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Version: 1.0.2
+# @Last Updated: 2026-04-23
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-39
 # @Category    : Unix Server
 # @Platform    : AIX
 # @Severity    : 상
-# @Title       : SSH 서비스 보안 설정
-# @Description : SSH 보안 설정 확인 - Protocol 2, PermitRootLogin no, X11Forwarding no, MaxAuthTries <= 3
+# @Title       : 불필요한 NFS 서비스 비활성화
+# @Description : NFS 관련 데몬(nfsd, rpc.mountd, rpcbind) 비활성화 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -31,13 +31,13 @@ source "${LIB_DIR}/metadata_parser.sh"
 
 
 ITEM_ID="U-39"
-ITEM_NAME="SSH 서비스 보안 설정"
+ITEM_NAME="불필요한 NFS 서비스 비활성화"
 SEVERITY="상"
 
 # 가이드라인 정보
 GUIDELINE_PURPOSE="NFS(Network File System) 서비스는 한 서버의 파일을 많은 서비스 서버들이 공유하여 사용할 때 이용하는 서비스지만 이를 이용한 침해 사고 위험성이 높으므로 사용하지 않는 경우 중지하기 위함"
 GUIDELINE_THREAT="NFS 서비스는 서버의 디스크를 클라이언트와 공유하는 서비스로 적정한 보안 설정이 적용되어 있지 않다면 불필요한 파일 공유로 인한 유출 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="불필요한 NFS 서비스 관련 데몬 이 비활성화된 경우"
+GUIDELINE_CRITERIA_GOOD="불필요한 NFS 서비스 관련 데몬이 비활성화된 경우"
 GUIDELINE_CRITERIA_BAD="불필요한 NFS 서비스 관련 데몬이 활성화된 경우"
 GUIDELINE_REMEDIATION="NFS 서비스를 사용하지 않는 경우 서비스 중지 및 비활성화 설정 ※ 로컬 서버에 마운트되어 있는 디렉터리 제거 및 공유 디렉터리 제거 후 서비스 중지 가능"
 
@@ -45,9 +45,7 @@ GUIDELINE_REMEDIATION="NFS 서비스를 사용하지 않는 경우 서비스 중
 # 진단 함수
 # ============================================================================
 
-# 진단 수행
 diagnose() {
-
 
     diagnosis_result="unknown"
     local status="미진단"
@@ -56,94 +54,67 @@ diagnose() {
     local command_executed=""
     local newline=$'\n'
 
-    # 진단 로직 구현
-    # /etc/ssh/sshd_config 보안 설정 확인
-
     local is_secure=true
-    local config_details=""
-    local issues=()
+    local active_services=()
+    local service_status=""
 
-    local sshd_config="/etc/ssh/sshd_config"
-
-    if [ ! -f "$sshd_config" ]; then
-        diagnosis_result="MANUAL"
-        status="수동진단"
-        inspection_summary="SSH 설정 파일 없음 (서비스 미설치)"
-        local ls_output=$(ls -la "$sshd_config" 2>/dev/null || echo "File not found")
-        command_result="[Command: ls -la $sshd_config]${newline}${ls_output}"
-        command_executed="ls -la $sshd_config"
-    else
-        # 1) Protocol 설정 확인 (Protocol 2 또는 Protocol 2,1)
-        local protocol=$(grep -E "^Protocol" "$sshd_config" | awk '{print $2}')
-        if [ -z "$protocol" ]; then
-            # 기본값은 2 (OpenSSH 5.4+는 Protocol 2만 지원)
-            protocol="2"
-        fi
-        if [ "$protocol" != "2" ]; then
+    # 1) AIX lssrc로 NFS 서비스 상태 확인
+    local nfs_subsystems=("nfs" "nfsd" "rpc.mountd" "rpcbind" "portmap")
+    for svc in "${nfs_subsystems[@]}"; do
+        local state=$(lssrc -s "$svc" 2>/dev/null | grep -E "$svc" | awk '{print $NF}' || echo "inoperative")
+        if [ "$state" = "active" ]; then
             is_secure=false
-            issues+=("Protocol=${protocol} (2여야 함)")
+            active_services+=("${svc} (active)")
         fi
+        service_status="${service_status}${svc}: ${state}\\n"
+    done || true
 
-        # 2) PermitRootLogin 확인
-        local root_login=$(grep -E "^PermitRootLogin" "$sshd_config" | awk '{print $2}')
-        if [ -z "$root_login" ]; then
-            root_login=$(ssh -G root 2>/dev/null | grep permitrootlogin | awk '{print $2}' || echo "yes")
-        fi
-        if [ "$root_login" != "no" ]; then
+    # 2) NFS 프로세스 확인
+    local nfs_procs=$(ps -ef 2>/dev/null | grep -Ei "nfsd|mountd|rpcbind|portmap" | grep -v grep || echo "")
+    if [ -n "$nfs_procs" ]; then
+        is_secure=false
+        local proc_names=$(echo "$nfs_procs" | awk '{print $8}' | sort -u | xargs)
+        active_services+=("NFS 프로세스: ${proc_names}")
+    fi
+
+    # 3) NFS 포트 확인 (2049)
+    local nfs_port=$(netstat -an 2>/dev/null | grep "\.2049 " | grep LISTEN || echo "")
+    if [ -n "$nfs_port" ]; then
+        is_secure=false
+        active_services+=("NFS 포트 2049 활성화")
+    fi
+
+    # 4) 공유 디렉토리 확인
+    local exports=""
+    if [ -f /etc/exports ]; then
+        exports=$(grep -v "^#" /etc/exports 2>/dev/null | grep -v "^$" || echo "")
+        if [ -n "$exports" ]; then
             is_secure=false
-            issues+=("PermitRootLogin=${root_login} (no여야 함)")
-        fi
-
-        # 3) X11Forwarding 확인
-        local x11_forwarding=$(grep -E "^X11Forwarding" "$sshd_config" | awk '{print $2}')
-        if [ -z "$x11_forwarding" ]; then
-            x11_forwarding="yes"  # 기본값
-        fi
-        if [ "$x11_forwarding" != "no" ]; then
-            is_secure=false
-            issues+=("X11Forwarding=${x11_forwarding} (no여야 함)")
-        fi
-
-        # 4) MaxAuthTries 확인 (<= 3)
-        local max_auth_tries=$(grep -E "^MaxAuthTries" "$sshd_config" | awk '{print $2}')
-        if [ -n "$max_auth_tries" ]; then
-            if [ "$max_auth_tries" -gt 3 ]; then
-                is_secure=false
-                issues+=("MaxAuthTries=${max_auth_tries} (<= 3이어야 함)")
-            fi
-        else
-            # 기본값은 6
-            is_secure=false
-            issues+=("MaxAuthTries 미설정 (기본값 6, <= 3이어야 함)")
-        fi
-
-        config_details="Protocol=${protocol}, PermitRootLogin=${root_login}, X11Forwarding=${x11_forwarding}"
-        [ -n "$max_auth_tries" ] && config_details="${config_details}, MaxAuthTries=${max_auth_tries}"
-
-        if [ "$is_secure" = true ]; then
-            diagnosis_result="GOOD"
-            status="양호"
-            inspection_summary="SSH 보안 설정 적절함 (${config_details})"
-            command_result="${config_details}"
-            command_executed="grep -E '^Protocol|^PermitRootLogin|^X11Forwarding|^MaxAuthTries' $sshd_config"
-        else
-            diagnosis_result="VULNERABLE"
-            status="취약"
-            inspection_summary="SSH 보안 설정 미흡: ${issues[*]}"
-        local grep_raw=$(grep -E '^Protocol|^PermitRootLogin|^X11Forwarding|^MaxAuthTries' "$sshd_config" 2>/dev/null || echo "Config not readable")
-        command_result="[Command: grep sshd_config]${newline}${grep_raw}"
-            command_executed="grep -E '^Protocol|^PermitRootLogin|^X11Forwarding|^MaxAuthTries' $sshd_config"
+            active_services+=("/etc/exports에 공유 설정 존재")
         fi
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
+    # 명령어 결과 수집
+    local lssrc_raw=""
+    for svc in nfs nfsd rpcbind; do
+        lssrc_raw="${lssrc_raw}$(lssrc -s "$svc" 2>/dev/null || echo "${svc}: service not found")${newline}"
+    done
 
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
+    # 최종 판정
+    if [ "$is_secure" = true ]; then
+        diagnosis_result="GOOD"
+        status="양호"
+        inspection_summary="NFS 관련 서비스가 비활성화되어 있습니다."
+        command_result="[Command: lssrc]${newline}${lssrc_raw}${newline}[Command: cat /etc/exports]${newline}${exports:-no exports configured}"
+        command_executed="lssrc -s nfs; lssrc -s nfsd; lssrc -s rpcbind; cat /etc/exports"
+    else
+        diagnosis_result="VULNERABLE"
+        status="취약"
+        inspection_summary="NFS 관련 서비스가 활성화되어 있습니다: ${active_services[*]}"
+        command_result="[Command: lssrc]${newline}${lssrc_raw}${newline}[Command: cat /etc/exports]${newline}${exports:-no exports configured}"
+        command_executed="lssrc -s nfs; lssrc -s nfsd; lssrc -s rpcbind; cat /etc/exports"
+    fi
+
     save_dual_result \
         "${ITEM_ID}" \
         "${ITEM_NAME}" \
@@ -158,9 +129,7 @@ diagnose() {
         "${GUIDELINE_CRITERIA_BAD}" \
         "${GUIDELINE_REMEDIATION}"
 
-    # 결과 저장 확인
     verify_result_saved "${ITEM_ID}"
-
 
     return 0
 }
@@ -170,16 +139,12 @@ diagnose() {
 # ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
 
-    # 디스크 공간 확인
     check_disk_space
 
-    # 진단 수행
     diagnose
 
-    # 진단 완료 표시
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
 
     return 0
