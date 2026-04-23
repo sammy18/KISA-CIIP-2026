@@ -118,11 +118,10 @@ diagnose() {
 
     # 4) 기본값 확인 (설정 파일에 명시되지 않은 경우)
     if [ -z "$pwd_algorithm" ] && [ "$is_secure" = false ]; then
-        # AIX 기본값은 일반적으로 안전한 알고리즘 사용
-        # 하지만 명시적으로 설정되지 않았으므로 경고
-        details="password_algorithm 미설정 (AIX 기본값 사용 중)"
-        # AIX 기본값은 보통 안전하므로 양호로 처리
-        is_secure=true
+        # AIX 기본값이 버전마다 다름 (구형 AIX 5.x는 DES 사용 가능)
+        # 명시적 설정이 없으면 취약으로 처리
+        details="password_algorithm 미설정 (명시적 설정 필요)"
+        is_secure=false
     fi
 
     # 최종 판정
