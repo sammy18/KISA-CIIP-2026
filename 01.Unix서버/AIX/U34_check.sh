@@ -2,16 +2,16 @@
 # ============================================================================
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
-# @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Version: 1.0.2
+# @Last Updated: 2026-04-23
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : U-34
 # @Category    : Unix Server
 # @Platform    : AIX
 # @Severity    : 상
-# @Title       : 로그온 시도 횟수 제한
-# @Description : loginretries 설정 확인 (AIX /etc/security/user)
+# @Title       : Finger 서비스 비활성화
+# @Description : Finger 서비스(사용자 정보 확인 서비스)의 비활성화 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
@@ -31,7 +31,7 @@ source "${LIB_DIR}/metadata_parser.sh"
 
 
 ITEM_ID="U-34"
-ITEM_NAME="로그온 시도 횟수 제한"
+ITEM_NAME="Finger 서비스 비활성화"
 SEVERITY="상"
 
 # 가이드라인 정보
@@ -45,9 +45,7 @@ GUIDELINE_REMEDIATION="Finger 서비스 비활성화 설정"
 # 진단 함수
 # ============================================================================
 
-# 진단 수행
 diagnose() {
-
 
     diagnosis_result="unknown"
     local status="미진단"
@@ -56,89 +54,58 @@ diagnose() {
     local command_executed=""
     local newline=$'\n'
 
-    # 진단 로직 구현
-    # AIX: /etc/security/user에서 loginretries 설정 확인
+    local is_secure=true
+    local finger_details=""
 
-    local is_secure=false
-    local config_details=""
-    local loginretries_value=""
+    # 1) 프로세스 실행 여부 확인
+    local finger_ps=$(ps -ef 2>/dev/null | grep -i "fingerd" | grep -v grep || echo "")
+    if [ -n "$finger_ps" ]; then
+        is_secure=false
+        finger_details="Finger 프로세스 실행 중"
+    fi
 
-    # 1) /etc/security/user 확인 (AIX)
-    if [ -f /etc/security/user ]; then
-        # 기본 설정 확인 (default 스탠자)
-        local default_loginretries=$(grep -A 10 "^default:" /etc/security/user | grep "loginretries" | awk '{print $3}')
-
-        if [ -n "$default_loginretries" ]; then
-            loginretries_value=$default_loginretries
-            config_details="/etc/security/user default: loginretries=${loginretries_value}"
-        else
-            # 특정 사용자 설정 확인
-            local user_loginretries=$(grep -v "^#" /etc/security/user | grep "loginretries" | head -1 | awk '{print $3}')
-            if [ -n "$user_loginretries" ]; then
-                loginretries_value=$user_loginretries
-                config_details="/etc/security/user: loginretries=${loginretries_value}"
-            fi
+    # 2) AIX inetd.conf에서 finger 서비스 확인
+    if [ -f /etc/inetd.conf ]; then
+        local finger_inetd=$(grep "^finger" /etc/inetd.conf 2>/dev/null | grep -v "^#" || echo "")
+        if [ -n "$finger_inetd" ]; then
+            is_secure=false
+            finger_details="${finger_details:+${finger_details}, }inetd.conf에서 finger 활성화됨"
         fi
     fi
 
-    # 2) lsuser 명령어로 기본값 확인 (AIX)
-    if [ -z "$loginretries_value" ]; then
-        if command -v lsuser &>/dev/null; then
-            # root 사용자의 loginretries 확인
-            local root_loginretries=$(lsuser -a loginretries root 2>/dev/null | awk -F= '{print $2}')
-            if [ -n "$root_loginretries" ]; then
-                loginretries_value=$root_loginretries
-                config_details="lsuser root: loginretries=${loginretries_value}"
-            fi
+    # 3) AIX lssrc로 서비스 상태 확인
+    if command -v lssrc >/dev/null 2>&1; then
+        local finger_lssrc=$(lssrc -s finger 2>/dev/null || echo "")
+        if echo "$finger_lssrc" | grep -q "active"; then
+            is_secure=false
+            finger_details="${finger_details:+${finger_details}, }lssrc finger active"
         fi
     fi
 
-    # 3) AIX 기본값 확인 (설정되지 않은 경우 기본값은 3 또는 무제한)
-    if [ -z "$loginretries_value" ]; then
-        # AIX 기본값 확인을 위한 방법
-        if command -v lssecfg &>/dev/null; then
-            loginretries_value="3"  # AIX 일반적 기본값
-            config_details="AIX 기본값: loginretries=${loginretries_value}"
-        fi
+    # 명령어 결과 수집
+    local ps_raw=$(ps -ef 2>/dev/null | grep -i "fingerd" | grep -v grep || echo "fingerd process not found")
+    local inetd_raw=""
+    if [ -f /etc/inetd.conf ]; then
+        inetd_raw=$(grep "finger" /etc/inetd.conf 2>/dev/null || echo "finger not in inetd.conf")
+    else
+        inetd_raw="/etc/inetd.conf not found"
     fi
 
-    # 최종 판정 (5회 이하이면 양호)
-    if [ -n "$loginretries_value" ]; then
-        if [ "$loginretries_value" -le 5 ]; then
-            is_secure=true
-        fi
-    fi
-
+    # 최종 판정
     if [ "$is_secure" = true ]; then
         diagnosis_result="GOOD"
         status="양호"
-        inspection_summary="로그온 시도 횟수 제한 적절히 설정됨 (loginretries=${loginretries_value} <= 5)"
-        command_result="${config_details}"
-        command_executed="grep -i loginretries /etc/security/user; lsuser -a loginretries root"
-    elif [ -n "$loginretries_value" ]; then
-        diagnosis_result="VULNERABLE"
-        status="취약"
-        inspection_summary="로그온 시도 횟수 제한 설정됨但 임계값 초과 (loginretries=${loginretries_value} > 5)"
-        command_result="${config_details}"
-        command_executed="grep -i loginretries /etc/security/user"
+        inspection_summary="Finger 서비스가 비활성화되어 있습니다."
+        command_result="[Command: ps -ef | grep fingerd]${newline}${ps_raw}${newline}${newline}[Command: grep finger /etc/inetd.conf]${newline}${inetd_raw}"
+        command_executed="ps -ef | grep fingerd; grep finger /etc/inetd.conf"
     else
         diagnosis_result="VULNERABLE"
         status="취약"
-        inspection_summary="로그온 시도 횟수 제한 미설정 (기본값 무제한 또는 5회 초과)"
-        local grep_raw=$(grep -i loginretries /etc/security/user 2>/dev/null || echo "loginretries not found")
-        local lsuser_raw=$(lsuser -a loginretries root 2>/dev/null || echo "lsuser failed")
-        command_result="[Command: grep -i loginretries /etc/security/user]${newline}${grep_raw}${newline}${newline}[Command: lsuser -a loginretries root]${newline}${lsuser_raw}"
-        command_executed="grep -i loginretries /etc/security/user; lsuser -a loginretries root"
+        inspection_summary="Finger 서비스가 활성화되어 있습니다 (${finger_details})."
+        command_result="[Command: ps -ef | grep fingerd]${newline}${ps_raw}${newline}${newline}[Command: grep finger /etc/inetd.conf]${newline}${inetd_raw}"
+        command_executed="ps -ef | grep fingerd; grep finger /etc/inetd.conf"
     fi
 
-    # echo ""
-    # echo "진단 결과: ${status}"
-    # echo "판정: ${diagnosis_result}"
-    # echo "설명: ${inspection_summary}"
-    # echo ""
-
-    # 결과 생성 (PC 패턴: 스크립트에서 모드 확인 후 처리)
-    # Run-all 모드 확인
     save_dual_result \
         "${ITEM_ID}" \
         "${ITEM_NAME}" \
@@ -153,9 +120,7 @@ diagnose() {
         "${GUIDELINE_CRITERIA_BAD}" \
         "${GUIDELINE_REMEDIATION}"
 
-    # 결과 저장 확인
     verify_result_saved "${ITEM_ID}"
-
 
     return 0
 }
@@ -165,16 +130,12 @@ diagnose() {
 # ============================================================================
 
 main() {
-    # 진단 시작 표시
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
 
-    # 디스크 공간 확인
     check_disk_space
 
-    # 진단 수행
     diagnose
 
-    # 진단 완료 표시
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-UNKNOWN}"
 
     return 0
