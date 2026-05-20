@@ -4,7 +4,7 @@
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-05-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-06
@@ -36,18 +36,27 @@ if (-not (Test-RunallMode)) {
 }
 
 # 1. Run diagnostic
-$commandExecuted = "reg query `"HKLM\SOFTWARE\Policies\Microsoft\Messenger\Client`" /v Disabled"
+$commandExecuted = "Get-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Messenger\Client -Name Disabled; Get-Service Messenger; uninstall registry messenger scan; Get-Process messenger scan"
 $commandOutput = ""
 try {
     # Check registry policy for Windows Messenger disable status
     $policyPath = "HKLM:\SOFTWARE\Policies\Microsoft\Messenger\Client"
-    $registryOutput = reg query "HKLM\SOFTWARE\Policies\Microsoft\Messenger\Client" /v Disabled 2>&1 | Out-String
-    $commandOutput = $registryOutput
+    $policyValue = Get-ItemProperty -Path $policyPath -Name Disabled -ErrorAction SilentlyContinue
+    $outputLines = @()
 
     # Check if policy exists and is set to disable (Disabled = 1)
     $policyDisabled = $false
-    if ($registryOutput -match 'Disabled\s+REG_DWORD\s+0x1') {
-        $policyDisabled = $true
+    $policyExplicitEnabled = $false
+    if ($null -ne $policyValue) {
+        $disabledValue = [int]$policyValue.Disabled
+        $outputLines += "Disabled policy: $disabledValue"
+        if ($disabledValue -eq 1) {
+            $policyDisabled = $true
+        } elseif ($disabledValue -eq 0) {
+            $policyExplicitEnabled = $true
+        }
+    } else {
+        $outputLines += "Disabled policy: Not set"
     }
 
     # Also check Windows Messenger service status
@@ -56,27 +65,93 @@ try {
     if ($messengerService -ne $null -and $messengerService.Status -eq "Running") {
         $serviceRunning = $true
     }
-
-    if ($policyDisabled -and -not $serviceRunning) {
-        $finalResult = "GOOD"
-        $summary = "Windows Messenger 실행 중지됨 (정책 비활성화 및 서비스 중지)"
-        $status = "양호"
-    } elseif ($serviceRunning) {
-        $finalResult = "VULNERABLE"
-        $summary = "Windows Messenger 실행 중 (서비스 상태: $($messengerService.Status), 시작 유형: $($messengerService.StartType))"
-        $status = "취약"
+    if ($null -ne $messengerService) {
+        $outputLines += "Messenger service: $($messengerService.Status), StartType: $($messengerService.StartType)"
     } else {
-        # Policy not set but service not running - check if policy exists
-        if ($registryOutput -match 'ERROR') {
-            $finalResult = "VULNERABLE"
-            $summary = "Windows Messenger 비활성화 정책 미설정 (레지스트리 정책 없음)"
-            $status = "취약"
-        } else {
-            $finalResult = "GOOD"
-            $summary = "Windows Messenger 실행 중지됨"
-            $status = "양호"
+        $outputLines += "Messenger service: Not installed"
+    }
+
+    # 주요 상용 메신저 설치/실행 흔적 확인
+    $messengerCandidates = @(
+        @{ Name = "KakaoTalk"; DisplayPatterns = @("KakaoTalk", "카카오톡"); ProcessNames = @("KakaoTalk") },
+        @{ Name = "LINE"; DisplayPatterns = @("LINE"); ProcessNames = @("LINE") },
+        @{ Name = "Telegram"; DisplayPatterns = @("Telegram"); ProcessNames = @("Telegram") },
+        @{ Name = "WhatsApp"; DisplayPatterns = @("WhatsApp"); ProcessNames = @("WhatsApp") },
+        @{ Name = "Slack"; DisplayPatterns = @("Slack"); ProcessNames = @("slack") },
+        @{ Name = "Discord"; DisplayPatterns = @("Discord"); ProcessNames = @("Discord") },
+        @{ Name = "Skype"; DisplayPatterns = @("Skype"); ProcessNames = @("Skype", "SkypeApp") },
+        @{ Name = "Microsoft Teams"; DisplayPatterns = @("Microsoft Teams", "Teams Machine-Wide Installer"); ProcessNames = @("Teams", "ms-teams", "msteams") },
+        @{ Name = "Zoom"; DisplayPatterns = @("Zoom", "Zoom Workplace"); ProcessNames = @("Zoom") },
+        @{ Name = "NateOn"; DisplayPatterns = @("NateOn", "네이트온"); ProcessNames = @("NateOn", "NateOnMain") },
+        @{ Name = "WeChat"; DisplayPatterns = @("WeChat", "微信"); ProcessNames = @("WeChat", "WeChatAppEx") }
+    )
+
+    $candidateNames = $messengerCandidates | ForEach-Object { $_.Name }
+    $outputLines += "Commercial messenger candidate list: $($candidateNames -join ', ')"
+
+    $uninstallPaths = @(
+        "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*",
+        "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*",
+        "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*"
+    )
+
+    $installedApps = @()
+    foreach ($uninstallPath in $uninstallPaths) {
+        $installedApps += @(Get-ItemProperty -Path $uninstallPath -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName })
+    }
+    $runningProcesses = @(Get-Process -ErrorAction SilentlyContinue)
+
+    $detectedMessengers = @()
+    foreach ($candidate in $messengerCandidates) {
+        foreach ($app in $installedApps) {
+            foreach ($pattern in $candidate.DisplayPatterns) {
+                if ($app.DisplayName -like "*$pattern*") {
+                    $versionText = if ($app.DisplayVersion) { " $($app.DisplayVersion)" } else { "" }
+                    $detectedMessengers += "$($candidate.Name) installed: $($app.DisplayName)$versionText"
+                    break
+                }
+            }
+        }
+
+        foreach ($proc in $runningProcesses) {
+            if ($candidate.ProcessNames -contains $proc.ProcessName) {
+                $detectedMessengers += "$($candidate.Name) running process: $($proc.ProcessName) (PID $($proc.Id))"
+            }
         }
     }
+
+    $detectedMessengers = @($detectedMessengers | Sort-Object -Unique)
+    if ($detectedMessengers.Count -gt 0) {
+        $outputLines += "Detected commercial messenger candidates:"
+        $outputLines += $detectedMessengers
+    } else {
+        $outputLines += "Detected commercial messenger candidates: None"
+    }
+    $outputLines += "Note: 조직에서 허용한 메신저인지 여부는 기관 정책 기준으로 별도 확인 필요"
+
+    if ($detectedMessengers.Count -gt 0) {
+        $finalResult = "VULNERABLE"
+        $summary = "상용 메신저 후보 탐지됨 ($($detectedMessengers.Count)건): 기관 허용 여부 확인 필요"
+        $status = "취약"
+    } elseif ($serviceRunning -or $policyExplicitEnabled) {
+        $finalResult = "VULNERABLE"
+        if ($serviceRunning) {
+            $summary = "Windows Messenger 실행 중 (서비스 상태: $($messengerService.Status), 시작 유형: $($messengerService.StartType))"
+        } else {
+            $summary = "Windows Messenger 비활성화 정책이 사용 안 함으로 설정되지 않음 (Disabled = 0)"
+        }
+        $status = "취약"
+    } elseif ($policyDisabled -and -not $serviceRunning) {
+        $finalResult = "GOOD"
+        $summary = "상용 메신저 후보 미탐지 및 Windows Messenger 실행 중지됨 (정책 비활성화 및 서비스 중지)"
+        $status = "양호"
+    } else {
+        $finalResult = "GOOD"
+        $summary = "상용 메신저 후보 미탐지 및 Windows Messenger 서비스 미설치 또는 실행 중지됨"
+        $status = "양호"
+    }
+
+    $commandOutput = $outputLines -join "`r`n"
 } catch {
     $finalResult = "MANUAL"
     $summary = "진단 실패: 수동 확인 필요"
