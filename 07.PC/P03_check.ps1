@@ -4,7 +4,7 @@
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-05-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-03
@@ -36,28 +36,41 @@ if (-not (Test-RunallMode)) {
 }
 
 # 1. Run diagnostic
-$commandExecuted = 'reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v DisableAutomaticRebootLogon'
+$commandExecuted = 'reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Setup\RecoveryConsole" /v SecurityLevel'
 $commandOutput = ""
 try {
-    $regPath = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'
-    $regName = 'DisableAutomaticRebootLogon'
+    $regPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Setup\RecoveryConsole'
+    $regName = 'SecurityLevel'
+    $value = Get-ItemProperty -Path $regPath -Name $regName -ErrorAction SilentlyContinue
 
-    $value = Get-ItemProperty -Path $regPath -Name $regName -ErrorAction Stop
-    if ($value.DisableAutomaticRebootLogon -eq 1) {
+    if ($null -eq $value -or $value.PSObject.Properties.Name -notcontains $regName) {
         $finalResult = "GOOD"
-        $summary = "복구 콘솔 자동 로그온 금지 설정됨"
+        $summary = "복구 콘솔 자동 관리자 로그온 허용 설정값 없음 (기본값: 자동 로그온 금지)"
         $status = "양호"
+        $commandOutput = "SecurityLevel : Not set (default: automatic administrative logon disabled)"
     } else {
-        $finalResult = "VULNERABLE"
-        $summary = "복구 콘솔 자동 로그온 금지 설정 안 됨"
-        $status = "취약"
+        $securityLevel = [int]$value.SecurityLevel
+        $commandOutput = "SecurityLevel : $securityLevel"
+
+        if ($securityLevel -eq 0) {
+            $finalResult = "GOOD"
+            $summary = "복구 콘솔 자동 관리자 로그온 금지 설정됨 (SecurityLevel = 0)"
+            $status = "양호"
+        } elseif ($securityLevel -eq 1) {
+            $finalResult = "VULNERABLE"
+            $summary = "복구 콘솔 자동 관리자 로그온 허용됨 (SecurityLevel = 1)"
+            $status = "취약"
+        } else {
+            $finalResult = "MANUAL"
+            $summary = "복구 콘솔 SecurityLevel 값이 예상 범위를 벗어남 ($securityLevel): 수동 확인 필요"
+            $status = "수동진단"
+        }
     }
-    $commandOutput = reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v DisableAutomaticRebootLogon 2>&1 | Out-String
 } catch {
-    $finalResult = "VULNERABLE"
-    $summary = "복구 콘솔 자동 로그온 금지 설정 안 됨"
-    $status = "취약"
-    $commandOutput = "레지스트리 값 없음 또는 진단 실패: $_"
+    $finalResult = "MANUAL"
+    $summary = "복구 콘솔 자동 관리자 로그온 설정 조회 실패: 수동 확인 필요"
+    $status = "수동진단"
+    $commandOutput = "진단 실패: $_"
 }
 
 # 2. lib를 통한 결과 저장
