@@ -4,7 +4,7 @@
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-05-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-10
@@ -38,24 +38,35 @@ if (-not (Test-RunallMode)) {
 # 1. Run diagnostic
 try {
     $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update"
-    $command = 'reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update /v AUOptions'
-    $commandResult = reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /v AUOptions 2>&1 | Out-String
+    $command = 'Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update -Name AUOptions; Get-Service wuauserv; Get-HotFix'
+    $commandDetails = @()
 
     $auOptions = Get-ItemProperty -Path $regPath -Name AUOptions -ErrorAction SilentlyContinue
+    $auOptionsText = if ($null -ne $auOptions) { "AUOptions: $($auOptions.AUOptions)" } else { "AUOptions: Not set" }
+    $commandDetails += $auOptionsText
 
-    if ($auOptions -eq $null) {
-        $finalResult = "MANUAL"
-        $summary = "수동 확인 필요"
-        $status = "수동진단"
-    } elseif ($auOptions.AUOptions -eq 4 -or $auOptions.AUOptions -eq 5) {
-        $finalResult = "GOOD"
-        $summary = "Windows 자동 업데이트 설정됨"
-        $status = "양호"
+    $wuService = Get-Service -Name wuauserv -ErrorAction SilentlyContinue
+    if ($null -ne $wuService) {
+        $commandDetails += "Windows Update service: Status=$($wuService.Status), StartType=$($wuService.StartType)"
     } else {
-        $finalResult = "VULNERABLE"
-        $summary = "Windows 자동 업데이트 설정 안 됨"
-        $status = "취약"
+        $commandDetails += "Windows Update service: Not found"
     }
+
+    $hotfixes = @(Get-HotFix -ErrorAction SilentlyContinue | Sort-Object InstalledOn -Descending | Select-Object -First 10)
+    if ($hotfixes.Count -gt 0) {
+        $commandDetails += "Recent hotfixes:"
+        foreach ($hotfix in $hotfixes) {
+            $installedOn = if ($hotfix.InstalledOn) { $hotfix.InstalledOn.ToString("yyyy-MM-dd") } else { "Unknown" }
+            $commandDetails += "- $($hotfix.HotFixID) | InstalledOn=$installedOn | Description=$($hotfix.Description)"
+        }
+    } else {
+        $commandDetails += "Recent hotfixes: Not available"
+    }
+
+    $finalResult = "MANUAL"
+    $summary = "로컬 Windows Update 설정 및 패치 이력만 확인됨: 최신 패치 적용 여부 수동 확인 필요"
+    $status = "수동진단"
+    $commandResult = $commandDetails -join "`r`n"
 } catch {
     $finalResult = "MANUAL"
     $summary = "진단 실패: 수동 확인 필요"
