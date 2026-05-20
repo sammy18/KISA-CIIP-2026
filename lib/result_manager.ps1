@@ -2,6 +2,7 @@
 # Encoding: UTF-8, CRLF
 # Purpose: 진단 결과 파일 생성, 저장, 관리 (IIS 전용)
 # Platform: Windows Server, IIS
+# Last Updated: 2026-05-20
 
 #Requires -Version 5.1
 
@@ -102,9 +103,6 @@ function Generate-JsonContent {
         [string]$GuidelineRemediation
     )
 
-    # command_result를 JSON 문자열로 이스케이프
-    $escapedResult = $CommandResult -replace '\\', '\\' -replace '"', '\"' -replace "`n", '\n' -replace "`r", '\r'
-
     $json = @{
         item_id = $ItemId
         item_name = $ItemName
@@ -114,7 +112,7 @@ function Generate-JsonContent {
         }
         final_result = $FinalResult
         command = $CommandExecuted
-        command_result = $escapedResult
+        command_result = $CommandResult
         guideline = @{
             purpose = $GuidelinePurpose
             security_threat = $GuidelineThreat
@@ -126,7 +124,7 @@ function Generate-JsonContent {
         hostname = (Get-Hostname)
     }
 
-    return ($json | ConvertTo-Json -Depth 3)
+    return ($json | ConvertTo-Json -Depth 5)
 }
 
 # ============================================================================
@@ -669,11 +667,12 @@ function Initialize-RunallTextFile {
     param(
         [string]$Category,
         [string]$Platform,
-        [string]$ScriptDir
+        [string]$ScriptDir,
+        [string]$RunTimestamp
     )
 
     $hostname = Get-Hostname
-    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $timestamp = if ([string]::IsNullOrWhiteSpace($RunTimestamp)) { Get-Date -Format "yyyyMMdd_HHmmss" } else { $RunTimestamp }
     $dateSuffix = Get-Date -Format "yyyyMMdd"
     $resultDir = Join-Path $ScriptDir "results\$dateSuffix"
 
@@ -825,11 +824,12 @@ function New-RunallAggregatedResults {
         [string]$Platform,
         [string]$ScriptDir,
         [int]$TotalItems,
-        [string[]]$ResultsJson
+        [string[]]$ResultsJson,
+        [string]$RunTimestamp
     )
 
     $hostname = Get-Hostname
-    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $timestamp = if ([string]::IsNullOrWhiteSpace($RunTimestamp)) { Get-Date -Format "yyyyMMdd_HHmmss" } else { $RunTimestamp }
     $dateSuffix = Get-Date -Format "yyyyMMdd"
     $resultDir = Join-Path $ScriptDir "results\$dateSuffix"
 
