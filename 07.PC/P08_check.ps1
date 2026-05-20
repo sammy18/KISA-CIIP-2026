@@ -4,7 +4,7 @@
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-05-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-08
@@ -36,25 +36,41 @@ if (-not (Test-RunallMode)) {
 }
 
 # 1. Run diagnostic using bcdedit
-# bcdedit의 부트 로더 식별자(identifier) 개수로 멀티부팅 여부 판단
-# Windows Boot Manager + 1개의 Windows Boot Loader = 단일 부팅 (양호)
-# Windows Boot Manager + 2개 이상의 Boot Loader = 멀티 부팅 (취약)
-$commandExecuted = 'bcdedit /enum'
+# bcdedit의 OS Loader 식별자(identifier) 개수로 멀티부팅 여부 판단
+# 조회 권한 부족/실패 시 부트 항목 0개로 간주하지 않고 수동진단 처리
+$commandExecuted = 'bcdedit /enum osloader'
 $commandOutput = ""
 try {
-    $bcdOutput = bcdedit /enum 2>&1 | Out-String
+    $bcdOutput = bcdedit /enum osloader 2>&1 | Out-String
+    $bcdExitCode = $LASTEXITCODE
     $commandOutput = $bcdOutput
-    $identifiers = $bcdOutput | Select-String -Pattern 'identifier\s+' | Where-Object { $_ -match '\{[A-F0-9-]+\}' }
-    $actualBootEntries = ($identifiers | Where-Object { $_ -match 'bootload' }).Count
 
-    if ($actualBootEntries -le 1) {
-        $finalResult = "GOOD"
-        $summary = "단일 부팅 구성 (Windows OS만 설치됨)"
-        $status = "양호"
+    if ($bcdExitCode -ne 0 -or
+        $bcdOutput -match 'Access is denied' -or
+        $bcdOutput -match 'could not be opened' -or
+        $bcdOutput -match '액세스가 거부') {
+        $finalResult = "MANUAL"
+        $summary = "bcdedit 조회 실패 또는 권한 부족: 관리자 권한으로 멀티부팅 여부 수동 확인 필요"
+        $status = "수동진단"
     } else {
-        $finalResult = "VULNERABLE"
-        $summary = "멀티 부팅 구성 감지 (2개 이상의 OS 부팅 가능)"
-        $status = "취약"
+        $identifierLines = $bcdOutput -split "`r?`n" | Where-Object {
+            $_ -match '^\s*(identifier|식별자)\s+(\{current\}|\{default\}|\{[0-9a-fA-F-]+\})'
+        }
+        $actualBootEntries = @($identifierLines).Count
+
+        if ($actualBootEntries -eq 0) {
+            $finalResult = "MANUAL"
+            $summary = "bcdedit 조회는 성공했으나 OS Loader 항목을 확인하지 못함: 수동 확인 필요"
+            $status = "수동진단"
+        } elseif ($actualBootEntries -le 1) {
+            $finalResult = "GOOD"
+            $summary = "단일 부팅 구성 (OS Loader $actualBootEntries개)"
+            $status = "양호"
+        } else {
+            $finalResult = "VULNERABLE"
+            $summary = "멀티 부팅 구성 감지 (OS Loader $actualBootEntries개)"
+            $status = "취약"
+        }
     }
 } catch {
     $finalResult = "MANUAL"
