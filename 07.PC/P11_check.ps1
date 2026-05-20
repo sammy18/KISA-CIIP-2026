@@ -4,7 +4,7 @@
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-05-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-11
@@ -37,31 +37,30 @@ if (-not (Test-RunallMode)) {
 
 # 1. Run diagnostic
 try {
-    $command = 'Get-CimInstance Win32_OperatingSystem'
+    $command = 'Get-CimInstance Win32_OperatingSystem; Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
     $os = Get-CimInstance Win32_OperatingSystem
     $caption = $os.Caption
     $build = [int]$os.BuildNumber
 
-    $displayVersion = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction SilentlyContinue).DisplayVersion
-    $releaseId = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction SilentlyContinue).ReleaseId
+    $currentVersion = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction SilentlyContinue
+    $displayVersion = $currentVersion.DisplayVersion
+    $releaseId = $currentVersion.ReleaseId
+    $ubr = $currentVersion.UBR
 
-    $commandResult = "OS: $caption | Build: $build"
-    if ($displayVersion) { $commandResult += " | DisplayVersion: $displayVersion" }
-    if ($releaseId) { $commandResult += " | ReleaseId: $releaseId" }
+    $localBuild = if ($null -ne $ubr) { "$build.$ubr" } else { "$build.0" }
 
-    if ($build -ge 22000) {
-        $finalResult = "GOOD"
-        $summary = "Windows 11 Build $build - 최신 지원 버전 사용 중"
-        $status = "양호"
-    } elseif ($build -ge 19044) {
-        $finalResult = "GOOD"
-        $summary = "Windows 10 Build $build 이상 지원"
-        $status = "양호"
-    } else {
-        $finalResult = "VULNERABLE"
-        $summary = "Windows 10 Build $build 미지원 버전"
-        $status = "취약"
-    }
+    $commandDetails = @()
+    $commandDetails += "OS: $caption | Build: $localBuild"
+    if ($displayVersion) { $commandDetails += "DisplayVersion: $displayVersion" }
+    if ($releaseId) { $commandDetails += "ReleaseId: $releaseId" }
+    if ($currentVersion.CurrentBuild) { $commandDetails += "CurrentBuild: $($currentVersion.CurrentBuild)" }
+    if ($null -ne $ubr) { $commandDetails += "UBR: $ubr" }
+    $commandDetails += "FullBuild: $localBuild"
+
+    $finalResult = "MANUAL"
+    $summary = "현재 OS 버전/빌드 확인 완료: 최신 보안 패치 적용 여부 수동 확인 필요 (현재 빌드: $localBuild)"
+    $status = "수동진단"
+    $commandResult = $commandDetails -join "`r`n"
 } catch {
     $finalResult = "MANUAL"
     $summary = "진단 실패: 수동 확인 필요"
