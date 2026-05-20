@@ -2,7 +2,7 @@
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.1
-# @Last Updated: 2026-01-17
+# @Last Updated: 2026-05-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : All
@@ -19,7 +19,7 @@ Write-Host "====================================================================
 Write-Host "KISA-CIIP-2026 Vulnerability Assessment Scripts" -ForegroundColor Cyan
 Write-Host "Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved." -ForegroundColor Cyan
 Write-Host "Version: 1.0.0" -ForegroundColor Cyan
-Write-Host "Last Updated: 2026-01-17" -ForegroundColor Cyan
+Write-Host "Last Updated: 2026-05-20" -ForegroundColor Cyan
 Write-Host "==============================================================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -30,7 +30,6 @@ $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 $LIB_DIR = Join-Path $SCRIPT_DIR "..\lib"
 
 # 필수 라이브러리 로드
-. "$LIB_DIR\common.ps1"
 . "$LIB_DIR\result_manager.ps1"
 
 # ============================================================================
@@ -101,55 +100,43 @@ function Run-SingleCheck {
     $outputLines = Get-Content $tmpOutput -Encoding UTF8
 
     # JSON 시작 찾기 ('{'로 시작하는 라인)
-    $jsonStartIndex = -1
-    $braceCount = 0
-
+    # command_result 안에 중괄호가 포함될 수 있으므로 단순 brace count 대신
+    # 후보 구간을 실제 ConvertFrom-Json으로 검증한다.
     for ($i = 0; $i -lt $outputLines.Count; $i++) {
         $line = $outputLines[$i].Trim()
 
         # JSON 객체 시작 감지
         if ($line -match '^\{') {
-            $jsonStartIndex = $i
-            $braceCount = 1
+            for ($j = $i; $j -lt $outputLines.Count; $j++) {
+                $candidateJson = $outputLines[$i..$j] -join "`n"
 
-            # JSON 끝 찾기 (중괄호 균형)
-            for ($j = $i + 1; $j -lt $outputLines.Count; $j++) {
-                $openBraces = ([regex]::Matches($outputLines[$j], '\{').Count)
-                $closeBraces = ([regex]::Matches($outputLines[$j], '\}').Count)
-                $braceCount += $openBraces - $closeBraces
+                try {
+                    $jsonObj = $candidateJson | ConvertFrom-Json -ErrorAction Stop
 
-                if ($braceCount -eq 0) {
-                    # JSON 객체 완성 - 추출 및 파싱 시도
-                    $candidateJson = $outputLines[$i..$j] -join "`n"
+                    # 필수 필드 확인
+                    if ($jsonObj.item_id -and $jsonObj.final_result) {
+                        $jsonOutput = $candidateJson
+                        $itemName = $jsonObj.item_name
+                        $finalResult = $jsonObj.final_result
 
-                    try {
-                        $jsonObj = $candidateJson | ConvertFrom-Json
-
-                        # 필수 필드 확인
-                        if ($jsonObj.item_id -and $jsonObj.final_result) {
-                            $jsonOutput = $candidateJson
-                            $itemName = $jsonObj.item_name
-                            $finalResult = $jsonObj.final_result
-
-                            # inspection.summary 추출
-                            if ($jsonObj.inspection) {
-                                $summary = $jsonObj.inspection.summary
-                            }
-                            if (-not $summary) {
-                                $summary = "진단 실패"
-                            }
-
-                            $script:RESULTS_JSON += $jsonOutput
-                            break
+                        # inspection.summary 추출
+                        if ($jsonObj.inspection) {
+                            $summary = $jsonObj.inspection.summary
                         }
-                    }
-                    catch {
-                        # 파싱 실패시 다음 후보 계속 검색
-                    }
+                        if (-not $summary) {
+                            $summary = "진단 실패"
+                        }
 
-                    # 다음 후보 찾기 위해 재시작
-                    $i = $j
-                    $jsonStartIndex = -1
+                        $script:RESULTS_JSON += $jsonOutput
+                        $i = $j
+                        break
+                    }
+                }
+                catch {
+                    # 아직 JSON 객체가 완성되지 않았거나 뒤쪽 출력이 섞인 후보이면 계속 확장
+                }
+
+                if ($jsonOutput) {
                     break
                 }
             }
@@ -212,7 +199,8 @@ if (Get-Command Check-DiskSpace -ErrorAction SilentlyContinue) {
 }
 
 # 텍스트 파일 초기화 (result_manager.ps1 함수 사용)
-$Script:TXT_FILE = Initialize-RunallTextFile -Category $CATEGORY -Platform $PLATFORM -ScriptDir $SCRIPT_DIR
+$Script:RUN_TIMESTAMP = Get-Date -Format "yyyyMMdd_HHmmss"
+$Script:TXT_FILE = Initialize-RunallTextFile -Category $CATEGORY -Platform $PLATFORM -ScriptDir $SCRIPT_DIR -RunTimestamp $Script:RUN_TIMESTAMP
 
 # 진단 시작 시간
 $startTime = Get-Date
@@ -246,7 +234,8 @@ New-RunallAggregatedResults `
     -Platform $PLATFORM `
     -ScriptDir $SCRIPT_DIR `
     -TotalItems $TOTAL_ITEMS `
-    -ResultsJson $RESULTS_JSON
+    -ResultsJson $RESULTS_JSON `
+    -RunTimestamp $Script:RUN_TIMESTAMP
 
 Write-Host ""
 Write-Host "[완료] 전체 진단 완료" -ForegroundColor Green
