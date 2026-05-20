@@ -4,7 +4,7 @@
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-05-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : PC-18
@@ -35,53 +35,71 @@ if (-not (Test-RunallMode)) {
     Write-Host "카테고리: $CATEGORY"
 }
 
-# 1. Check remote assistance policy (fAllowToGetHelp)
+# 1. Check remote assistance policy (fAllowToGetHelp, fAllowUnsolicited)
 try {
     $policyPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
-    $defaultPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Services"
-    $regName = "fAllowToGetHelp"
+    $actualPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance"
+    $regNames = @("fAllowToGetHelp", "fAllowUnsolicited")
+    $commandOutputLines = @()
+    $enabledSettings = @()
+    $disabledSettings = @()
+    $missingSettings = @()
+    $unexpectedSettings = @()
 
-    $value = Get-ItemProperty -Path $policyPath -Name $regName -ErrorAction SilentlyContinue
+    foreach ($regName in $regNames) {
+        $effectiveValue = $null
+        $effectiveSource = $null
 
-    if ($value -ne $null) {
-        $intValue = [int]$value.fAllowToGetHelp
-        $commandOutput = "$regName : $intValue (Policy)"
-
-        if ($intValue -eq 0) {
-            $finalResult = "GOOD"
-            $summary = "원격 지원 요청 금지됨 (정책 설정: fAllowToGetHelp = 0)"
-            $status = "양호"
+        $policyValue = Get-ItemProperty -Path $policyPath -Name $regName -ErrorAction SilentlyContinue
+        if ($policyValue -ne $null -and $policyValue.PSObject.Properties.Name -contains $regName) {
+            $effectiveValue = [int]$policyValue.$regName
+            $effectiveSource = "Policy: $policyPath"
         } else {
-            $finalResult = "VULNERABLE"
-            $summary = "원격 지원 요청 허용됨 (정책 설정: fAllowToGetHelp = 1)"
-            $status = "취약"
-        }
-    } else {
-        # Check default path if policy not set
-        $defaultValue = Get-ItemProperty -Path $defaultPath -Name $regName -ErrorAction SilentlyContinue
+            $commandOutputLines += "$regName : Policy not set ($policyPath)"
 
-        if ($defaultValue -ne $null) {
-            $intValue = [int]$defaultValue.fAllowToGetHelp
-            $commandOutput = "$regName : $intValue (Default)"
-
-            if ($intValue -eq 0) {
-                $finalResult = "GOOD"
-                $summary = "원격 지원 요청 금지됨 (기본값: fAllowToGetHelp = 0)"
-                $status = "양호"
-            } else {
-                $finalResult = "VULNERABLE"
-                $summary = "원격 지원 요청 허용됨 (기본값: fAllowToGetHelp = 1)"
-                $status = "취약"
+            # 정책이 없으면 실제 원격 지원 설정 경로 확인
+            $actualValue = Get-ItemProperty -Path $actualPath -Name $regName -ErrorAction SilentlyContinue
+            if ($actualValue -ne $null -and $actualValue.PSObject.Properties.Name -contains $regName) {
+                $effectiveValue = [int]$actualValue.$regName
+                $effectiveSource = "Actual: $actualPath"
             }
+        }
+
+        if ($null -eq $effectiveValue) {
+            $missingSettings += $regName
+            $commandOutputLines += "$regName : Not set (actual path: $actualPath)"
         } else {
-            $finalResult = "GOOD"
-            $summary = "원격 지원 요청 금지됨 (값 없음: 기본적으로 비활성화)"
-            $status = "양호"
-            $commandOutput = "$regName : Not set (default: disabled)"
+            $commandOutputLines += "$regName : $effectiveValue ($effectiveSource)"
+            if ($effectiveValue -eq 0) {
+                $disabledSettings += $regName
+            } elseif ($effectiveValue -eq 1) {
+                $enabledSettings += $regName
+            } else {
+                $unexpectedSettings += "$regName=$effectiveValue"
+            }
         }
     }
 
-    $commandExecuted = "reg query HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services /v fAllowToGetHelp"
+    if ($enabledSettings.Count -gt 0) {
+        $finalResult = "VULNERABLE"
+        $summary = "원격 지원 기능 허용 설정 감지: $($enabledSettings -join ', ') = 1"
+        $status = "취약"
+    } elseif ($unexpectedSettings.Count -gt 0) {
+        $finalResult = "MANUAL"
+        $summary = "원격 지원 설정값이 예상 범위를 벗어남 ($($unexpectedSettings -join ', ')): 수동 확인 필요"
+        $status = "수동진단"
+    } elseif ($missingSettings.Count -gt 0) {
+        $finalResult = "MANUAL"
+        $summary = "원격 지원 일부 설정값 없음 ($($missingSettings -join ', ')): 수동 확인 필요"
+        $status = "수동진단"
+    } else {
+        $finalResult = "GOOD"
+        $summary = "원격 지원 요청 및 원격 지원 제안 모두 금지됨 (fAllowToGetHelp=0, fAllowUnsolicited=0)"
+        $status = "양호"
+    }
+
+    $commandOutput = $commandOutputLines -join "`r`n"
+    $commandExecuted = "Get-ItemProperty '$policyPath' -Name fAllowToGetHelp,fAllowUnsolicited; Get-ItemProperty '$actualPath' -Name fAllowToGetHelp,fAllowUnsolicited"
 
 } catch {
     $finalResult = "MANUAL"
