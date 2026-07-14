@@ -36,11 +36,11 @@ ITEM_ID="D-22"
 ITEM_NAME="SQL Server 버전 점검"
 SEVERITY="하"
 
-GUIDELINE_PURPOSE="RESOURCE _LIMIT 값을 TRUE로 설정하여 자원의 과도한 사용을 방지하여 데이터베이스의 안정성을 보장하고, 효율적인 자원 관리를 수행하기 위함"
-GUIDELINE_THREAT="자원 제한 기능을 TRUE로 설정하지 않을 경우, 특정 사용자가 과도하게 많은 자원을 소비할 수 있으며 이로 인해 시스템에 과부하가 발생할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="RESOURCE _LIMIT 설정이 TRUE로 되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="RESOURCE _LIMIT 설정이 FALSE로 되어 있는 경우"
-GUIDELINE_REMEDIATION="RESOURCE _LIMIT 설정을 TRUE로 설정 변경"
+GUIDELINE_PURPOSE="안전한 버전의 SQL Server를 사용하여 알려진 보안 취약점으로 인한 공격을 차단하기 위함"
+GUIDELINE_THREAT="지원이 종료되었거나 보안 패치가 적용되지 않은 오래된 버전을 사용할 경우, 알려진 보안 취약점을 통해 시스템에 침투하거나 데이터 탈취, 악성 코드 감염 및 서비스 중단 등의 보안 사고를 초래할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="기술 지원이 유지되는 최신 버전의 SQL Server를 사용하며, 최신 보안 패치가 적용된 경우"
+GUIDELINE_CRITERIA_BAD="기술 지원이 종료되었거나 보안 패치가 적용되지 않은 오래된 버전의 SQL Server를 사용하는 경우"
+GUIDELINE_REMEDIATION="기술 지원이 유지되는 최신 버전으로 업그레이드하고, 최신 보안 패치를 적용"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

@@ -9,7 +9,7 @@
 # @ID          : D-16
 # @Category    : DBMS (Database Management System)
 # @Platform    : MSSQL
-# @Severity    : 하
+# @Severity    : 중
 # @Title       : Windows 인증 모드 사용
 # @Description : MSSQL Server가 Windows 인증 모드만 사용하도록 설정되어 있는지 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -31,7 +31,7 @@ source "${LIB_DIR}/db_connection_helpers.sh"
 init_mssql_vars
 ITEM_ID="D-16"
 ITEM_NAME="Windows 인증 모드 사용"
-SEVERITY="하"
+SEVERITY="중"
 
 # 가이드라인 정보
 GUIDELINE_PURPOSE="적절한 Windows 인증 모드를 적용하여 적합한 복잡성 수준을 유지하기 위함"

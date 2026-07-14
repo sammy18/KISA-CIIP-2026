@@ -10,7 +10,7 @@
 # @ID          : D-12
 # @Category    : DBMS (Database Management System)
 # @Platform    : PostgreSQL
-# @Severity    : 중
+# @Severity    : 상
 # @Title       : 리스너보안설정
 # @Description : 보안 설정 검토 및 안전한 구성 유지
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -30,7 +30,7 @@ source "${LIB_DIR}/db_connection_helpers.sh"
 
 ITEM_ID="D-12"
 ITEM_NAME="리스너보안설정"
-SEVERITY="중"
+SEVERITY="상"
 
 GUIDELINE_PURPOSE="Listener의 Owner는 DBA가 아니더라도 Listener를 shutdown시키거나 DB 서버에 임의의 파일을 생성할 수 있으며, 원격에서 LSNRCTL 유틸리티를 사용하여 listener.ora 파일에 대한 변경이 가능하므로 Listener에 비밀번호를 설정하여 비인가자가 이를 수정하지 못하도록하기 위함"
 GUIDELINE_THREAT="Listener에 비밀번호가 설정되지 않았을 경우 DoS, 정보 획득, Listener 프로세스를 중지시킬 수 있는 위험이 존재함"

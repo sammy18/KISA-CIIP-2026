@@ -15,7 +15,10 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ============================================================================
 
+set -eu
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 source "${LIB_DIR}/common.sh"
 source "${LIB_DIR}/command_validator.sh"

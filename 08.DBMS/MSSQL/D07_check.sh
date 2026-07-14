@@ -10,7 +10,7 @@
 # @ID          : D-07
 # @Category    : DBMS (Database Management System)
 # @Platform    : MSSQL
-# @Severity    : 중
+# @Severity    : 상
 # @Title       : root권한으로서비스구동제한
 # @Description : 과도한 권한 부여 방지 및 최소 권한 원칙 적용
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -33,7 +33,7 @@ init_mssql_vars
 
 ITEM_ID="D-07"
 ITEM_NAME="root권한으로서비스구동제한"
-SEVERITY="중"
+SEVERITY="상"
 
 GUIDELINE_PURPOSE="root 권한을 제한적으로 사용함으로써 시스템의 손상, 데이터의 유출 및 변조 등을 차단하여 보안 위협을 방지하기 위함"
 GUIDELINE_THREAT="root 권한으로 서비스를 구동할 경우 시스템 손상, 데이터 유출 및 변조, 감사 및 추적의 어려움 등으로 인해 서비스 공격의 표적이 될 위험이 존재함"

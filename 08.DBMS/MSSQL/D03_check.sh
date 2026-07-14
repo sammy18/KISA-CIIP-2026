@@ -10,7 +10,7 @@
 # @ID          : D-03
 # @Category    : DBMS (Database Management System)
 # @Platform    : MSSQL
-# @Severity    : 상
+# @Severity    : 중
 # @Title       : 비밀번호 사용기간 및 복잡도를 기관의 정책에 맞도록 설정
 # @Description : 비밀번호 정책 및 설정 관리를 통한 무단 접근 방지
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -33,7 +33,7 @@ init_mssql_vars
 
 ITEM_ID="D-03"
 ITEM_NAME="비밀번호 사용기간 및 복잡도를 기관의 정책에 맞도록 설정"
-SEVERITY="상"
+SEVERITY="중"
 
 GUIDELINE_PURPOSE="비밀번호 사용 기간 및 복잡 도 설정 유무를 점검하여 비인가자의 비밀번호 추측 공격(무차별 대입 공격, 사전 대입 공격 등)에 대한 대비가 되어 있는지 확인하기 위함"
 GUIDELINE_THREAT="비밀번호 사용 기간 및 복잡 도 설정이 되어 있지 않으면 비인가자가 비밀번호 추측 공격을 통해 획득한 계정의 비밀번호를 이용하여 DB에 접근할 수 있는 위험이 존재함"

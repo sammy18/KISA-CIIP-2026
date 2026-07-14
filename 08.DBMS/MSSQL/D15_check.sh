@@ -10,7 +10,7 @@
 # @ID          : D-15
 # @Category    : DBMS (Database Management System)
 # @Platform    : MSSQL
-# @Severity    : 하
+# @Severity    : 중
 # @Title       : 관리자이외의사용자가오라클리스너의접속을통해리스너로그및trace파일에대한변경제한
 # @Description : 불필요한 접속 경로 제한 및 접근 통제
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -32,7 +32,7 @@ source "${LIB_DIR}/db_connection_helpers.sh"
 init_mssql_vars
 ITEM_ID="D-15"
 ITEM_NAME="관리자이외의사용자가오라클리스너의접속을통해리스너로그및trace파일에대한변경제한"
-SEVERITY="하"
+SEVERITY="중"
 
 # 가이드라인 정보
 GUIDELINE_PURPOSE="Listener 설정 파일 및 파라미터 변경 방지 옵션을 설정하여 비인가자의 Listener를 이용한 파라미터 변경을 방지하여 trace 파일 및 Listener 로그의 신뢰도를 유지하기 위함"
