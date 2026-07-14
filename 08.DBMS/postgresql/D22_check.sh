@@ -32,11 +32,11 @@ ITEM_ID="D-22"
 ITEM_NAME="DBMS 데이터 디렉터리 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="RESOURCE _LIMIT 값을 TRUE로 설정하여 자원의 과도한 사용을 방지하여 데이터베이스의 안정성을 보장하고, 효율적인 자원 관리를 수행하기 위함"
-GUIDELINE_THREAT="자원 제한 기능을 TRUE로 설정하지 않을 경우, 특정 사용자가 과도하게 많은 자원을 소비할 수 있으며 이로 인해 시스템에 과부하가 발생할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="RESOURCE _LIMIT 설정이 TRUE로 되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="RESOURCE _LIMIT 설정이 FALSE로 되어 있는 경우"
-GUIDELINE_REMEDIATION="RESOURCE _LIMIT 설정을 TRUE로 설정 변경"
+GUIDELINE_PURPOSE="PostgreSQL 데이터 디렉터리의 접근 권한 및 소유자를 점검하여 비인가자에 의한 데이터 파일 직접 접근 및 변조를 방지하기 위함"
+GUIDELINE_THREAT="데이터 디렉터리의 권한이 과도하게 개방되어 있거나 소유자가 postgres 계정이 아닌 경우, 비인가자가 데이터 파일에 직접 접근하여 데이터를 탈취하거나 변조할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="데이터 디렉터리 권한이 700이고 소유자가 postgres:postgres로 설정되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="데이터 디렉터리 권한이 700보다 넓게 설정되어 있거나 소유자가 postgres 계정이 아닌 경우"
+GUIDELINE_REMEDIATION="데이터 디렉터리 권한을 700, 소유자를 postgres:postgres로 설정"
 
 # PostgreSQL 연결 정보 초기화
 DB_ADMIN_USER="${DB_ADMIN_USER:-postgres}"

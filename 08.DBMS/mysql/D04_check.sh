@@ -10,8 +10,8 @@
 # @Category    : DBMS (Database Management System)
 # @Platform    : MySQL
 # @Severity    : 상
-# @Title       : 원격에서DB서버로의접속제한
-# @Description : 관리자 계정의 원격 접속을 제한하여 비인가자의 DB 접근을 방지
+# @Title       : 데이터베이스관리자권한을꼭필요한계정및그룹에대해서만허용
+# @Description : 관리자 권한이 필요한 계정과 그룹에만 관리자 권한을 부여하였는지 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ============================================================================
 
@@ -29,7 +29,7 @@ source "${LIB_DIR}/db_connection_helpers.sh"
 
 
 ITEM_ID="D-04"
-ITEM_NAME="원격에서DB서버로의접속제한"
+ITEM_NAME="데이터베이스관리자권한을꼭필요한계정및그룹에대해서만허용"
 SEVERITY="상"
 
 GUIDELINE_PURPOSE="관리자 권한이 필요한 계정과 그룹에만 관리자 권한을 부여하였는지 점검하여 관리자 권한의 남용을 방지하여 계정 유출로 인한 비인가자의 DB 접근 가능성을 최소화하고자함"
