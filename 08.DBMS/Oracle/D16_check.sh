@@ -33,11 +33,11 @@ ITEM_ID="D-16"
 ITEM_NAME="비밀번호 복잡성 설정 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="적절한 Windows 인증 모드를 적용하여 적합한 복잡성 수준을 유지하기 위함"
-GUIDELINE_THREAT="혼합 인증 모드를 사용하고 sa 계정이 활성화되어 있는 경우, 잘 알려진 sa 계정에 대한 계정 추측 공격의 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="Windows 인증 모드를 사용하고 sa 계정이 비활성화되어 있는 경우 sa 계정 활성화 시 강력한 암호 정책을 설정한 경우"
-GUIDELINE_CRITERIA_BAD="혼합 인증 모드를 사용하고, 활성화된 sa 계정에 대한 강력한 암호 정책 설정을 하지 않은 경우"
-GUIDELINE_REMEDIATION="Windows 인증 모드 사용"
+GUIDELINE_PURPOSE="비밀번호 복잡성 검증 함수(PASSWORD_VERIFY_FUNCTION)를 설정하여 문자/숫자/특수문자를 조합한 강력한 비밀번호 사용을 강제하고, 추측하기 쉬운 취약한 비밀번호 사용을 방지하기 위함"
+GUIDELINE_THREAT="비밀번호 복잡성 검증 함수가 설정되어 있지 않거나 단순한 비밀번호(연속된 문자, 계정명과 동일한 비밀번호 등)를 허용하는 경우, 비인가자가 무차별 대입 공격 또는 사전 공격을 통해 계정 비밀번호를 탈취할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="프로파일에 PASSWORD_VERIFY_FUNCTION이 설정되어 있고, 최소 길이(8자 이상)와 영문 대소문자/숫자/특수문자 조합 등 복잡성 요건을 강제하는 경우"
+GUIDELINE_CRITERIA_BAD="PASSWORD_VERIFY_FUNCTION이 설정되어 있지 않거나 NULL/DEFAULT로 되어 있어 비밀번호 복잡성 요건이 적용되지 않는 경우"
+GUIDELINE_REMEDIATION="프로파일에 PASSWORD_VERIFY_FUNCTION을 설정하여 비밀번호 복잡성 요건(길이, 문자 조합)을 강제"
 
 # Oracle 연결 정보 초기화 (fallback if library not loaded)
 ORACLE_USER="${ORACLE_USER:-system}"
