@@ -180,7 +180,8 @@ main() {
             "psql -U ${DB_ADMIN_USER} -h ${DB_HOST} -p ${DB_PORT} -d postgres" \
             "${GUIDELINE_PURPOSE}" "${GUIDELINE_THREAT}" "${GUIDELINE_CRITERIA_GOOD}" \
             "${GUIDELINE_CRITERIA_BAD}" "${GUIDELINE_REMEDIATION}"
-        return 1
+        show_diagnosis_complete "${ITEM_ID}" "MANUAL"
+        return 0
     fi
 
     diagnose
