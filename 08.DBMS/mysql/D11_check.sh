@@ -32,11 +32,11 @@ ITEM_ID="D-11"
 ITEM_NAME="DBMS GRANT 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="시스템 테이블의 일반 사용자 계정 접근 제한 설정 적용 여부를 점검하여 일반 사용자 계정 유출 시 발생할 수 있는 비인가자의 시스템 테이블 접근 위험을 차단하기 위함"
-GUIDELINE_THREAT="시스템 테이블의 일반 사용자 계정 접근 제한 설정이 되어 있지 않을 경우 Object, 사용자, 테이블 및 뷰, 작업 내역 등의 시스템 테이블에 저장된 정보가 누출될 수 있음"
-GUIDELINE_CRITERIA_GOOD="시스템 테이블에 DBA만 접근 가능하도록 설정되어 있는 경우"
-GUIDELINE_CRITERIA_BAD="시스템 테이블에 DBA 외 일반 사용자 계정이 접근 가능하도록 설정되어 있는 경우"
-GUIDELINE_REMEDIATION="시스템 테이블에 일반 사용자 계정이 접근할 수 없도록 설정"
+GUIDELINE_PURPOSE="일반 사용자에게 부여된 GRANT 권한을 점검하여 비인가자에 의한 임의의 권한 부여로 발생할 수 있는 권한 오남용을 방지하기 위함"
+GUIDELINE_THREAT="일반 사용자에게 GRANT 권한이 부여된 경우, 해당 사용자가 다른 사용자에게 임의로 권한을 부여할 수 있어 권한 관리 체계가 무력화되고 비인가자의 권한 획득 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="관리자(root) 계정 외 일반 사용자에게 GRANT 권한이 부여되어 있지 않은 경우"
+GUIDELINE_CRITERIA_BAD="관리자(root) 계정 외 일반 사용자에게 GRANT 권한이 부여되어 있는 경우"
+GUIDELINE_REMEDIATION="불필요한 일반 사용자 계정의 GRANT 권한 회수"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

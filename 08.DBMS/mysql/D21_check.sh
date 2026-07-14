@@ -32,11 +32,11 @@ ITEM_ID="D-21"
 ITEM_NAME="DBMS local_infile 설정 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="GRANTOPTION을 ROLE에 의해 설정하여 권한의 남용을 방지하고, 안정성을 확보하기 위함"
-GUIDELINE_THREAT="일반 사용자에게 GRANT OPTION이 부여된 경우, 일반 사용자가 Object 소유자인 것과 같이 다른 일반 사용자에게 권한을 부여할 수 있어 권한의 무분별한 확산으로 인한 중요 정보의 유출 등의 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="WITH _GRANT _OPTION이 ROLE에 의하여 설정된 경우"
-GUIDELINE_CRITERIA_BAD="WITH _GRANT _OPTION이 ROLE에 의하여 설정되지 않은 경우"
-GUIDELINE_REMEDIATION="WITH _GRANT _OPTION이 ROLE에 의하여 설정되도록 변경"
+GUIDELINE_PURPOSE="local_infile 설정을 비활성화하여 LOAD DATA LOCAL INFILE을 통한 클라이언트·서버 파일 무단 읽기·쓰기를 방지하기 위함"
+GUIDELINE_THREAT="local_infile이 활성화된 경우, 공격자가 LOAD DATA LOCAL INFILE 구문을 악용하여 서버나 클라이언트의 임의 파일을 읽어 정보를 유출하거나 SQL 인젝션과 결합해 시스템을 공격할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="local_infile 설정이 OFF(비활성화)로 되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="local_infile 설정이 ON(활성화)으로 되어 있는 경우"
+GUIDELINE_REMEDIATION="local_infile 설정을 OFF로 변경"
 
 # MySQL 연결 정보 초기화 (fallback if library not loaded)
 DB_USER="${DB_USER:-root}"

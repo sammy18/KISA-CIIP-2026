@@ -36,11 +36,11 @@ ITEM_ID="D-21"
 ITEM_NAME="SQL Server 인증 모드 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="GRANTOPTION을 ROLE에 의해 설정하여 권한의 남용을 방지하고, 안정성을 확보하기 위함"
-GUIDELINE_THREAT="일반 사용자에게 GRANT OPTION이 부여된 경우, 일반 사용자가 Object 소유자인 것과 같이 다른 일반 사용자에게 권한을 부여할 수 있어 권한의 무분별한 확산으로 인한 중요 정보의 유출 등의 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="WITH _GRANT _OPTION이 ROLE에 의하여 설정된 경우"
-GUIDELINE_CRITERIA_BAD="WITH _GRANT _OPTION이 ROLE에 의하여 설정되지 않은 경우"
-GUIDELINE_REMEDIATION="WITH _GRANT _OPTION이 ROLE에 의하여 설정되도록 변경"
+GUIDELINE_PURPOSE="SQL Server의 인증 모드(Authentication Mode) 설정을 점검하여 잘 알려진 sa 계정을 이용한 계정 추측 공격의 위험을 방지하기 위함"
+GUIDELINE_THREAT="SQL Server 및 Windows 인증 모드(혼합 모드)를 사용하고 sa 계정이 활성화되어 있는 경우, 비인가자가 잘 알려진 sa 계정에 대한 무차별 대입 공격 및 계정 추측 공격을 시도할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="Windows 인증 모드만 사용하도록 설정되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="SQL Server 및 Windows 인증 모드(혼합 모드)를 사용하도록 설정되어 있는 경우"
+GUIDELINE_REMEDIATION="가능한 경우 Windows 인증 모드로 변경, 혼합 모드가 필요한 경우 sa 계정에 강력한 비밀번호 정책 적용"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

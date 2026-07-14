@@ -9,7 +9,7 @@
 # @ID          : D-06
 # @Category    : DBMS (Database Management System)
 # @Platform    : MySQL
-# @Severity    : 상
+# @Severity    : 중
 # @Title       : DB사용자계정을개별적으로부여하여사용
 # @Description : 공유 계정 사용 유무를 점검하여 개별 계정 사용을 확인
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -28,7 +28,7 @@ done
 
 ITEM_ID="D-06"
 ITEM_NAME="DB사용자계정을개별적으로부여하여사용"
-SEVERITY="상"
+SEVERITY="중"
 
 GUIDELINE_PURPOSE="사용자별 별도 DBMS 계정을 사용하여 DB에 접근하는지 점검하여 DB 계정 공유 사용으로 발생할 수 있는 로그 감사 추적 문제를 대비하고자함"
 GUIDELINE_THREAT="DB 계정을 공유하여 사용할 경우 비인가자의 DB 접근 발생 시 계정 공유 사용으로 인해 로그 감사 추적의 어려움이 발생할 위험이 존재함"

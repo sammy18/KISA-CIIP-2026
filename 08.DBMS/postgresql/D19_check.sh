@@ -32,11 +32,11 @@ ITEM_ID="D-19"
 ITEM_NAME="DBMS INSERT 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="OS_ROLES, REMOTE_OS_AUTHENTICATION, REMOTE_OS_ROLES의 설정을 점검하여 비인가자들의 데이터베이스 접근을 막고 데이터베이스 관리자에 의한 사용자 Role 설정이 가능하게하기 위함"
-GUIDELINE_THREAT="OS_ROLES가 TRUE로 설정된 경우, 데이터베이스 접근 제어로 컨트롤되지 않는 OS 그룹에 의해 GRANT된 권한이 허락되어 악의적인 사용자가 시스템 권한을 악용할 위험이 존재 REMOTE_OS_ROLES가 TRUE로 설정된 경우, 원격 사용자가 OS의 다른 사용자로 속여 데이터베이스에 접근할 수 있으므로 중요 정보에 대한 무단 접근 및 권한 상승의 위험이 존재함 REMOTE_OS_AUTHENT가 TRUE로 설정된 경우, 신뢰하는 원격 호스트에서 인증 절차 없이 데이터베이스에 접속할 수 있으므로 중요 정보의 유출 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="OS_ROLES, REMOTE_OS_AUTHENTICATION, REMOTE_OS_ROLES 설정이 FALSE로 설정된 경우"
-GUIDELINE_CRITERIA_BAD="OS_ROLES, REMOTE_OS_AUTHENTICATION, REMOTE_OS_ROLES 설정이 TRUE로 설정되지 않은 경우"
-GUIDELINE_REMEDIATION="OS_ROLES, REMOTE_OS_AUTHENTICATION, REMOTE_OS_ROLES 설정을 FALSE로 변경"
+GUIDELINE_PURPOSE="일반 사용자에게 부여된 INSERT 권한을 점검하여 비인가자에 의한 데이터 무단 삽입으로 발생할 수 있는 데이터 신뢰성 저해를 방지하기 위함"
+GUIDELINE_THREAT="일반 사용자에게 INSERT 권한이 부여된 경우, 비인가자가 허위 데이터를 임의로 삽입하여 데이터 신뢰성을 저해하고 업무 오류를 유발할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="관리자 계정 외 일반 사용자에게 INSERT 권한이 부여되어 있지 않은 경우"
+GUIDELINE_CRITERIA_BAD="관리자 계정 외 일반 사용자에게 INSERT 권한이 부여되어 있는 경우"
+GUIDELINE_REMEDIATION="불필요한 일반 사용자 계정의 INSERT 권한 회수"
 
 # PostgreSQL 연결 정보 초기화
 DB_ADMIN_USER="${DB_ADMIN_USER:-postgres}"

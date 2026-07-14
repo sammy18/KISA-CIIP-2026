@@ -10,11 +10,15 @@
 # @Category    : DBMS (Database Management System)
 # @Platform    : Oracle
 # @Severity    : 중
-# @Title       : DBMS 진단 항목 D-09
-# @Description : DBMS 진단 항목 D-09 관련 점검
+# @Title       : 일정횟수의로그인실패시이에대한잠금정책설정
+# @Description : 일정 횟수의 로그인 실패 시 계정 잠금 정책 설정 여부를 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ============================================================================
 
+set -eu
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="${SCRIPT_DIR}/../../lib"
 
 source "${LIB_DIR}/common.sh"
 source "${LIB_DIR}/command_validator.sh"

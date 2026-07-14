@@ -10,7 +10,7 @@
 # @ID          : D-18
 # @Category    : DBMS (Database Management System)
 # @Platform    : MSSQL
-# @Severity    : 상
+# @Severity    : 중
 # @Title       : 응용프로그램또는DBA계정의Role이Public으로설정되지않도록조정
 # @Description : 불필요한 계정 관리 및 권한 제어를 통한 보안 강화
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -32,7 +32,7 @@ source "${LIB_DIR}/db_connection_helpers.sh"
 init_mssql_vars
 ITEM_ID="D-18"
 ITEM_NAME="응용프로그램또는DBA계정의Role이Public으로설정되지않도록조정"
-SEVERITY="상"
+SEVERITY="중"
 
 # 가이드라인 정보
 GUIDELINE_PURPOSE="응용 프로그램 또는 DBA 계정의 Role을 점검하여 일반 계정으로 응용 프로그램 테이블이나 DBA 테이블의 접근을 차단하기 위함"

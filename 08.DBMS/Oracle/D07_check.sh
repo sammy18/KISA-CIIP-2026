@@ -10,8 +10,8 @@
 # @Category    : DBMS (Database Management System)
 # @Platform    : Oracle
 # @Severity    : 중
-# @Title       : DBMS 진단 항목 D-07
-# @Description : DBMS 진단 항목 D-07 관련 점검
+# @Title       : DBMS 관리자 권한 점검
+# @Description : root 권한을 제한적으로 사용하여 시스템 손상 및 데이터 유출·변조 위험 차단
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ============================================================================
 

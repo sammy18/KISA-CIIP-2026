@@ -32,11 +32,11 @@ ITEM_ID="D-13"
 ITEM_NAME="DBMS INDEX 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="불필요한 데이터 소스 및 드라이버를 제거함으로써 비인가자에 의한 데이터베이스 접속 및 자료 유출을 차단하기 위함"
-GUIDELINE_THREAT="불필요한 ODBC/OLE-DB 데이터 소스를 통한 비인가자의 데이터베이스 접속 및 주요 정보 유출에 대한 위험이 발생할 수 있음"
-GUIDELINE_CRITERIA_GOOD="불필요한 ODBC/OLE-DB가 설치되지 않은 경우"
-GUIDELINE_CRITERIA_BAD="불필요한 ODBC/OLE-DB가 설치된 경우"
-GUIDELINE_REMEDIATION="불필요한 ODBC/OLE-DB 제거"
+GUIDELINE_PURPOSE="일반 사용자에게 부여된 INDEX 권한을 점검하여 비인가자에 의한 임의의 인덱스 생성/삭제로 발생할 수 있는 성능 저하 및 데이터 무결성 저해를 방지하기 위함"
+GUIDELINE_THREAT="일반 사용자에게 INDEX 권한이 부여된 경우, 비인가자가 임의로 인덱스를 생성하거나 삭제하여 조회 성능 저하, 디스크 자원 고갈, 서비스 장애를 유발할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="관리자 계정 외 일반 사용자에게 INDEX 권한이 부여되어 있지 않은 경우"
+GUIDELINE_CRITERIA_BAD="관리자 계정 외 일반 사용자에게 INDEX 권한이 부여되어 있는 경우"
+GUIDELINE_REMEDIATION="불필요한 일반 사용자 계정의 INDEX 권한 회수"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

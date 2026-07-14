@@ -10,8 +10,8 @@
 # @Category    : DBMS (Database Management System)
 # @Platform    : Oracle
 # @Severity    : 중
-# @Title       : DBMS 진단 항목 D-02
-# @Description : DBMS 진단 항목 D-02 관련 점검
+# @Title       : 데이터베이스의 불필요 계정을 제거하거나, 잠금 설정 후 사용
+# @Description : 불필요한 계정 존재 유무를 점검하여 비인가자의 DB 접근 위험을 차단
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ============================================================================
 

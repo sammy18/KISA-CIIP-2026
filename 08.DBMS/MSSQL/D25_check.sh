@@ -35,11 +35,11 @@ ITEM_ID="D-25"
 
 ITEM_NAME="DBMS 백업/복구 권한 점검"
 SEVERITY="중"
-GUIDELINE_PURPOSE="안전한 버전의 데이터 베이스를 사용하여 알려진 보안 취약점으로 인한 공격을 차단하기 위함"
-GUIDELINE_THREAT="안전하지 않은 버전을 사용할 경우, 알려진 보안 취약점을 통해 시스템에 침투하거나 데이터의 탈취, 악성 코드 감염 및 서비스 중단 등의 보안 사고를 초래할 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="보안 패치가 적용된 버전을 사용하는 경우"
-GUIDELINE_CRITERIA_BAD="보안 패치가 적용되지 않는 버전을 사용하는 경우"
-GUIDELINE_REMEDIATION="보안 패치가 적용된 버전으로 업데이트"
+GUIDELINE_PURPOSE="백업/복구 관련 권한이 관리자 계정으로 제한되어 있는지 점검하여 비인가자에 의한 백업 데이터 무단 접근 및 복구 기능 오남용을 방지하기 위함"
+GUIDELINE_THREAT="일반 사용자에게 백업/복구 권한이 부여된 경우, 비인가자가 백업 파일을 통해 전체 데이터를 탈취하거나, 임의로 데이터를 복구(덮어쓰기)하여 데이터 무결성을 훼손할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="백업/복구 관련 권한이 관리자(sysadmin, db_owner, db_backupoperator) 계정으로만 제한되어 있는 경우"
+GUIDELINE_CRITERIA_BAD="관리자 계정 외 일반 사용자에게 백업/복구 관련 권한이 부여되어 있는 경우"
+GUIDELINE_REMEDIATION="불필요한 일반 사용자 계정의 백업/복구 관련 권한 회수"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

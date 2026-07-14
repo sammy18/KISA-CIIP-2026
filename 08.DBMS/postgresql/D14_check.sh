@@ -32,11 +32,11 @@ ITEM_ID="D-14"
 ITEM_NAME="DBMS ALTER 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="데이터 베이스의 주요 파일에 관리자를 제외한 일반 사용자의 파일 수정 권한을 제거함으로써 비인가자에 의한 DBMS 주요 파일 변경이나 삭제를 방지하고 주요 정보 유출을 방지할 수 있음"
-GUIDELINE_THREAT="데이터베이스 주요 파일에 비인가자가 접근하여 수정 및 삭제 시 데이터베이스 운영에 장애가 발생할 수 있으며 계정 비밀번호 정보 등 중요 정보의 유출 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="주요 설정 파일 및 디렉터리의 권한 설정 시 일반 사용자의 수정 권한을 제거한 경우"
-GUIDELINE_CRITERIA_BAD="주요 설정 파일 및 디렉터리의 권한 설정 시 일반 사용자의 수정 권한을 제거하지 않은 경우"
-GUIDELINE_REMEDIATION="주요 설정 파일 및 디렉터리의 권한 설정 변경"
+GUIDELINE_PURPOSE="일반 사용자에게 부여된 ALTER 권한을 점검하여 비인가자에 의한 테이블 구조 변경으로 발생할 수 있는 데이터 손상 및 서비스 장애를 방지하기 위함"
+GUIDELINE_THREAT="일반 사용자에게 ALTER 권한이 부여된 경우, 비인가자가 테이블 구조(컬럼, 제약조건 등)를 임의로 변경하여 데이터 손상, 무결성 훼손, 애플리케이션 오류를 유발할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="관리자 계정 외 일반 사용자에게 ALTER 권한이 부여되어 있지 않은 경우"
+GUIDELINE_CRITERIA_BAD="관리자 계정 외 일반 사용자에게 ALTER 권한이 부여되어 있는 경우"
+GUIDELINE_REMEDIATION="불필요한 일반 사용자 계정의 ALTER 권한 회수"
 
 diagnose() {
     echo "진단 항목: ${ITEM_ID} - ${ITEM_NAME}"

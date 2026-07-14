@@ -32,11 +32,11 @@ ITEM_ID="D-16"
 ITEM_NAME="DBMS DROP 권한 점검"
 SEVERITY="중"
 
-GUIDELINE_PURPOSE="적절한 Windows 인증 모드를 적용하여 적합한 복잡성 수준을 유지하기 위함"
-GUIDELINE_THREAT="혼합 인증 모드를 사용하고 sa 계정이 활성화되어 있는 경우, 잘 알려진 sa 계정에 대한 계정 추측 공격의 위험이 존재함"
-GUIDELINE_CRITERIA_GOOD="Windows 인증 모드를 사용하고 sa 계정이 비활성화되어 있는 경우 sa 계정 활성화 시 강력한 암호 정책을 설정한 경우"
-GUIDELINE_CRITERIA_BAD="혼합 인증 모드를 사용하고, 활성화된 sa 계정에 대한 강력한 암호 정책 설정을 하지 않은 경우"
-GUIDELINE_REMEDIATION="Windows 인증 모드 사용"
+GUIDELINE_PURPOSE="일반 사용자에게 부여된 DROP 권한을 점검하여 비인가자에 의한 데이터베이스/테이블 무단 삭제로 발생할 수 있는 서비스 중단 및 데이터 손실을 방지하기 위함"
+GUIDELINE_THREAT="일반 사용자에게 DROP 권한이 부여된 경우, 비인가자가 테이블이나 데이터베이스를 임의로 삭제하여 데이터 유실 및 서비스 중단을 유발할 위험이 존재함"
+GUIDELINE_CRITERIA_GOOD="관리자 계정 외 일반 사용자에게 DROP 권한이 부여되어 있지 않은 경우"
+GUIDELINE_CRITERIA_BAD="관리자 계정 외 일반 사용자에게 DROP 권한이 부여되어 있는 경우"
+GUIDELINE_REMEDIATION="불필요한 일반 사용자 계정의 DROP 권한 회수"
 
 # PostgreSQL 연결 정보 초기화
 DB_ADMIN_USER="${DB_ADMIN_USER:-postgres}"

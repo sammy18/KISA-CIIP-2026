@@ -10,7 +10,7 @@
 # @ID          : D-10
 # @Category    : DBMS (Database Management System)
 # @Platform    : PostgreSQL
-# @Severity    : 중
+# @Severity    : 상
 # @Title       : 원격에서DB서버로의접속제한
 # @Description : 불필요한 접속 경로 제한 및 접근 통제
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -30,7 +30,7 @@ source "${LIB_DIR}/db_connection_helpers.sh"
 
 ITEM_ID="D-10"
 ITEM_NAME="원격에서DB서버로의접속제한"
-SEVERITY="중"
+SEVERITY="상"
 
 GUIDELINE_PURPOSE="지정된 IP 주소만 DB 서버에 접근 가능하도록 설정되어 있는지 점검하여 비인가자의 DB 서버 접근을 원천적으로 차단하고자함"
 GUIDELINE_THREAT="DB 서버 접속 시 IP 주소 제한이 적용되지 않은 경우 비인가자가 내·외부 망 위치에 상관없이 DB 서버에 접근할 수 있는 위험이 존재함"

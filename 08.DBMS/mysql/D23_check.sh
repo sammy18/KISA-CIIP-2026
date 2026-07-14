@@ -9,7 +9,7 @@
 # @ID          : D-23
 # @Category    : DBMS (Database Management System)
 # @Platform    : MySQL
-# @Severity    : 중
+# @Severity    : 상
 # @Title       : DBMS 네트워크 리스너 암호화
 # @Description : DBMS 연결 시 SSL/TLS 암호화로 데이터 유출 방지
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -30,7 +30,7 @@ source "${LIB_DIR}/db_connection_helpers.sh"
 
 ITEM_ID="D-23"
 ITEM_NAME="DBMS 네트워크 리스너 암호화"
-SEVERITY="중"
+SEVERITY="상"
 
 GUIDELINE_PURPOSE="불필요하게 활성화되어 있는 xp_cmdshell를 제한하여 공격자의 무단 접근 및 악성 코드의 실행 위험을 감소시키기 위함"
 GUIDELINE_THREAT="해킹 툴에서 자주 이용되고 있으며, 권한 상승이나 데이터 유출 등의 위험이 존재함"

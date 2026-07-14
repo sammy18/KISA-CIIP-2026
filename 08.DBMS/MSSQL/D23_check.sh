@@ -10,7 +10,7 @@
 # @ID          : D-23
 # @Category    : DBMS (Database Management System)
 # @Platform    : MSSQL
-# @Severity    : 중
+# @Severity    : 상
 # @Title       : DBMS 네트워크 리스너 암호화
 # @Description : 비밀번호 정책 및 설정 관리를 통한 무단 접근 방지
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
@@ -34,7 +34,7 @@ init_mssql_vars
 ITEM_ID="D-23"
 
 ITEM_NAME="DBMS 네트워크 리스너 암호화"
-SEVERITY="중"
+SEVERITY="상"
 GUIDELINE_PURPOSE="불필요하게 활성화되어 있는 xp_cmdshell를 제한하여 공격자의 무단 접근 및 악성 코드의 실행 위험을 감소시키기 위함"
 GUIDELINE_THREAT="해킹 툴에서 자주 이용되고 있으며, 권한 상승이나 데이터 유출 등의 위험이 존재함"
 GUIDELINE_CRITERIA_GOOD="xp_cmdshell이 비활성화되어 있거나, 활성화되어 있으면 다음의 조건을 모두 만족하는 경우 1. public의 실행(Execute)권한이 부여되어 있지 않은 경우 2. 서비스 계정(애플리케이션 연동)에 sysadmin 권한이 부여되어 있지 않은 경우"
