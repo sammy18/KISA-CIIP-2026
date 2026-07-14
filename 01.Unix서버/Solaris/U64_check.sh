@@ -15,7 +15,7 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -eu
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -82,7 +82,7 @@ diagnose() {
         fi
 
         # Capture raw output for pkg
-        raw_output=$(echo "=== Kernel Version ===" && uname -r && echo -e "\n=== Package Updates ===" && pkg list -u 2>/dev/null | head -20)
+        raw_output=$(echo "=== Kernel Version ===" && uname -r && echo -e "\n=== Package Updates ===" && pkg list -u 2>/dev/null | head -20) || true
 
         # 마지막 업데이트 시간 확인 (pkg history)
         local last_pkg=$(pkg history 2>/dev/null | head -10)
@@ -96,7 +96,7 @@ diagnose() {
 
     else
         # 다른 배포판의 경우 커널 버전만 확인
-        raw_output=$(echo "=== Kernel Version ===" && uname -r)
+        raw_output=$(echo "=== Kernel Version ===" && uname -r) || true
         details="커널: ${kernel_version}, 패키지 매니저: 확인 불가"
     fi
 

@@ -15,7 +15,7 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -eu
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -106,20 +106,20 @@ diagnose() {
             status="양호"
             inspection_summary="사용자 환경변수 파일 없음 또는 모두 안전한 권한으로 설정됨"
             command_result="[Command: find env files]${newline}No environment files found or all checked files are secure"
-            command_executed="awk -F: '\$3 >= 100 {print \$1, \$6}' /etc/passwd | while read user home; do find \"\$home\" -maxdepth 1 -name '.*' -type f 2>/dev/null; done | xargs perl -e 'for $f (@ARGV) { if (-f $f) { printf \"%04o:%s:%s\n\", (stat($f))[2] & 07777, (getpwuid((stat($f))[4]))[0], $f; } }' 2>/dev/null"
+            command_executed="awk -F: '\$3 >= 100 {print \$1, \$6}' /etc/passwd | while read user home; do find \"\$home\" -maxdepth 1 -name '.*' -type f 2>/dev/null; done | xargs perl -e 'for \$f (@ARGV) { if (-f \$f) { printf \"%04o:%s:%s\n\", (stat(\$f))[2] & 07777, (getpwuid((stat(\$f))[4]))[0], \$f; } }' 2>/dev/null"
         else
             diagnosis_result="GOOD"
             status="양호"
             inspection_summary="사용자 환경변수 파일 ${checked_count}개 모두 안전한 권한으로 설정됨"
             command_result="[Command: find env files]${newline}${raw_output}"
-            command_executed="awk -F: '\$3 >= 100 {print \$1, \$6}' /etc/passwd | while read user home; do find \"\$home\" -maxdepth 1 -name '.*' -type f 2>/dev/null; done | xargs perl -e 'for $f (@ARGV) { if (-f $f) { printf \"%04o:%s:%s\n\", (stat($f))[2] & 07777, (getpwuid((stat($f))[4]))[0], $f; } }' 2>/dev/null"
+            command_executed="awk -F: '\$3 >= 100 {print \$1, \$6}' /etc/passwd | while read user home; do find \"\$home\" -maxdepth 1 -name '.*' -type f 2>/dev/null; done | xargs perl -e 'for \$f (@ARGV) { if (-f \$f) { printf \"%04o:%s:%s\n\", (stat(\$f))[2] & 07777, (getpwuid((stat(\$f))[4]))[0], \$f; } }' 2>/dev/null"
         fi
     else
         diagnosis_result="VULNERABLE"
         status="취약"
         inspection_summary="취약한 환경변수 파일 ${vulnerable_count}개 발견: ${vulnerable_files%, }"
         command_result="[Command: find env files]${newline}${raw_output}"
-        command_executed="awk -F: '\$3 >= 100 {print \$1, \$6}' /etc/passwd | while read user home; do find \"\$home\" -maxdepth 1 -name '.*' -type f 2>/dev/null; done | xargs perl -e 'for $f (@ARGV) { if (-f $f) { printf \"%04o:%s:%s\n\", (stat($f))[2] & 07777, (getpwuid((stat($f))[4]))[0], $f; } }' 2>/dev/null"
+        command_executed="awk -F: '\$3 >= 100 {print \$1, \$6}' /etc/passwd | while read user home; do find \"\$home\" -maxdepth 1 -name '.*' -type f 2>/dev/null; done | xargs perl -e 'for \$f (@ARGV) { if (-f \$f) { printf \"%04o:%s:%s\n\", (stat(\$f))[2] & 07777, (getpwuid((stat(\$f))[4]))[0], \$f; } }' 2>/dev/null"
     fi
 
     # echo ""

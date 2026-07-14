@@ -3,7 +3,7 @@
 # Encoding: UTF-8 (BOM 없음), LF
 # Purpose: 진단 결과 파일 생성, 저장, 관리 (T025-T029)
 
-set -euo pipefail
+set -eu
 
 # 결과 디렉토리 기본 경로
 RESULT_DIR_BASE="results"

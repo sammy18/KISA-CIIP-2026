@@ -3,7 +3,7 @@
 # Encoding: UTF-8 (BOM 없음), LF
 # Purpose: JSON 생성 헬퍼 함수
 
-set -euo pipefail
+set -eu
 
 # JSON 값 이스케이프
 json_escape() {

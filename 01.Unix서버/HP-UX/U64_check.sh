@@ -15,7 +15,7 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -eu
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -76,7 +76,7 @@ diagnose() {
         package_updates=$installed_patches
 
         # Capture raw output for HP-UX
-        raw_output=$(echo "=== Kernel Version ===" && uname -r && echo -e "\n=== Installed Patches ===" && swlist 2>/dev/null | head -20)
+        raw_output=$(echo "=== Kernel Version ===" && uname -r && echo -e "\n=== Installed Patches ===" && swlist 2>/dev/null | head -20) || true
 
         details="커널: ${kernel_version}, 설치된 패치: ${package_updates}개"
 
@@ -90,7 +90,7 @@ diagnose() {
         [ -n "$last_update_info" ] && details="${details}, 마지막 패치: ${last_update_info}"
     else
         # 다른 배포판의 경우 커널 버전만 확인
-        raw_output=$(echo "=== Kernel Version ===" && uname -r)
+        raw_output=$(echo "=== Kernel Version ===" && uname -r) || true
         details="커널: ${kernel_version}, 패키지 매니저: 확인 불가"
     fi
 

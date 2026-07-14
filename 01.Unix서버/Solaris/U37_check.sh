@@ -15,7 +15,7 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -eu
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -138,13 +138,13 @@ diagnose() {
         status="양호"
         inspection_summary="crontab 관련 파일 권한 적절함"
         command_result="${file_info}"
-        command_executed="perl -e 'for $f (@ARGV) { if (-f $f) { printf \"%04o %s\\n\", (stat($f))[2] & 07777, (getpwuid((stat($f))[4]))[0]; } }' /etc/cron.deny /etc/cron.allow /etc/at.deny /etc/at.allow 2>/dev/null"
+        command_executed="perl -e 'for \$f (@ARGV) { if (-f \$f) { printf \"%04o %s\\n\", (stat(\$f))[2] & 07777, (getpwuid((stat(\$f))[4]))[0]; } }' /etc/cron.deny /etc/cron.allow /etc/at.deny /etc/at.allow 2>/dev/null"
     else
         diagnosis_result="VULNERABLE"
         status="취약"
         inspection_summary="crontab 파일 권한 미흡: ${issues[*]}"
         command_result="${file_info}"
-        command_executed="perl -e 'for $f (@ARGV) { if (-f $f) { printf \"%04o %s\\n\", (stat($f))[2] & 07777, (getpwuid((stat($f))[4]))[0]; } }' /etc/cron.deny /etc/cron.allow /etc/at.deny /etc/at.allow 2>/dev/null; find /var/spool/cron/crontabs -type f 2>/dev/null"
+        command_executed="perl -e 'for \$f (@ARGV) { if (-f \$f) { printf \"%04o %s\\n\", (stat(\$f))[2] & 07777, (getpwuid((stat(\$f))[4]))[0]; } }' /etc/cron.deny /etc/cron.allow /etc/at.deny /etc/at.allow 2>/dev/null; find /var/spool/cron/crontabs -type f 2>/dev/null"
     fi
 
     # echo ""

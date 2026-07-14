@@ -3,7 +3,7 @@
 # Encoding: UTF-8 (BOM 없음), LF
 # Purpose: 명령어 타임아웃 처리 (FR-014: 30초 타임아웃, 사용자 프롬프트) (T035-T037)
 
-set -euo pipefail
+set -eu
 
 # 타임아웃 상수
 DEFAULT_TIMEOUT=30
