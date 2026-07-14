@@ -3,7 +3,7 @@
 # Encoding: UTF-8 (BOM 없음), LF
 # Purpose: JSON과 텍스트 이중 출력 모드 관리
 
-set -euo pipefail
+set -eu
 
 # 출력 모드 변수
 OUTPUT_MODE="dual"  # dual, json, text

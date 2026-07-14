@@ -14,7 +14,7 @@
 # @Description : Apache .htaccess 파일의 오버라이드 권한 제한 여부 점검
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==========================================================================
-set -euo pipefail
+set -eu
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

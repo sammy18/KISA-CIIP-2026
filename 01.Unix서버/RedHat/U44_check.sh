@@ -14,7 +14,7 @@
 # @Description : 인증 절차가 없는 tftp와 보안에 취약한 talk 서비스 비활성화 점검
 # ==============================================================================
 
-set -euo pipefail
+set -eu
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../../lib"
 source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${LIB_DIR}/output_mode.sh"; source "${LIB_DIR}/metadata_parser.sh"
 

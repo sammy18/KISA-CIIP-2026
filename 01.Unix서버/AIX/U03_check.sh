@@ -17,7 +17,7 @@
 
 
 
-set -euo pipefail
+set -eu
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

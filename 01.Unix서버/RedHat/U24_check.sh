@@ -4,7 +4,7 @@
 # @Title       : 사용자, 시스템 환경변수 파일 소유자 및 권한 설정
 # ============================================================================
 
-set -euo pipefail
+set -eu
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; LIB_DIR="${SCRIPT_DIR}/../../lib"
 source "${LIB_DIR}/common.sh"; source "${LIB_DIR}/result_manager.sh"; source "${LIB_DIR}/output_mode.sh"; source "${LIB_DIR}/metadata_parser.sh"
 

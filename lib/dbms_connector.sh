@@ -3,7 +3,7 @@
 # Encoding: UTF-8 (BOM 없음), LF
 # Purpose: DBMS 연결 보안 (FR-011: 3회 재시도, 5초 간격, 30초 타임아웃, stdin 표준 입력) (T030-T034)
 
-set -euo pipefail
+set -eu
 
 # DBMS 연결 상수
 DBMS_MAX_RETRIES=3

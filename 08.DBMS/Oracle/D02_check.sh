@@ -38,6 +38,8 @@ GUIDELINE_CRITERIA_BAD="인가되지 않은 계정, 퇴직자 계정, 테스트 
 GUIDELINE_REMEDIATION="계정별 용도를 파악한 후 불필요한 계정 삭제"
 
 diagnose() {
+    local command_result=""
+    local command_executed=""
     # Oracle 서비스 확인
     if ! pgrep -x "tnslsnr" &>/dev/null && ! pgrep -x "oracle" &>/dev/null; then
         diagnosis_result="GOOD"

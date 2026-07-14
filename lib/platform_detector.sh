@@ -3,7 +3,7 @@
 # Encoding: UTF-8 (BOM 없음), LF
 # Purpose: Unix/Linux/Windows 플랫폼 자동 감지
 
-set -euo pipefail
+set -eu
 
 # 감지된 플랫폼 정보
 DETECTED_PLATFORM=""

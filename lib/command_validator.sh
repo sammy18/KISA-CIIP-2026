@@ -3,7 +3,7 @@
 # Encoding: UTF-8 (BOM 없음), LF
 # Purpose: 화이트리스트 기반 명령어 검증 (FR-020: Read-only 명령어만 허용) (T038-T041)
 
-set -euo pipefail
+set -eu
 
 # SCRIPT_DIR이 설정되어 있지 않을 때만 설정 (라이브러리로 호출 시 개별 스크립트의 SCRIPT_DIR 유지)
 if [ -z "${SCRIPT_DIR:-}" ]; then

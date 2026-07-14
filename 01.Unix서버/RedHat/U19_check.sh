@@ -15,7 +15,7 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="${SCRIPT_DIR}/../../lib"
@@ -70,7 +70,6 @@ diagnose() {
 
 main() {
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-    [ "$EUID" -ne 0 ] && exit 1
     diagnose
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
 }

@@ -3,7 +3,7 @@
 # Encoding: UTF-8 (BOM 없음), LF
 # Purpose: 스크립트 메타데이터 추출 (@guideline, @item_id, etc.)
 
-set -euo pipefail
+set -eu
 
 # 라이브러리 자신의 경로 저장 (라이브러리 로드를 위해)
 LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

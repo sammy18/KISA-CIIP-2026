@@ -15,7 +15,7 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -eu
 
 # 스크립트 디렉토리 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -74,7 +74,7 @@ diagnose() {
     local oslevel=$(oslevel -r 2>/dev/null || echo "알 수 없음")
 
     # Capture raw output for AIX
-    raw_output=$(echo "=== Kernel Version ===" && uname -r && echo -e "\n=== OS Level ===" && oslevel -r 2>/dev/null && echo -e "\n=== Installed Packages (sample) ===" && lslpp -L 2>/dev/null | head -20)
+    raw_output=$(echo "=== Kernel Version ===" && uname -r && echo -e "\n=== OS Level ===" && oslevel -r 2>/dev/null && echo -e "\n=== Installed Packages (sample) ===" && lslpp -L 2>/dev/null | head -20) || true
 
     details="커널: ${kernel_version}, OS Level: ${oslevel}"
 

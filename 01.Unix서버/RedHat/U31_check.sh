@@ -15,7 +15,7 @@
 # @Reference   : 2026 KISA 주요정보통신기반시설 기술적 취약점 분석·평가 상세 가이드
 # ==============================================================================
 
-set -euo pipefail
+set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="${SCRIPT_DIR}/../../lib"
@@ -87,12 +87,6 @@ diagnose() {
 }
 
 main() {
-    # root 권한 체크
-    if [ "$EUID" -ne 0 ]; then
-        echo "Error: root 권한이 필요합니다."
-        exit 1
-    fi
-
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
     
     # 진단 실행 (에러 발생해도 무시하고 진행하도록 설정 가능)
