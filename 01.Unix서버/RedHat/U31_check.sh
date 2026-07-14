@@ -87,12 +87,6 @@ diagnose() {
 }
 
 main() {
-    # root 권한 체크
-    if [ "$EUID" -ne 0 ]; then
-        echo "Error: root 권한이 필요합니다."
-        exit 1
-    fi
-
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
     
     # 진단 실행 (에러 발생해도 무시하고 진행하도록 설정 가능)

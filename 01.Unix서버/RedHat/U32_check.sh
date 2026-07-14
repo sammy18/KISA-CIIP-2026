@@ -81,11 +81,6 @@ diagnose() {
 }
 
 main() {
-    if [ "$EUID" -ne 0 ]; then
-        echo "Error: root 권한이 필요합니다."
-        exit 1
-    fi
-
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
     diagnose || true
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result:-ERROR}"

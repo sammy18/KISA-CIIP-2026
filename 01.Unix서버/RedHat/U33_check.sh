@@ -65,5 +65,5 @@ diagnose() {
     return 0
 }
 
-main() { [ "$EUID" -ne 0 ] && exit 1; diagnose; }
+main() { diagnose; }
 main "$@"

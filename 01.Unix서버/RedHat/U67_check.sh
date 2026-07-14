@@ -174,7 +174,6 @@ main() {
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
 
     # root 권한 확인
-    [ "$EUID" -ne 0 ] && { echo "root 권한이 필요합니다."; exit 1; }
 
     # 진단 수행
     diagnose

@@ -70,7 +70,6 @@ diagnose() {
 
 main() {
     show_diagnosis_start "${ITEM_ID}" "${ITEM_NAME}"
-    [ "$EUID" -ne 0 ] && exit 1
     diagnose
     show_diagnosis_complete "${ITEM_ID}" "${diagnosis_result}"
 }
