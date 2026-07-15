@@ -3,7 +3,7 @@
 # @Project: KISA-CIIP-2026 Vulnerability Assessment Scripts
 # @Copyright: Copyright (c) 2026 Yang Uhyeok (양우혁). All rights reserved.
 # @Version: 1.0.1
-# @Last Updated: 2026-01-16
+# @Last Updated: 2026-04-20
 # ============================================================================
 # [점검 항목 상세]
 # @ID          : D-01
@@ -126,8 +126,17 @@ diagnose() {
             local empty_password=$(MYSQL_PWD="${DB_ADMIN_PASS}" mysql -u"${DB_ADMIN_USER}" -h"${DB_HOST}" -P"${DB_PORT}" -se \
                 "SELECT COUNT(*) FROM mysql.user WHERE user='${account}' AND (authentication_string='' OR authentication_string IS NULL);" 2>/dev/null)
 
-            # MySQL 5.7 이전 버전에서는 password 필드 확인
-            if [[ "${mysql_version}" < "5.7" ]]; then
+            # Improved version comparison for MySQL 5.7+ (robust parsing)
+            local is_old_version=false
+            if [[ "$mysql_version" =~ ^([0-9]+)\.([0-9]+) ]]; then
+                local major=${BASH_REMATCH[1]}
+                local minor=${BASH_REMATCH[2]}
+                if [ "$major" -lt 5 ] || { [ "$major" -eq 5 ] && [ "$minor" -lt 7 ]; }; then
+                    is_old_version=true
+                fi
+            fi
+
+            if [ "$is_old_version" = true ]; then
                 empty_password=$(MYSQL_PWD="${DB_ADMIN_PASS}" mysql -u"${DB_ADMIN_USER}" -h"${DB_HOST}" -P"${DB_PORT}" -se \
                     "SELECT COUNT(*) FROM mysql.user WHERE user='${account}' AND (password='' OR password IS NULL);" 2>/dev/null)
             fi
